@@ -1,0 +1,28 @@
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 3px 0 3px;
+}
+
+.stacked {
+  flex-direction: column;
+  gap: 16px;
+}
+
+.text {
+  min-width: 0;
+}
+
+.title {
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.date {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,15 @@
+/* Estrutura compartilhada pelas telas de listagem (Apiários, Colmeias, Alertas) */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 0 14px;
+}
+
+.results {
+  margin-top: 26px;
+}
+
+.cta {
+  padding: 0 14px;
+}

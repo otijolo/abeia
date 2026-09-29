@@ -1,0 +1,44 @@
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.box {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #c9c9c9;
+  border-radius: 4px;
+  background: var(--color-surface);
+}
+
+.tick {
+  color: #1f6d33;
+  opacity: 0;
+}
+
+.input:checked + .box {
+  background: #5fd36a;
+  border-color: #3aa84a;
+}
+
+.input:checked + .box .tick {
+  opacity: 1;
+}
+
+.input:focus-visible + .box {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}

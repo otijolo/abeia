@@ -1,0 +1,27 @@
+.bubble {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.honey {
+  background: var(--color-icon-bg);
+  color: var(--color-icon);
+  --icon-hole: var(--color-icon-bg);
+}
+
+.silver {
+  background: #e3e3e3;
+  color: #7b7b7b;
+}
+
+.bronze {
+  background: #dfa77f;
+  color: #8a4a1c;
+}
+
+.danger {
+  background: var(--status-critical-bg);
+  color: var(--status-critical-fg);
+}

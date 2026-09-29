@@ -1,0 +1,42 @@
+.wrap {
+  position: relative;
+  height: 36px;
+}
+
+.face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  padding: 0 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-chip);
+  font-size: 14.5px;
+  pointer-events: none;
+}
+
+.text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.wrap:hover .face {
+  background: #e4e4e4;
+}
+
+
+.wrap:focus-within .face {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}

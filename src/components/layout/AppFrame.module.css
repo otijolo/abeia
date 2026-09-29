@@ -1,0 +1,14 @@
+.frame {
+  position: relative;
+  width: 100%;
+  max-width: var(--app-width);
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: var(--color-bg);
+}
+
+@media (min-width: 480px) {
+  .frame {
+    box-shadow: 0 0 0 1px var(--color-border), 0 12px 40px rgba(0, 0, 0, 0.08);
+  }
+}

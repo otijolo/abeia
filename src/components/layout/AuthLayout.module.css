@@ -1,0 +1,40 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: calc(51px + env(safe-area-inset-top)) 24px 40px;
+  background: var(--color-bg);
+}
+
+.form {
+  margin-top: 46px;
+}
+
+.heading {
+  margin: 0;
+}
+
+.heading h1 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.heading p {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 32px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 32px;
+}

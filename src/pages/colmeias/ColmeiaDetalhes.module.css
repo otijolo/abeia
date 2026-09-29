@@ -1,0 +1,17 @@
+.health {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.problem {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.atencao {
+  color: var(--status-attention-fg);
+}
+
+.critico {
+  color: var(--status-critical-fg);
+}

@@ -1,0 +1,66 @@
+.figure {
+  margin: 0;
+}
+
+.card {
+  height: 200px;
+  overflow: hidden;
+}
+
+.scroll {
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 100%;
+  margin: 0;
+  padding: 0 0 8px 30px;
+  list-style: none;
+  width: max-content;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.bar {
+  width: 43px;
+  border-radius: 3px;
+  background: var(--color-primary);
+}
+
+.month {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.track {
+  position: relative;
+  height: 15px;
+  margin-top: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+}
+
+.thumb {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}

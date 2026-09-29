@@ -1,0 +1,77 @@
+.splash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100dvh;
+  padding-top: calc(184px + env(safe-area-inset-top));
+  background: var(--color-bg);
+  cursor: pointer;
+}
+
+.wordmark {
+  margin-top: 52px;
+}
+
+.loader {
+  position: relative;
+  width: 140px;
+  height: 120px;
+  margin-top: 30px;
+}
+
+.hex {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 58px;
+  height: 64px;
+  margin: -32px 0 0 -29px;
+  fill: none;
+  stroke: #f9d236;
+  stroke-width: 6;
+  stroke-linejoin: round;
+  animation: 1.6s ease-in-out infinite alternate;
+}
+
+.top {
+  animation-name: toTop;
+}
+.left {
+  animation-name: toLeft;
+}
+.right {
+  animation-name: toRight;
+}
+
+@keyframes toTop {
+  from {
+    transform: translate(0, -10px);
+  }
+  to {
+    transform: translate(0, -28px);
+  }
+}
+@keyframes toLeft {
+  from {
+    transform: translate(-6px, 4px);
+  }
+  to {
+    transform: translate(-39px, 28px);
+  }
+}
+@keyframes toRight {
+  from {
+    transform: translate(6px, 4px);
+  }
+  to {
+    transform: translate(39px, 28px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hex {
+    animation-duration: 0s;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+  }
+}

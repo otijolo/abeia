@@ -1,0 +1,16 @@
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 3px;
+}
+
+.title {
+  font-size: 16.5px;
+  font-weight: 600;
+}
+
+.action {
+  font-size: 15px;
+  color: var(--color-link);
+}

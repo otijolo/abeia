@@ -1,0 +1,6 @@
+.intro {
+  margin: -6px 0 14px;
+  padding: 0 3px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
