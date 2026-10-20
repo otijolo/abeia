@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
+import { getDatabase } from 'firebase/database'
 
 const firebaseConfig = {
   apiKey: "AIzaSyCfoKYRrKA2qRtnPRgkeYirHVbqPwPZvDk",
@@ -15,7 +16,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const analytics = getAnalytics(app);
 
 // EXPORTAÇÃO OBRIGATÓRIA DA AUTENTICAÇÃO:
 export const auth = getAuth(app);
+export const db = getDatabase(app)

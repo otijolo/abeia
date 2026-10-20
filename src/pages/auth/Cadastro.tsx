@@ -1,7 +1,9 @@
+
 import { useState, FormEvent, ChangeEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../../services/firebase'
+import { ref, set } from 'firebase/database'
+import { auth, db } from '../../services/firebase'
 import { AuthLayout } from '../../components/layout/AuthLayout'
 import { Button } from '../../components/ui/Button'
 import { TextField } from '../../components/ui/Field'
@@ -16,7 +18,7 @@ export function Cadastro() {
   const [carregando, setCarregando] = useState(false)
 
   const handleCadastro = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()  
+    e.preventDefault()
     setErro('')
 
     if (senha !== confirmaSenha) {
@@ -26,12 +28,33 @@ export function Cadastro() {
 
     try {
       setCarregando(true)
-      // Cria o usuário no Firebase Authentication sem exibir alerta
-      await createUserWithEmailAndPassword(auth, email, senha)
+
+      // 1. Cria o usuário no Firebase Authentication
+      const credencial = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        senha
+      )
+
+      // 2. Obtém o UID exclusivo do usuário cadastrado
+      const usuario = credencial.user
+
+      // 3. Salva os dados do usuário no Realtime Database
+      await set(ref(db, `usuarios/${usuario.uid}`), {
+        email: usuario.email,
+        criadoEm: new Date().toISOString()
+      })
+
+      // 4. Redireciona para a tela de login
       navigate('/login')
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err)
-      setErro(`Erro ao cadastrar: ${err.message}`)
+
+      if (err instanceof Error) {
+        setErro(`Erro ao cadastrar: ${err.message}`)
+      } else {
+        setErro('Ocorreu um erro ao cadastrar.')
+      }
     } finally {
       setCarregando(false)
     }
@@ -44,39 +67,59 @@ export function Cadastro() {
       onSubmit={handleCadastro}
       actions={
         <>
-          {erro && <p style={{ color: 'red', fontSize: '14px', marginBottom: '10px' }}>{erro}</p>}
+          {erro && (
+            <p
+              style={{
+                color: 'red',
+                fontSize: '14px',
+                marginBottom: '10px'
+              }}
+            >
+              {erro}
+            </p>
+          )}
+
           <Button type="submit" disabled={carregando}>
             {carregando ? 'Cadastrando...' : 'Confirmar'}
           </Button>
+
           <div style={{ marginTop: 20 }}>
             <TextLink to="/login">Já possui uma conta?</TextLink>
           </div>
         </>
       }
     >
-      <TextField 
-        label="E-mail" 
-        type="email" 
-        placeholder="Digite seu e-mail..." 
-        autoComplete="email" 
+      <TextField
+        label="E-mail"
+        type="email"
+        placeholder="Digite seu e-mail..."
+        autoComplete="email"
         value={email}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setEmail(e.target.value)
+        }
       />
-      <TextField 
-        label="Senha" 
-        type="password" 
-        placeholder="••••••••" 
-        autoComplete="new-password" 
+
+      <TextField
+        label="Senha"
+        type="password"
+        placeholder="••••••••"
+        autoComplete="new-password"
         value={senha}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setSenha(e.target.value)
+        }
       />
-      <TextField 
-        label="Confirmação de senha" 
-        type="password" 
-        placeholder="••••••••" 
-        autoComplete="new-password" 
+
+      <TextField
+        label="Confirmação de senha"
+        type="password"
+        placeholder="••••••••"
+        autoComplete="new-password"
         value={confirmaSenha}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmaSenha(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setConfirmaSenha(e.target.value)
+        }
       />
     </AuthLayout>
   )

@@ -1,11 +1,13 @@
-import { useMemo, useState } from 'react'
+
+import { useEffect, useMemo, useState } from 'react'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { ChipGroup } from '../../components/ui/ChipGroup'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
 import { SearchBar } from '../../components/ui/SearchBar'
 import { EmptyState } from '../../components/ui/EmptyState'
-import { apiarios } from '../../data/mock'
+import { listarApiarios } from '../../services/apiarioService'
+import type { Apiario } from '../../data/types'
 import { statusFilterOptions, type StatusFilter } from '../../data/filters'
 import styles from '../shared/ListPage.module.css'
 
@@ -13,39 +15,115 @@ import styles from '../shared/ListPage.module.css'
 export function Apiarios() {
   const [busca, setBusca] = useState('')
   const [filtro, setFiltro] = useState<StatusFilter>('todos')
+  const [apiarios, setApiarios] = useState<Apiario[]>([])
+  const [carregando, setCarregando] = useState(true)
+  const [erro, setErro] = useState('')
+
+  useEffect(() => {
+    let ativo = true
+
+    async function carregarApiarios() {
+      try {
+        setCarregando(true)
+        setErro('')
+
+        const dados = await listarApiarios()
+
+        if (ativo) {
+          setApiarios(dados)
+        }
+      } catch (error) {
+        console.error('Erro ao carregar apiários:', error)
+
+        if (ativo) {
+          setErro(
+            error instanceof Error
+              ? error.message
+              : 'Não foi possível carregar os apiários.'
+          )
+        }
+      } finally {
+        if (ativo) {
+          setCarregando(false)
+        }
+      }
+    }
+
+    void carregarApiarios()
+
+    return () => {
+      ativo = false
+    }
+  }, [])
 
   const lista = useMemo(
     () =>
       apiarios.filter(
-        (a) =>
-          (filtro === 'todos' || a.status === filtro) &&
-          `${a.nome} ${a.cidade}`.toLowerCase().includes(busca.trim().toLowerCase()),
+        (apiario) =>
+          (filtro === 'todos' || apiario.status === filtro) &&
+          `${apiario.nome} ${apiario.cidade}`
+            .toLowerCase()
+            .includes(busca.trim().toLowerCase())
       ),
-    [busca, filtro],
+    [apiarios, busca, filtro]
   )
 
   return (
     <Screen title="Apiários" nav="apiarios">
       <div className={styles.filters}>
-        <SearchBar placeholder="Buscar apiários..." value={busca} onChange={(e) => setBusca(e.target.value)} />
-        <ChipGroup label="Filtrar por status" options={statusFilterOptions} value={filtro} onChange={setFiltro} />
+        <SearchBar
+          placeholder="Buscar apiários..."
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+        />
+
+        <ChipGroup
+          label="Filtrar por status"
+          options={statusFilterOptions}
+          value={filtro}
+          onChange={setFiltro}
+        />
       </div>
 
       <Stack gap={37} className={styles.results}>
         <ListStack gap={15}>
-          {lista.map((a) => (
+          {carregando && (
+            <p>Carregando apiários...</p>
+          )}
+
+          {!carregando && erro && (
+            <div role="alert">
+              <p>Não foi possível carregar os apiários.</p>
+              <p>{erro}</p>
+              <Button
+                onClick={() => window.location.reload()}
+              >
+                Tentar novamente
+              </Button>
+            </div>
+          )}
+
+          {!carregando && !erro && lista.map((apiario) => (
             <ListCard
-              key={a.id}
-              to={`/apiarios/${a.id}`}
-              title={a.nome}
-              subtitle={`${a.cidade} • ${a.totalColmeias} colmeias`}
-              status={a.status}
+              key={apiario.id}
+              to={`/apiarios/${apiario.id}`}
+              title={apiario.nome}
+              subtitle={`${apiario.cidade} • ${apiario.totalColmeias} colmeias`}
+              status={apiario.status}
             />
           ))}
-          {lista.length === 0 && <EmptyState>Nenhum apiário encontrado.</EmptyState>}
+
+          {!carregando && !erro && lista.length === 0 && (
+            <EmptyState>
+              Nenhum apiário encontrado.
+            </EmptyState>
+          )}
         </ListStack>
+
         <div className={styles.cta}>
-          <Button to="/apiarios/novo">+ Novo Apiário</Button>
+          <Button to="/apiarios/novo">
+            + Novo Apiário
+          </Button>
         </div>
       </Stack>
     </Screen>

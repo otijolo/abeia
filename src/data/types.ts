@@ -78,3 +78,20 @@ export interface ProducaoMensal {
   mes: string
   kg: number
 }
+
+export interface Producao {
+  id: string
+  colmeiaId: string
+  data: string
+  quantidade: number
+  unidade: string
+  observacoes?: string
+}
+
+export interface Perfil {
+  id?: string
+  nome: string
+  email: string
+  iniciais?: string
+  telefone?: string
+}
