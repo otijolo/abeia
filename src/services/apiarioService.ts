@@ -1,14 +1,4 @@
-
-import {
-  get,
-  push,
-  ref,
-  set,
-  update,
-  remove
-} from 'firebase/database'
-
-import { auth, db } from './firebase'
+import { apiFetch } from './api'
 import type { Apiario } from '../data/types'
 
 type NovoApiario = Omit<
@@ -17,123 +7,60 @@ type NovoApiario = Omit<
 > & Partial<Pick<Apiario, 'totalColmeias' | 'status'>>
 
 /**
- * Retorna o caminho dos apiários do usuário autenticado.
- */
-function obterCaminhoApiarios(): string {
-  const usuario = auth.currentUser
-
-  if (!usuario) {
-    throw new Error(
-      'Você precisa estar autenticado para acessar os apiários.'
-    )
-  }
-
-  return `usuarios/${usuario.uid}/apiarios`
-}
-
-/**
- * Lista todos os apiários do usuário autenticado.
+ * Lista todos os apiários através da API Java (Spring Boot MVC).
+ * Endpoint: GET /api/apiarios
  */
 export async function listarApiarios(): Promise<Apiario[]> {
-  const referencia = ref(db, obterCaminhoApiarios())
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    return []
-  }
-
-  const dados = snapshot.val() as Record<string, Omit<Apiario, 'id'>>
-
-  return Object.entries(dados).map(([id, apiario]) => ({
-    ...apiario,
-    id
-  }))
+  return apiFetch<Apiario[]>('/apiarios')
 }
 
 /**
- * Busca um apiário pelo ID.
+ * Busca um apiário pelo ID na API Java.
+ * Endpoint: GET /api/apiarios/{id}
  */
-export async function buscarApiario(
-  id: string
-): Promise<Apiario | null> {
-  const referencia = ref(
-    db,
-    `${obterCaminhoApiarios()}/${id}`
-  )
-
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
+export async function buscarApiario(id: string): Promise<Apiario | null> {
+  try {
+    return await apiFetch<Apiario>(`/apiarios/${id}`)
+  } catch {
     return null
   }
-
-  return {
-    ...snapshot.val(),
-    id
-  } as Apiario
 }
 
 /**
- * Cadastra um novo apiário.
+ * Cadastra um novo apiário no backend Java.
+ * Endpoint: POST /api/apiarios
  */
-export async function criarApiario(
-  dados: NovoApiario
-): Promise<Apiario> {
-  const referencia = push(ref(db, obterCaminhoApiarios()))
-
-  if (!referencia.key) {
-    throw new Error('Não foi possível gerar o ID do apiário.')
-  }
-
-  const apiario: Apiario = {
-    ...dados,
-    id: referencia.key,
-    totalColmeias: dados.totalColmeias ?? 0,
-    status: dados.status ?? 'normal'
-  }
-
-  await set(referencia, apiario)
-
-  return apiario
+export async function criarApiario(dados: NovoApiario): Promise<Apiario> {
+  return apiFetch<Apiario>('/apiarios', {
+    method: 'POST',
+    body: JSON.stringify({
+      ...dados,
+      totalColmeias: dados.totalColmeias ?? 0,
+      status: dados.status ?? 'normal'
+    })
+  })
 }
 
 /**
- * Atualiza os campos enviados de um apiário existente.
+ * Atualiza os campos de um apiário via API Java.
+ * Endpoint: PUT /api/apiarios/{id}
  */
 export async function atualizarApiario(
   id: string,
   dados: Partial<Omit<Apiario, 'id'>>
 ): Promise<void> {
-  const referencia = ref(
-    db,
-    `${obterCaminhoApiarios()}/${id}`
-  )
-
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    throw new Error('Apiário não encontrado.')
-  }
-
-  await update(referencia, dados)
+  await apiFetch<Apiario>(`/apiarios/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(dados)
+  })
 }
 
 /**
- * Exclui um apiário existente.
+ * Exclui um apiário existente via API Java.
+ * Endpoint: DELETE /api/apiarios/{id}
  */
-export async function excluirApiario(
-  id: string
-): Promise<void> {
-  const referencia = ref(
-    db,
-    `${obterCaminhoApiarios()}/${id}`
-  )
-
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    throw new Error('Apiário não encontrado.')
-  }
-
-  await remove(referencia)
+export async function excluirApiario(id: string): Promise<void> {
+  await apiFetch<void>(`/apiarios/${id}`, {
+    method: 'DELETE'
+  })
 }

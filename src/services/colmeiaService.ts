@@ -1,119 +1,60 @@
-
-import {
-  get,
-  push,
-  ref,
-  set,
-  update,
-remove
-} from 'firebase/database'
-
-import { auth, db } from './firebase'
+import { apiFetch } from './api'
 import type { Colmeia } from '../data/types'
 
-function obterCaminhoColmeias(): string {
-  const usuario = auth.currentUser
-
-  if (!usuario) {
-    throw new Error(
-      'Você precisa estar autenticado para acessar as colmeias.'
-    )
-  }
-
-  return `usuarios/${usuario.uid}/colmeias`
+/**
+ * Lista todas as colmeias através da API Java (Spring Boot MVC).
+ * Endpoint: GET /api/colmeias
+ */
+export async function listarColmeias(apiarioId?: string): Promise<Colmeia[]> {
+  const query = apiarioId ? `?apiarioId=${encodeURIComponent(apiarioId)}` : ''
+  return apiFetch<Colmeia[]>(`/colmeias${query}`)
 }
 
-/** Lista as colmeias do usuário autenticado. */
-export async function listarColmeias(): Promise<Colmeia[]> {
-  const referencia = ref(db, obterCaminhoColmeias())
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    return []
-  }
-
-  const dados = snapshot.val() as Record<string, Omit<Colmeia, 'id'>>
-
-  return Object.entries(dados).map(([id, colmeia]) => ({
-    ...colmeia,
-    id
-  }))
-}
-
-/** Busca uma colmeia pelo ID. */
-export async function buscarColmeia(
-  id: string
-): Promise<Colmeia | null> {
-  const referencia = ref(
-    db,
-    `${obterCaminhoColmeias()}/${id}`
-  )
-
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
+/**
+ * Busca uma colmeia pelo ID na API Java.
+ * Endpoint: GET /api/colmeias/{id}
+ */
+export async function buscarColmeia(id: string): Promise<Colmeia | null> {
+  try {
+    return await apiFetch<Colmeia>(`/colmeias/${id}`)
+  } catch {
     return null
   }
-
-  return {
-    ...snapshot.val(),
-    id
-  } as Colmeia
 }
 
-/** Cadastra uma nova colmeia. */
+/**
+ * Cadastra uma nova colmeia no backend Java.
+ * Endpoint: POST /api/colmeias
+ */
 export async function criarColmeia(
   dados: Omit<Colmeia, 'id'>
 ): Promise<Colmeia> {
-  const referencia = push(ref(db, obterCaminhoColmeias()))
-
-  if (!referencia.key) {
-    throw new Error('Não foi possível gerar o ID da colmeia.')
-  }
-
-  const colmeia: Colmeia = {
-    ...dados,
-    id: referencia.key
-  }
-
-  await set(referencia, colmeia)
-
-  return colmeia
+  return apiFetch<Colmeia>('/colmeias', {
+    method: 'POST',
+    body: JSON.stringify(dados)
+  })
 }
 
-/** Atualiza os campos de uma colmeia existente. */
+/**
+ * Atualiza os campos de uma colmeia existente via API Java.
+ * Endpoint: PUT /api/colmeias/{id}
+ */
 export async function atualizarColmeia(
   id: string,
   dados: Partial<Omit<Colmeia, 'id'>>
 ): Promise<void> {
-  const referencia = ref(
-    db,
-    `${obterCaminhoColmeias()}/${id}`
-  )
-
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    throw new Error('Colmeia não encontrada.')
-  }
-
-  await update(referencia, dados)
+  await apiFetch<Colmeia>(`/colmeias/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(dados)
+  })
 }
 
-/** Exclui uma colmeia do usuário autenticado. */
-export async function excluirColmeia(
-  id: string
-): Promise<void> {
-  const referencia = ref(
-    db,
-    `${obterCaminhoColmeias()}/${id}`
-  )
-
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    throw new Error('Colmeia não encontrada.')
-  }
-
-  await remove(referencia)
+/**
+ * Exclui uma colmeia existente via API Java.
+ * Endpoint: DELETE /api/colmeias/{id}
+ */
+export async function excluirColmeia(id: string): Promise<void> {
+  await apiFetch<void>(`/colmeias/${id}`, {
+    method: 'DELETE'
+  })
 }

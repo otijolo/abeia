@@ -1,143 +1,69 @@
-import {
-  get,
-  push,
-  ref,
-  set,
-  update,
-  remove
-} from 'firebase/database'
-
-import { auth, db } from './firebase'
+import { apiFetch } from './api'
 import type { Producao } from '../data/types'
 
 type NovaProducao = Omit<Producao, 'id'>
 
 /**
- * Retorna o caminho das produções do usuário autenticado.
- */
-function obterCaminhoProducoes(): string {
-  const usuario = auth.currentUser
-
-  if (!usuario) {
-    throw new Error(
-      'Você precisa estar autenticado para acessar as produções.'
-    )
-  }
-
-  return `usuarios/${usuario.uid}/producoes`
-}
-
-/**
- * Lista todas as produções cadastradas pelo usuário autenticado.
+ * Lista todas as produções através da API Java (Spring Boot MVC).
+ * Endpoint: GET /api/producoes
  */
 export async function listarProducoes(): Promise<Producao[]> {
-  const referencia = ref(db, obterCaminhoProducoes())
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    return []
-  }
-
-  const dados = snapshot.val() as Record<string, Omit<Producao, 'id'>>
-
-  return Object.entries(dados).map(([id, producao]) => ({
-    ...producao,
-    id
-  }))
+  return apiFetch<Producao[]>('/producoes')
 }
 
 /**
- * Lista todas as produções de uma colmeia específica.
+ * Lista as produções de uma colmeia específica.
+ * Endpoint: GET /api/producoes/colmeia/{colmeiaId}
  */
 export async function listarProducoesDaColmeia(
   colmeiaId: string
 ): Promise<Producao[]> {
-  const producoes = await listarProducoes()
-  return producoes.filter((p) => p.colmeiaId === colmeiaId)
+  return apiFetch<Producao[]>(`/producoes/colmeia/${colmeiaId}`)
 }
 
 /**
- * Busca uma produção pelo ID.
+ * Busca uma produção pelo ID na API Java.
+ * Endpoint: GET /api/producoes/{id}
  */
-export async function buscarProducao(
-  id: string
-): Promise<Producao | null> {
-  const referencia = ref(
-    db,
-    `${obterCaminhoProducoes()}/${id}`
-  )
-
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
+export async function buscarProducao(id: string): Promise<Producao | null> {
+  try {
+    return await apiFetch<Producao>(`/producoes/${id}`)
+  } catch {
     return null
   }
-
-  return {
-    ...snapshot.val(),
-    id
-  } as Producao
 }
 
 /**
- * Cadastra uma nova produção no Firebase.
+ * Registra uma nova produção através do ProducaoController em Java.
+ * Endpoint: POST /api/producoes
  */
-export async function criarProducao(
-  dados: NovaProducao
-): Promise<Producao> {
-  const referencia = push(ref(db, obterCaminhoProducoes()))
-
-  if (!referencia.key) {
-    throw new Error('Não foi possível gerar o ID da produção.')
-  }
-
-  const producao: Producao = {
-    ...dados,
-    id: referencia.key
-  }
-
-  await set(referencia, producao)
-
-  return producao
+export async function criarProducao(dados: NovaProducao): Promise<Producao> {
+  return apiFetch<Producao>('/producoes', {
+    method: 'POST',
+    body: JSON.stringify(dados)
+  })
 }
 
 /**
  * Atualiza os campos de uma produção existente.
+ * Endpoint: PUT /api/producoes/{id}
  */
 export async function atualizarProducao(
   id: string,
   dados: Partial<Omit<Producao, 'id'>>
 ): Promise<void> {
-  const referencia = ref(
-    db,
-    `${obterCaminhoProducoes()}/${id}`
-  )
-
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    throw new Error('Produção não encontrada.')
-  }
-
-  await update(referencia, dados)
+  await apiFetch<Producao>(`/producoes/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(dados)
+  })
 }
 
 /**
- * Exclui um registro de produção existente.
+ * Exclui um registro de produção.
+ * Endpoint: DELETE /api/producoes/{id}
  */
-export async function excluirProducao(
-  id: string
-): Promise<void> {
-  const referencia = ref(
-    db,
-    `${obterCaminhoProducoes()}/${id}`
-  )
-
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    throw new Error('Produção não encontrada.')
-  }
-
-  await remove(referencia)
+export async function excluirProducao(id: string): Promise<void> {
+  await apiFetch<void>(`/producoes/${id}`, {
+    method: 'DELETE'
+  })
 }
