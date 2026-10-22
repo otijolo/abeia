@@ -1,15 +1,33 @@
+import { useState, useEffect } from 'react'
 import { FileTextIcon, HexagonsIcon, HiveIcon, MegaphoneIcon } from '../../components/icons'
 import { Columns, Screen, Stack } from '../../components/layout/Screen'
 import { BarChart } from '../../components/ui/BarChart'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
 import { SectionTitle } from '../../components/ui/SectionTitle'
 import { StatCard } from '../../components/ui/StatCard'
-import { findApiario, findColmeia, inspecoesPendentes, producaoMensal, resumoInicio, usuario } from '../../data/mock'
+import { findApiario, findColmeia, inspecoesPendentes, producaoMensal, resumoInicio, usuario as mockUsuario } from '../../data/mock'
+import { buscarPerfil } from '../../services/perfilService'
+import { auth } from '../../services/firebase'
 import styles from './Inicio.module.css'
 
 /** 4 - Tela de Início */
 export function Inicio() {
-  const primeiroNome = usuario.nome.split(' ')[0]
+  const [nomeUsuario, setNomeUsuario] = useState(mockUsuario.nome)
+
+  useEffect(() => {
+    async function carregarDadosUsuario() {
+      try {
+        const perfil = await buscarPerfil()
+        const nomeFinal = perfil?.nome || auth.currentUser?.displayName || mockUsuario.nome
+        setNomeUsuario(nomeFinal)
+      } catch (err) {
+        console.error('Erro ao carregar nome na home:', err)
+      }
+    }
+    void carregarDadosUsuario()
+  }, [])
+
+  const primeiroNome = nomeUsuario.split(' ')[0]
   const pendentes = inspecoesPendentes.map((id) => findColmeia(id)!)
 
   return (
@@ -37,7 +55,7 @@ export function Inicio() {
                 key={c.id}
                 to={`/colmeias/${c.id}`}
                 title={c.nome}
-                subtitle={`${findApiario(c.apiarioId)?.nome} • ${c.prazoInspecao}`}
+                subtitle={`${findApiario(c.apiarioId)?.nome}\n${c.prazoInspecao}`}
                 status={c.status}
               />
             ))}
@@ -51,4 +69,4 @@ export function Inicio() {
       </Stack>
     </Screen>
   )
-}
+} 
