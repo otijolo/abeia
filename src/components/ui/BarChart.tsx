@@ -9,7 +9,7 @@ const BAR_MAX_HEIGHT = 128
 export function BarChart({ data, label }: { data: ProducaoMensal[]; label: string }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [thumb, setThumb] = useState({ width: 20, left: 0 })
-  const max = Math.max(...data.map((d) => d.kg))
+  const max = Math.max(1, ...data.map((d) => d.kg))
 
   useEffect(() => {
     const el = scrollRef.current

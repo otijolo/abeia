@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { SelectField, TextArea, TextField } from '../../components/ui/Field'
-import { colmeias as mockColmeias, opcoes } from '../../data/mock'
+import { opcoes } from '../../data/mock'
 import { listarColmeias } from '../../services/colmeiaService'
 import { criarProducao } from '../../services/producaoService'
 import type { Colmeia } from '../../data/types'
@@ -33,9 +33,9 @@ export function RegistrarProducao() {
     async function carregarColmeias() {
       try {
         const dados = await listarColmeias()
-        setColmeias(dados.length > 0 ? dados : mockColmeias)
+        setColmeias(dados)
       } catch {
-        setColmeias(mockColmeias)
+        setColmeias([])
       }
     }
     void carregarColmeias()

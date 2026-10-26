@@ -1,15 +1,30 @@
-import type { FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { SelectField, TextField } from '../../components/ui/Field'
 import { SectionTitle } from '../../components/ui/SectionTitle'
-import { apiarios, opcoes, ultimoRelatorio } from '../../data/mock'
+import { opcoes, ultimoRelatorio } from '../../data/mock'
+import { listarApiarios } from '../../services/apiarioService'
+import type { Apiario } from '../../data/types'
 import styles from './Relatorios.module.css'
 
 /** Tela de Relatórios */
 export function Relatorios() {
+  const [apiarios, setApiarios] = useState<Apiario[]>([])
   const handleSubmit = (e: FormEvent) => e.preventDefault()
+
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const dados = await listarApiarios()
+        setApiarios(dados)
+      } catch {
+        setApiarios([])
+      }
+    }
+    void carregar()
+  }, [])
 
   return (
     <Screen title="Relatórios" avatar={false}>
