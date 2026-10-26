@@ -1,22 +1,40 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { BodyText, InfoCard } from '../../components/ui/InfoCard'
 import { SectionTitle } from '../../components/ui/SectionTitle'
-import { buscarAlerta, atualizarEstadoAlerta } from '../../services/alertaService'
-import { findAlerta } from '../../data/mock'
+import { buscarAlerta, atualizarEstadoAlerta, excluirAlerta } from '../../services/alertaService'
 import type { Alerta } from '../../data/types'
 import { NotFound } from '../NotFound'
 import { DetailHeading } from '../shared/DetailHeading'
 
 /** Tela de Detalhes do Alerta */
 export function AlertaDetalhes() {
-  const { id } = useParams()
+  const [idParam] = [useParams().id]
+  const navigate = useNavigate()
+  const id = idParam
   const [alerta, setAlerta] = useState<Alerta | null>(null)
   const [carregando, setCarregando] = useState(true)
   const [atualizando, setAtualizando] = useState(false)
+  const [confirmandoExclusao, setConfirmandoExclusao] = useState(false)
+  const [excluindo, setExcluindo] = useState(false)
   const [erro, setErro] = useState('')
+
+  const handleExcluirAlerta = async () => {
+    if (!id) return
+    try {
+      setExcluindo(true)
+      await excluirAlerta(id)
+      navigate('/alertas', { replace: true })
+    } catch (e) {
+      console.error('Erro ao excluir alerta:', e)
+    } finally {
+      setExcluindo(false)
+      setConfirmandoExclusao(false)
+    }
+  }
 
   useEffect(() => {
     let ativo = true
@@ -34,23 +52,16 @@ export function AlertaDetalhes() {
         const encontrado = await buscarAlerta(id)
 
         if (ativo) {
-          // Se encontrar no Firebase, usa ele. Se não encontrar, tenta o mock como fallback.
-          setAlerta(encontrado ?? findAlerta(id) ?? null)
+          setAlerta(encontrado ?? null)
         }
       } catch (error) {
         console.error('Erro ao buscar alerta:', error)
         if (ativo) {
-          // Tenta o mock caso ocorra erro de autenticação ou leitura
-          const mockAlerta = findAlerta(id)
-          if (mockAlerta) {
-            setAlerta(mockAlerta)
-          } else {
-            setErro(
-              error instanceof Error
-                ? error.message
-                : 'Não foi possível carregar o alerta.'
-            )
-          }
+          setErro(
+            error instanceof Error
+              ? error.message
+              : 'Não foi possível carregar o alerta.'
+          )
         }
       } finally {
         if (ativo) {
@@ -137,8 +148,25 @@ export function AlertaDetalhes() {
               Ver Colmeia
             </Button>
           )}
+
+          <Button
+            variant="danger"
+            onClick={() => setConfirmandoExclusao(true)}
+            disabled={excluindo}
+          >
+            Excluir alerta
+          </Button>
         </Stack>
       </div>
+
+      <ConfirmDialog
+        open={confirmandoExclusao}
+        title="Excluir alerta?"
+        description="Esta ação não poderá ser desfeita e removerá o alerta do sistema."
+        confirmLabel={excluindo ? 'Excluindo...' : 'Excluir'}
+        onConfirm={handleExcluirAlerta}
+        onCancel={() => setConfirmandoExclusao(false)}
+      />
     </Screen>
   )
 }

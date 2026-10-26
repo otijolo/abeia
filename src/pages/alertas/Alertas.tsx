@@ -93,6 +93,10 @@ export function Alertas() {
             </>
           )}
         </ListStack>
+
+        <div style={{ marginTop: 24, paddingBottom: 16 }}>
+          <Button to="/alertas/novo">+ Novo Alerta</Button>
+        </div>
       </div>
     </Screen>
   )

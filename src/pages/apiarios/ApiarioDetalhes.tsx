@@ -14,6 +14,7 @@ import {
   buscarApiario,
   excluirApiario
 } from '../../services/apiarioService'
+import { listarColmeias } from '../../services/colmeiaService'
 import type { Apiario, Colmeia } from '../../data/types'
 import { NotFound } from '../NotFound'
 import { Actions } from '../shared/Actions'
@@ -45,17 +46,15 @@ export function ApiarioDetalhes() {
         setCarregando(true)
         setErro('')
 
-        const resultado = await buscarApiario(id)
+        const [resultado, colmeiasDoApiario] = await Promise.all([
+          buscarApiario(id),
+          listarColmeias(id).catch(() => [])
+        ])
 
         if (!ativo) return
 
         setApiario(resultado)
-
-        if (!resultado) return
-
-        // As colmeias serão carregadas do serviço próprio quando
-        // a integração de colmeias com o Firebase for implementada.
-        setColmeias([])
+        setColmeias(colmeiasDoApiario)
       } catch (error) {
         console.error('Erro ao carregar detalhes do apiário:', error)
 

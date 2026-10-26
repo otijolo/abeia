@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet, ScrollRestoration } from 'react-router-dom
 import { AppFrame } from './components/layout/AppFrame'
 import { AlertaDetalhes } from './pages/alertas/AlertaDetalhes'
 import { Alertas } from './pages/alertas/Alertas'
+import { NovoAlerta } from './pages/alertas/NovoAlerta'
 import { ApiarioDetalhes } from './pages/apiarios/ApiarioDetalhes'
 import { Apiarios } from './pages/apiarios/Apiarios'
 import { EditarApiario } from './pages/apiarios/EditarApiario'
@@ -65,6 +66,7 @@ export const router = createBrowserRouter([
 
       // Alertas
       { path: '/alertas', element: <Alertas /> },
+      { path: '/alertas/novo', element: <NovoAlerta /> },
       { path: '/alertas/:id', element: <AlertaDetalhes /> },
 
       // Produção
