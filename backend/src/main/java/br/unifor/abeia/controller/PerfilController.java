@@ -27,7 +27,7 @@ public class PerfilController {
     public ResponseEntity<Perfil> obter() {
         return perfilService.obterPerfil()
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.ok(new Perfil("usr-1", "Ildo Ramos", "ildo@email.com", "IR", "")));
+                .orElse(ResponseEntity.noContent().build());
     }
 
     /**

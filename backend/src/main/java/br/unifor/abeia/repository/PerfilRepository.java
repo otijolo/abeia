@@ -12,9 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Repository
 public class PerfilRepository {
 
-    private final AtomicReference<Perfil> perfilAtual = new AtomicReference<>(
-            new Perfil("usr-1", "Ildo Ramos", "ildo@email.com", "IR", "(85) 98888-7777")
-    );
+    private final AtomicReference<Perfil> perfilAtual = new AtomicReference<>();
 
     public Optional<Perfil> obterPerfil() {
         return Optional.ofNullable(perfilAtual.get());

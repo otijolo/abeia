@@ -16,6 +16,9 @@ public class InspecaoRepository {
     private final Map<String, Inspecao> dados = new ConcurrentHashMap<>();
 
     public InspecaoRepository() {
+    }
+
+    public void semearDadosIniciais() {
         salvar(new Inspecao(
                 "i-2026-11-17", "d03", "17/11/2026", "Colônia forte • Sem problemas",
                 "normal", "Forte", true, 6, 4, "Boa", List.of(),
@@ -26,6 +29,10 @@ public class InspecaoRepository {
                 "critico", "Média", true, 5, 3, "Padrão",
                 List.of("Infestação moderada de varroa."), "Manejo sanitário realizado."
         ));
+    }
+
+    public void limpar() {
+        dados.clear();
     }
 
     public List<Inspecao> listarTodas() {

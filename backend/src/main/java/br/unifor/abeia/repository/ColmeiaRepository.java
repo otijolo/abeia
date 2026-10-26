@@ -16,6 +16,9 @@ public class ColmeiaRepository {
     private final Map<String, Colmeia> dados = new ConcurrentHashMap<>();
 
     public ColmeiaRepository() {
+    }
+
+    public void semearDadosIniciais() {
         salvar(new Colmeia(
                 "j14", "Colmeia J14", "mata-fresca", "Langstroth", "14",
                 "12/08/2021", "", "atencao", "Dentro do prazo",
@@ -41,6 +44,10 @@ public class ColmeiaRepository {
                 "10/10/2019", "", "atencao", "Dentro do prazo",
                 "Inspeção dentro do prazo", 44.0, List.of("Reserva de alimento baixa.")
         ));
+    }
+
+    public void limpar() {
+        dados.clear();
     }
 
     public List<Colmeia> listarTodas() {

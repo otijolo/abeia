@@ -16,10 +16,16 @@ public class ProducaoRepository {
     private final Map<String, Producao> dados = new ConcurrentHashMap<>();
 
     public ProducaoRepository() {
-        // Dados iniciais
+    }
+
+    public void semearDadosIniciais() {
         salvar(new Producao("p1", "d03", "10/10/2026", 72.0, "kg", "Colheita de mel silvestre"));
         salvar(new Producao("p2", "e17", "12/10/2026", 67.0, "kg", "Mel claro, boa qualidade"));
         salvar(new Producao("p3", "j14", "15/10/2026", 58.0, "kg", "Colheita padrão"));
+    }
+
+    public void limpar() {
+        dados.clear();
     }
 
     public List<Producao> listarTodas() {

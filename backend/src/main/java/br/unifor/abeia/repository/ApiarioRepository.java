@@ -15,6 +15,9 @@ public class ApiarioRepository {
     private final Map<String, Apiario> dados = new ConcurrentHashMap<>();
 
     public ApiarioRepository() {
+    }
+
+    public void semearDadosIniciais() {
         salvar(new Apiario(
                 "sabia", "Apiário Sabiá", "Juazeiro do Norte", "CE",
                 "Área principal de produção", "Caatinga", true,
@@ -39,6 +42,10 @@ public class ApiarioRepository {
                 "-4.2625...", "-38.9322...", "",
                 6, "critico"
         ));
+    }
+
+    public void limpar() {
+        dados.clear();
     }
 
     public List<Apiario> listarTodos() {

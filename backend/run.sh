@@ -9,7 +9,7 @@ cd "$DIR" || exit 1
 echo "=========================================="
 echo "Iniciando Backend Spring Boot Abeia (Unifor)"
 echo "Java Home: $JAVA_HOME"
-echo "Porta: 8080"
+echo "Porta: 8088"
 echo "=========================================="
 
 ./mvnw spring-boot:run

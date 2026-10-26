@@ -15,7 +15,9 @@ public class AlertaRepository {
     private final Map<String, Alerta> dados = new ConcurrentHashMap<>();
 
     public AlertaRepository() {
-        // Dados iniciais pré-cadastrados para teste
+    }
+
+    public void semearDadosIniciais() {
         salvar(new Alerta(
                 "varroa-k07",
                 "Alta infestação de varroa",
@@ -55,6 +57,10 @@ public class AlertaRepository {
                 List.of("Apiário Mata Fresca"),
                 null
         ));
+    }
+
+    public void limpar() {
+        dados.clear();
     }
 
     public List<Alerta> listarTodos() {
