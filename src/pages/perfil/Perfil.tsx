@@ -6,7 +6,6 @@ import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { Divider } from '../../components/ui/Divider'
 import { TextField } from '../../components/ui/Field'
-import { usuario as mockUsuario } from '../../data/mock'
 import { auth } from '../../services/firebase'
 import { buscarPerfil, atualizarPerfil } from '../../services/perfilService'
 import styles from './Perfil.module.css'
@@ -31,28 +30,41 @@ export function Perfil() {
         const perfil = await buscarPerfil()
 
         if (ativo) {
-          const nomeFinal = perfil?.nome || auth.currentUser?.displayName || mockUsuario.nome
-          const emailFinal = perfil?.email || auth.currentUser?.email || mockUsuario.email
+          const nomeFinal =
+            perfil?.nome ||
+            auth.currentUser?.displayName ||
+            (auth.currentUser?.email ? auth.currentUser.email.split('@')[0] : '')
+          const emailFinal = perfil?.email || auth.currentUser?.email || ''
           const iniciaisCalculadas =
             perfil?.iniciais ||
-            nomeFinal
-              .split(' ')
-              .map((p) => p[0])
-              .slice(0, 2)
-              .join('')
-              .toUpperCase() ||
-            mockUsuario.iniciais
+            (nomeFinal
+              ? nomeFinal
+                  .split(' ')
+                  .map((p) => p[0])
+                  .slice(0, 2)
+                  .join('')
+                  .toUpperCase()
+              : (emailFinal ? emailFinal.slice(0, 2).toUpperCase() : 'U'))
 
           setNome(nomeFinal)
           setEmail(emailFinal)
           setIniciais(iniciaisCalculadas)
+
+          if (iniciaisCalculadas) {
+            localStorage.setItem('abeia_iniciais', iniciaisCalculadas)
+          }
+          if (nomeFinal) {
+            localStorage.setItem('abeia_nome', nomeFinal)
+          }
         }
       } catch (err) {
         console.error('Erro ao carregar perfil:', err)
         if (ativo) {
-          setNome(mockUsuario.nome)
-          setEmail(mockUsuario.email)
-          setIniciais(mockUsuario.iniciais)
+          const emailFallback = auth.currentUser?.email || ''
+          const nomeFallback = auth.currentUser?.displayName || (emailFallback ? emailFallback.split('@')[0] : 'Produtor')
+          setNome(nomeFallback)
+          setEmail(emailFallback)
+          setIniciais(nomeFallback.slice(0, 2).toUpperCase())
         }
       } finally {
         if (ativo) {
@@ -88,6 +100,8 @@ export function Perfil() {
         iniciais: novasIniciais
       })
       setIniciais(novasIniciais)
+      localStorage.setItem('abeia_nome', nome)
+      localStorage.setItem('abeia_iniciais', novasIniciais)
       setSucesso(true)
       setTimeout(() => setSucesso(false), 3000)
     } catch (err) {
@@ -100,6 +114,8 @@ export function Perfil() {
 
   const handleSair = async () => {
     try {
+      localStorage.removeItem('abeia_nome')
+      localStorage.removeItem('abeia_iniciais')
       await signOut(auth)
       navigate('/login', { replace: true })
     } catch (err) {

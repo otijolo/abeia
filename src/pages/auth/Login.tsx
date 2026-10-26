@@ -1,7 +1,8 @@
-import { useState, FormEvent, ChangeEvent } from 'react'
+import { useState, type FormEvent, type ChangeEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../services/firebase'
+import { buscarPerfil } from '../../services/perfilService'
 import { AuthLayout } from '../../components/layout/AuthLayout'
 import { Button } from '../../components/ui/Button'
 import { TextField } from '../../components/ui/Field'
@@ -22,10 +23,40 @@ export function Login() {
     try {
       setCarregando(true)
       // Autentica o usuário com o Firebase
-      await signInWithEmailAndPassword(auth, email, senha)
+      const cred = await signInWithEmailAndPassword(auth, email, senha)
+      const usuario = cred.user
+
+      let nomeUsuario = usuario.displayName || ''
+      if (!nomeUsuario) {
+        try {
+          const perfil = await buscarPerfil()
+          if (perfil?.nome) {
+            nomeUsuario = perfil.nome
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      if (!nomeUsuario && usuario.email) {
+        nomeUsuario = usuario.email.split('@')[0]
+      }
+
+      const iniciais = nomeUsuario
+        ? nomeUsuario
+            .split(/\s+/)
+            .map((p) => p[0])
+            .slice(0, 2)
+            .join('')
+            .toUpperCase()
+        : 'U'
+
+      localStorage.setItem('abeia_nome', nomeUsuario)
+      localStorage.setItem('abeia_iniciais', iniciais)
+
       // Redireciona para a tela inicial após logar com sucesso
       navigate('/inicio')
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err)
       setErro('E-mail ou senha inválidos. Verifique seus dados.')
     } finally {
@@ -40,7 +71,11 @@ export function Login() {
       onSubmit={handleLogin}
       actions={
         <>
-          {erro && <p style={{ color: 'red', fontSize: '14px', marginBottom: '10px' }}>{erro}</p>}
+          {erro && (
+            <p style={{ color: 'red', fontSize: '14px', marginBottom: '10px' }}>
+              {erro}
+            </p>
+          )}
           <Button type="submit" disabled={carregando}>
             {carregando ? 'Entrando...' : 'Entrar'}
           </Button>
@@ -53,19 +88,19 @@ export function Login() {
         </>
       }
     >
-      <TextField 
-        label="E-mail" 
-        type="email" 
-        placeholder="Digite seu e-mail..." 
-        autoComplete="email" 
+      <TextField
+        label="E-mail"
+        type="email"
+        placeholder="Digite seu e-mail..."
+        autoComplete="email"
         value={email}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
       />
-      <TextField 
-        label="Senha" 
-        type="password" 
-        placeholder="••••••••" 
-        autoComplete="current-password" 
+      <TextField
+        label="Senha"
+        type="password"
+        placeholder="••••••••"
+        autoComplete="current-password"
         value={senha}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
       />

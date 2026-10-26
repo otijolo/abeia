@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { AppIcon, Wordmark } from '../../components/brand/Brand'
 import styles from './Splash.module.css'
 
+import { auth } from '../../services/firebase'
+
 const SPLASH_DURATION_MS = 2400
 
 function Hexagon({ className }: { className: string }) {
@@ -13,13 +15,20 @@ function Hexagon({ className }: { className: string }) {
   )
 }
 
-/** 0 - Tela de Título: logo + loader de hexágonos, depois segue para o cadastro */
+/** 0 - Tela de Título: logo + loader de hexágonos, depois segue para o cadastro ou início */
 export function Splash() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const t = setTimeout(() => navigate('/cadastro', { replace: true }), SPLASH_DURATION_MS)
-    return () => clearTimeout(t)
+    let timer: NodeJS.Timeout
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      const destino = user ? '/inicio' : '/login'
+      timer = setTimeout(() => navigate(destino, { replace: true }), SPLASH_DURATION_MS)
+    })
+    return () => {
+      unsubscribe()
+      clearTimeout(timer)
+    }
   }, [navigate])
 
   return (
