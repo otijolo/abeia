@@ -10,6 +10,8 @@ echo "=========================================="
 echo "Iniciando Backend Spring Boot Abeia (Unifor)"
 echo "Java Home: $JAVA_HOME"
 echo "Porta: 8088"
+echo "Swagger UI: http://localhost:8088/swagger-ui.html"
+echo "OpenAPI JSON: http://localhost:8088/api-docs"
 echo "=========================================="
 
 ./mvnw spring-boot:run

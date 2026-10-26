@@ -2,6 +2,8 @@ package br.unifor.abeia.controller;
 
 import br.unifor.abeia.model.Apiario;
 import br.unifor.abeia.service.ApiarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/apiarios")
 @CrossOrigin(origins = "*")
+@Tag(name = "Apiários", description = "Endpoints para gerenciamento de apiários")
 public class ApiarioController {
 
     private final ApiarioService apiarioService;
@@ -27,6 +30,7 @@ public class ApiarioController {
      * GET /api/apiarios - Lista todos os apiários
      */
     @GetMapping
+    @Operation(summary = "Listar apiários", description = "Retorna todos os apiários cadastrados.")
     public ResponseEntity<List<Apiario>> listar() {
         return ResponseEntity.ok(apiarioService.listarTodos());
     }
@@ -35,6 +39,7 @@ public class ApiarioController {
      * GET /api/apiarios/{id} - Busca um apiário por ID
      */
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar apiário por ID", description = "Retorna os detalhes de um apiário específico.")
     public ResponseEntity<Apiario> buscarPorId(@PathVariable String id) {
         return apiarioService.buscarPorId(id)
                 .map(ResponseEntity::ok)
@@ -45,6 +50,7 @@ public class ApiarioController {
      * POST /api/apiarios - Cadastra um novo apiário
      */
     @PostMapping
+    @Operation(summary = "Cadastrar apiário", description = "Cria um novo apiário no sistema.")
     public ResponseEntity<Apiario> criar(@RequestBody Apiario apiario) {
         Apiario criado = apiarioService.criar(apiario);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
@@ -54,6 +60,7 @@ public class ApiarioController {
      * PUT /api/apiarios/{id} - Atualiza um apiário existente
      */
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar apiário", description = "Atualiza os dados de um apiário existente.")
     public ResponseEntity<Apiario> atualizar(@PathVariable String id, @RequestBody Apiario dados) {
         return apiarioService.atualizar(id, dados)
                 .map(ResponseEntity::ok)
@@ -64,6 +71,7 @@ public class ApiarioController {
      * DELETE /api/apiarios/{id} - Exclui um apiário
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "Excluir apiário", description = "Remove um apiário e suas configurações.")
     public ResponseEntity<Void> excluir(@PathVariable String id) {
         if (apiarioService.excluir(id)) {
             return ResponseEntity.noContent().build();
