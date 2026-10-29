@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom'
-import { Avatar } from '../brand/Avatar'
+import { Link, useNavigate } from 'react-router-dom'
+import { DesignIcon } from '../ui/DesignIcon'
 import { Wordmark } from '../brand/Brand'
 import { ChevronLeftIcon } from '../icons'
 import styles from './AppHeader.module.css'
@@ -37,7 +37,9 @@ export function AppHeader({ title, avatar = true, backTo }: Props) {
       )}
       {avatar && (
         <div className={styles.avatar}>
-          <Avatar to="/perfil" />
+          <Link to="/perfil" aria-label="Abrir perfil">
+            <DesignIcon name="perfil" />
+          </Link>
         </div>
       )}
     </header>

@@ -10,68 +10,77 @@
 
 .wordmark {
   margin-top: 52px;
+  width: min(326px, calc(100% - 48px));
+  animation: revelar 0.35s ease-out 0.2s both;
+}
+
+.brandIcon {
+  animation: revelar 0.2s ease-out both;
+}
+
+.brandIcon img {
+  animation: revelar 0.3s ease-out 0.1s both;
 }
 
 .loader {
   position: relative;
   width: 140px;
   height: 120px;
-  margin-top: 30px;
+  margin-top: 22px;
+  animation: revelar 0.2s ease-out 0.3s both;
 }
 
 .hex {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 0;
   width: 58px;
   height: 64px;
-  margin: -32px 0 0 -29px;
+  margin-left: -29px;
   fill: none;
   stroke: #f9d236;
-  stroke-width: 6;
+  stroke-width: 7;
   stroke-linejoin: round;
-  animation: 1.6s ease-in-out infinite alternate;
+  animation: 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .top {
+  transform: translate(0, 12px);
   animation-name: toTop;
 }
 .left {
+  transform: translate(-27px, 56px);
   animation-name: toLeft;
 }
 .right {
+  transform: translate(27px, 56px);
   animation-name: toRight;
 }
 
 @keyframes toTop {
-  from {
-    transform: translate(0, -10px);
-  }
-  to {
-    transform: translate(0, -28px);
-  }
+  0%, 68% { transform: translate(0, 0); }
+  75%, 100% { transform: translate(0, 12px); }
 }
 @keyframes toLeft {
-  from {
-    transform: translate(-6px, 4px);
-  }
-  to {
-    transform: translate(-39px, 28px);
-  }
+  0%, 33% { transform: translate(0, 0); }
+  40%, 68% { transform: translate(-39px, 56px); }
+  75%, 100% { transform: translate(-27px, 56px); }
 }
 @keyframes toRight {
-  from {
-    transform: translate(6px, 4px);
-  }
-  to {
-    transform: translate(39px, 28px);
-  }
+  0%, 33% { transform: translate(0, 0); }
+  40%, 68% { transform: translate(39px, 56px); }
+  75%, 100% { transform: translate(27px, 56px); }
+}
+
+@keyframes revelar {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hex {
-    animation-duration: 0s;
-    animation-direction: normal;
-    animation-fill-mode: forwards;
-  }
+  .brandIcon,
+  .brandIcon img,
+  .wordmark,
+  .loader,
+  .hex { animation: none; }
 }

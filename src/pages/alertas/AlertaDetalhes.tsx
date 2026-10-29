@@ -138,17 +138,16 @@ export function AlertaDetalhes() {
 
       <div style={{ marginTop: 34, padding: '0 12px' }}>
         <Stack gap={12}>
-          {alerta.estado === 'ativo' && (
-            <Button onClick={handleResolverAlerta} disabled={atualizando}>
-              {atualizando ? 'Resolvendo...' : 'Marcar como resolvido'}
-            </Button>
-          )}
           {alerta.colmeiaId && (
-            <Button variant="secondary" to={`/colmeias/${alerta.colmeiaId}`}>
+            <Button to={`/colmeias/${alerta.colmeiaId}`}>
               Ver Colmeia
             </Button>
           )}
-
+          {alerta.estado === 'ativo' && (
+            <Button variant="secondary" onClick={handleResolverAlerta} disabled={atualizando}>
+              {atualizando ? 'Resolvendo...' : 'Marcar como resolvido'}
+            </Button>
+          )}
           <Button
             variant="danger"
             onClick={() => setConfirmandoExclusao(true)}

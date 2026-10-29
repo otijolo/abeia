@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { Status } from '../../data/types'
-import { CheckIcon, ExclamationIcon, SkullIcon } from '../icons'
+import { DesignIcon } from './DesignIcon'
 import styles from './IconBubble.module.css'
 
 type Tone = 'honey' | 'silver' | 'bronze' | 'danger'
@@ -20,12 +20,6 @@ export function IconBubble({ children, tone = 'honey', size = 28 }: Props) {
   )
 }
 
-const statusIcon: Record<Status, ReactNode> = {
-  normal: <CheckIcon size={16} />,
-  atencao: <ExclamationIcon size={18} />,
-  critico: <SkullIcon size={20} />,
-}
-
 export function StatusIcon({ status }: { status: Status }) {
-  return <IconBubble>{statusIcon[status]}</IconBubble>
+  return <DesignIcon name={`status-${status}`} />
 }

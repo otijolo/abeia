@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="11.55" viewBox="0 0 20 11.55">
+  <defs>
+    <path id="favo" d="M-4.85 0-2.425-4.2H2.425L4.85 0 2.425 4.2H-2.425Z"/>
+    <pattern id="colmeia" width="20" height="11.55" patternUnits="userSpaceOnUse">
+      <path fill="#e0b30c" d="M0 0H20V11.55H0Z"/>
+      <g fill="#f9c502">
+        <use href="#favo" x="0" y="0"/>
+        <use href="#favo" x="20" y="0"/>
+        <use href="#favo" x="10" y="5.775"/>
+        <use href="#favo" x="0" y="11.55"/>
+        <use href="#favo" x="20" y="11.55"/>
+      </g>
+    </pattern>
+  </defs>
+  <path fill="url(#colmeia)" d="M0 0H20V11.55H0Z"/>
+</svg>

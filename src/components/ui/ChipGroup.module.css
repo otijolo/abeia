@@ -20,6 +20,7 @@
 .chip[aria-checked='true'] {
   background: var(--color-chip-active);
   border-color: var(--color-chip-active-border);
+  font-weight: 700;
 }
 
 .lg {

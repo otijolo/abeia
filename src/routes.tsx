@@ -7,6 +7,7 @@ import { ApiarioDetalhes } from './pages/apiarios/ApiarioDetalhes'
 import { Apiarios } from './pages/apiarios/Apiarios'
 import { EditarApiario } from './pages/apiarios/EditarApiario'
 import { NovoApiario } from './pages/apiarios/NovoApiario'
+import { Mapa } from './pages/apiarios/Mapa'
 import { Cadastro } from './pages/auth/Cadastro'
 import { Login } from './pages/auth/Login'
 import { RecuperarSenha } from './pages/auth/RecuperarSenha'
@@ -51,6 +52,7 @@ export const router = createBrowserRouter([
 
       // Apiários
       { path: '/apiarios', element: <Apiarios /> },
+      { path: '/mapa', element: <Mapa /> },
       { path: '/apiarios/novo', element: <NovoApiario /> },
       { path: '/apiarios/:id', element: <ApiarioDetalhes /> },
       { path: '/apiarios/:id/editar', element: <EditarApiario /> },

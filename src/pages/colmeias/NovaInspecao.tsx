@@ -6,7 +6,8 @@ import { Columns, Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { Checkbox } from '../../components/ui/Checkbox'
 import { ChipGroup } from '../../components/ui/ChipGroup'
-import { Field, SelectField, TextArea, TextField } from '../../components/ui/Field'
+import { Field, TextArea, TextField } from '../../components/ui/Field'
+import { MultiSelectField } from '../../components/ui/MultiSelectField'
 import { Stepper } from '../../components/ui/Stepper'
 
 import { opcoes } from '../../data/mock'
@@ -53,7 +54,7 @@ export function NovaInspecao() {
   const [forca, setForca] = useState<Forca>('fraca')
   const [postura, setPostura] = useState<Postura>('ruim')
   const [nivel, setNivel] = useState<Nivel>('baixo')
-  const [sintoma, setSintoma] = useState('')
+  const [sintomas, setSintomas] = useState<string[]>([])
   const [abelhas, setAbelhas] = useState(6)
   const [cria, setCria] = useState(4)
   const [rainhaObservada, setRainhaObservada] = useState(false)
@@ -97,7 +98,7 @@ export function NovaInspecao() {
         quadrosAbelhas: abelhas,
         quadrosCria: cria,
         postura,
-        pragas: sintoma ? [sintoma] : [],
+        pragas: sintomas,
         observacoes
       })
 
@@ -152,11 +153,11 @@ export function NovaInspecao() {
             )}
           </Field>
 
-          <SelectField
+          <MultiSelectField
             label="Sintomas notados"
             options={opcoes.sintomas}
-            value={sintoma}
-            onChange={(e) => setSintoma(e.target.value)}
+            value={sintomas}
+            onChange={setSintomas}
             disabled={salvando}
           />
 

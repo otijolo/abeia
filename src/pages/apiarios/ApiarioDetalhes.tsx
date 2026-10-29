@@ -140,18 +140,14 @@ export function ApiarioDetalhes() {
         <InfoCard
           title={`${apiario.cidade} - ${apiario.uf}`}
           lines={[
-            `Descrição: ${apiario.descricao || 'Não informada'}`,
             `Vegetação: ${apiario.vegetacao || 'Não informada'}`,
             `Fonte de água: ${apiario.fonteAgua ? 'Sim' : 'Não'}`,
-            `${apiario.totalColmeias} colmeias cadastradas`,
-            `Latitude: ${apiario.latitude || 'Não informada'}`,
-            `Longitude: ${apiario.longitude || 'Não informada'}`,
-            `Observações: ${apiario.observacoes || 'Nenhuma'}`
+            `${apiario.totalColmeias} colmeias cadastradas`
           ]}
         />
 
         <div style={{ padding: '0 7px' }}>
-          <MapPreview label={`Mapa do ${apiario.nome}`} />
+          <MapPreview to={`/mapa?apiario=${apiario.id}`} />
         </div>
 
         <Stack gap={18}>
@@ -170,7 +166,7 @@ export function ApiarioDetalhes() {
 
             {colmeias.length === 0 && (
               <EmptyState>
-                Nenhuma colmeia carregada do Firebase ainda.
+                Nenhuma colmeia cadastrada neste apiário.
               </EmptyState>
             )}
           </ListStack>
@@ -199,6 +195,16 @@ export function ApiarioDetalhes() {
           Excluir Apiário
         </Button>
       </Actions>
+
+      <details>
+        <summary>Informações adicionais</summary>
+        <InfoCard lines={[
+          `Descrição: ${apiario.descricao || 'Não informada'}`,
+          `Latitude: ${apiario.latitude || 'Não informada'}`,
+          `Longitude: ${apiario.longitude || 'Não informada'}`,
+          `Observações: ${apiario.observacoes || 'Nenhuma'}`,
+        ]} />
+      </details>
 
       <ConfirmDialog
         open={confirmando}

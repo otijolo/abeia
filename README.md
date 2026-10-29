@@ -35,6 +35,7 @@ src/
 | Cadastro / Login / Recuperação | `/cadastro`, `/login`, `/recuperar-senha` |
 | Início | `/inicio` |
 | Apiários / Novo / Detalhes / Editar | `/apiarios`, `/apiarios/novo`, `/apiarios/:id`, `/apiarios/:id/editar` |
+| Mapa dos apiários | `/mapa`, `/mapa?apiario=:id` |
 | Colmeias / Nova / Detalhes / Editar | `/colmeias`, `/colmeias/nova`, `/colmeias/:id`, `/colmeias/:id/editar` |
 | Histórico / Nova inspeção / Detalhe | `/colmeias/:id/inspecoes`, `/colmeias/:id/inspecoes/nova`, `/inspecoes/:id` |
 | Alertas / Detalhe | `/alertas`, `/alertas/:id` |
@@ -43,3 +44,7 @@ src/
 
 O app usa rotas de histórico (BrowserRouter): ao hospedar, configure o servidor para
 redirecionar rotas desconhecidas para `index.html`.
+
+O mapa usa Leaflet e OpenStreetMap, com marcadores a partir das coordenadas dos
+apiários retornados pela API. Coordenadas incompletas não geram marcadores.
+O carregamento do mapa precisa de conexão com a internet.

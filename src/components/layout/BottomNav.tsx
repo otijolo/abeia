@@ -1,29 +1,31 @@
 import { NavLink } from 'react-router-dom'
-import { FileTextIcon, HexagonsIcon, HiveIcon, HomeIcon, MegaphoneIcon } from '../icons'
+import { DesignIcon, type DesignIconName } from '../ui/DesignIcon'
 import styles from './BottomNav.module.css'
 
 export type NavSection = 'inicio' | 'apiarios' | 'colmeias' | 'alertas' | 'producao'
 
-const items: { key: NavSection; label: string; to: string; Icon: typeof HomeIcon }[] = [
-  { key: 'inicio', label: 'Início', to: '/inicio', Icon: HomeIcon },
-  { key: 'apiarios', label: 'Apiários', to: '/apiarios', Icon: HexagonsIcon },
-  { key: 'colmeias', label: 'Colmeias', to: '/colmeias', Icon: HiveIcon },
-  { key: 'alertas', label: 'Alertas', to: '/alertas', Icon: MegaphoneIcon },
-  { key: 'producao', label: 'Produção', to: '/producao', Icon: FileTextIcon },
+const items: { key: NavSection; label: string; to: string }[] = [
+  { key: 'inicio', label: 'Início', to: '/inicio' },
+  { key: 'apiarios', label: 'Apiários', to: '/apiarios' },
+  { key: 'colmeias', label: 'Colmeias', to: '/colmeias' },
+  { key: 'alertas', label: 'Alertas', to: '/alertas' },
+  { key: 'producao', label: 'Produção', to: '/producao' },
 ]
 
 /** Barra de navegação inferior. `active` define a aba destacada (ex.: Histórico → Colmeias). */
 export function BottomNav({ active }: { active: NavSection }) {
   return (
     <nav className={styles.nav} aria-label="Navegação principal">
-      {items.map(({ key, label, to, Icon }) => (
+      {items.map(({ key, label, to }) => (
         <NavLink
           key={key}
           to={to}
           className={`${styles.item} ${key === active ? styles.active : ''}`}
           aria-current={key === active ? 'page' : undefined}
         >
-          <Icon size={27} />
+          <span className={styles.icon}>
+            <DesignIcon name={(key === active ? `${key}-ativo` : key) as DesignIconName} />
+          </span>
           <span>{label}</span>
         </NavLink>
       ))}

@@ -24,7 +24,7 @@ export function ListCard({ title, subtitle, status, to, icon }: Props) {
         <strong className={styles.title}>{title}</strong>
         <span className={styles.subtitle}>{subtitle}</span>
       </div>
-      <StatusBadge status={status} />
+      <StatusBadge status={status} plain className={styles.status} />
       <ChevronRightIcon size={20} className={styles.chevron} />
     </Card>
   )

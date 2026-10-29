@@ -7,7 +7,8 @@
 }
 
 .map img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 1665px;
+  height: 1665px;
+  max-width: none;
+  transform: translate(-778px, -583px);
 }

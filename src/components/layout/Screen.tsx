@@ -13,7 +13,7 @@ interface Props {
   /** Aba ativa na navegação inferior; omitido = sem navegação inferior */
   nav?: NavSection
   /** Espaçamento lateral do conteúdo */
-  padding?: 'list' | 'form'
+  padding?: 'list' | 'form' | 'none'
 }
 
 /** Estrutura padrão das telas autenticadas: cabeçalho + conteúdo rolável + navegação */

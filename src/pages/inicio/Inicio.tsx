@@ -1,35 +1,20 @@
 import { useEffect, useState } from 'react'
-import { FileTextIcon, HexagonsIcon, HiveIcon, MegaphoneIcon } from '../../components/icons'
 import { Columns, Screen, Stack } from '../../components/layout/Screen'
-import { BarChart } from '../../components/ui/BarChart'
+import { DesignIcon } from '../../components/ui/DesignIcon'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
 import { SectionTitle } from '../../components/ui/SectionTitle'
 import { StatCard } from '../../components/ui/StatCard'
 import { findApiario } from '../../data/mock'
 import { auth } from '../../services/firebase'
+import { quantidadeEmKg } from '../../data/producao'
 import { listarApiarios } from '../../services/apiarioService'
 import { listarColmeias } from '../../services/colmeiaService'
 import { listarProducoes } from '../../services/producaoService'
 import { listarAlertas } from '../../services/alertaService'
 import { buscarPerfil } from '../../services/perfilService'
-import type { Apiario, Colmeia, ProducaoMensal } from '../../data/types'
+import type { Apiario, Colmeia } from '../../data/types'
 import styles from './Inicio.module.css'
-
-const MESES_INICIAIS: ProducaoMensal[] = [
-  { mes: 'Jan', kg: 0 },
-  { mes: 'Fev', kg: 0 },
-  { mes: 'Mar', kg: 0 },
-  { mes: 'Abr', kg: 0 },
-  { mes: 'Mai', kg: 0 },
-  { mes: 'Jun', kg: 0 },
-  { mes: 'Jul', kg: 0 },
-  { mes: 'Ago', kg: 0 },
-  { mes: 'Set', kg: 0 },
-  { mes: 'Out', kg: 0 },
-  { mes: 'Nov', kg: 0 },
-  { mes: 'Dez', kg: 0 },
-]
 
 /** 4 - Tela de Início */
 export function Inicio() {
@@ -47,7 +32,6 @@ export function Inicio() {
   const [totalAlertas, setTotalAlertas] = useState(0)
   const [colmeiasPendentes, setColmeiasPendentes] = useState<Colmeia[]>([])
   const [apiariosMap, setApiariosMap] = useState<Map<string, string>>(new Map())
-  const [dadosGrafico, setDadosGrafico] = useState<ProducaoMensal[]>(MESES_INICIAIS)
 
   useEffect(() => {
     let ativo = true
@@ -97,33 +81,14 @@ export function Inicio() {
 
         // Produção total em kg
         const somaKg = producoes.reduce(
-          (acc, p) => acc + (Number(p.quantidade) || 0),
+          (acc, p) => acc + quantidadeEmKg(p),
           0
         )
-        setTotalProducaoKg(Math.round(somaKg))
+        setTotalProducaoKg(somaKg)
 
         // Alertas ativos
         const ativos = alertas.filter((a) => a.estado === 'ativo').length
         setTotalAlertas(ativos)
-
-        // Gráfico de evolução da produção mensal
-        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-        const porMes = meses.map((mes) => ({ mes, kg: 0 }))
-        producoes.forEach((p) => {
-          if (!p.data) return
-          let mIndex = -1
-          if (p.data.includes('-')) {
-            const partes = p.data.split('-')
-            mIndex = parseInt(partes[1], 10) - 1
-          } else if (p.data.includes('/')) {
-            const partes = p.data.split('/')
-            mIndex = parseInt(partes[1], 10) - 1
-          }
-          if (mIndex >= 0 && mIndex < 12) {
-            porMes[mIndex].kg += Number(p.quantidade) || 0
-          }
-        })
-        setDadosGrafico(porMes)
       } catch (err) {
         console.error('Erro ao sincronizar dashboard de início:', err)
       }
@@ -150,25 +115,26 @@ export function Inicio() {
           <Columns gap={20} rowGap={16}>
             <StatCard
               to="/apiarios"
-              icon={<HexagonsIcon size={18} />}
+              icon={<DesignIcon name="resumo-apiarios" />}
               label="Apiários"
               value={totalApiarios}
             />
             <StatCard
               to="/colmeias"
-              icon={<HiveIcon size={18} />}
+              icon={<DesignIcon name="resumo-colmeias" />}
               label="Colmeias"
               value={totalColmeias}
             />
             <StatCard
               to="/producao"
-              icon={<FileTextIcon size={18} />}
+              icon={<DesignIcon name="resumo-producao" />}
               label="Produção"
-              value={`${totalProducaoKg} kg`}
+              indicator={<DesignIcon name="tendencia" className={styles.trend} />}
+              value={`${totalProducaoKg.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} kg`}
             />
             <StatCard
               to="/alertas"
-              icon={<MegaphoneIcon size={18} />}
+              icon={<DesignIcon name="resumo-alertas" />}
               label="Alertas"
               value={totalAlertas}
             />
@@ -200,11 +166,6 @@ export function Inicio() {
               <EmptyState>Nenhuma inspeção pendente no momento.</EmptyState>
             )}
           </ListStack>
-        </section>
-
-        <section className={styles.section}>
-          <SectionTitle>Evolução da produção</SectionTitle>
-          <BarChart data={dadosGrafico} label="Produção mensal em kg" />
         </section>
       </Stack>
     </Screen>

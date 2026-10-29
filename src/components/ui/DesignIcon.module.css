@@ -1,0 +1,10 @@
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon img {
+  max-width: none;
+}

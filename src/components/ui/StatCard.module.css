@@ -1,24 +1,32 @@
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 97px;
-  padding: 11px 12px;
+  padding: 11px 13px;
 }
 
 .head {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
 }
 
 .label {
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--color-text-muted);
 }
 
 .value {
-  margin-top: 6px;
-  padding-left: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  position: absolute;
+  bottom: 20px;
+  left: 13px;
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
+  line-height: 1;
 }

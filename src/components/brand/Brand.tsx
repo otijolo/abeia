@@ -1,5 +1,5 @@
-import beeUrl from '../../assets/bee.png'
-import wordmarkUrl from '../../assets/wordmark.png'
+import beeUrl from '../../assets/figma/abelha.png'
+import wordmarkUrl from '../../assets/figma/marca.png'
 import styles from './Brand.module.css'
 
 /** Ícone do app: abelha dentro de um quadrado branco arredondado */

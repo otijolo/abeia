@@ -11,6 +11,7 @@ import { buscarColmeia } from '../../services/colmeiaService'
 import { listarInspecoesDaColmeia } from '../../services/inspecaoService'
 
 import type { Colmeia, Inspecao } from '../../data/types'
+import { compararDatasDecrescente, formatarData } from '../../data/datas'
 
 import { NotFound } from '../NotFound'
 import styles from './HistoricoInspecoes.module.css'
@@ -56,7 +57,7 @@ export function HistoricoInspecoes() {
 
         if (!ativo) return
 
-        setLista(inspecoes)
+        setLista([...inspecoes].sort((a, b) => compararDatasDecrescente(a.data, b.data)))
       } catch (error) {
         if (!ativo) return
 
@@ -111,7 +112,7 @@ export function HistoricoInspecoes() {
                 <ListCard
                   key={inspecao.id}
                   to={`/inspecoes/${inspecao.id}`}
-                  title={inspecao.data}
+                  title={formatarData(inspecao.data)}
                   subtitle={inspecao.resumo}
                   status={inspecao.status}
                 />

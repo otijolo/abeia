@@ -10,7 +10,7 @@ const SPLASH_DURATION_MS = 2400
 function Hexagon({ className }: { className: string }) {
   return (
     <svg viewBox="0 0 60 66" className={`${styles.hex} ${className}`} aria-hidden="true">
-      <path d="M30 4 55 18.5v29L30 62 5 47.5v-29z" />
+      <path d="M32.6 5.5 52.4 17Q55 18.5 55 21.5V44.5Q55 47.5 52.4 49L32.6 60.5Q30 62 27.4 60.5L7.6 49Q5 47.5 5 44.5V21.5Q5 18.5 7.6 17L27.4 5.5Q30 4 32.6 5.5Z" />
     </svg>
   )
 }
@@ -20,10 +20,11 @@ export function Splash() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    let timer: NodeJS.Timeout
+    let timer: ReturnType<typeof setTimeout> | undefined
     const unsubscribe = auth.onAuthStateChanged((user) => {
       const destino = user ? '/inicio' : '/login'
-      timer = setTimeout(() => navigate(destino, { replace: true }), SPLASH_DURATION_MS)
+      clearTimeout(timer)
+      timer = setTimeout(() => navigate(destino, { replace: true, viewTransition: !user }), SPLASH_DURATION_MS)
     })
     return () => {
       unsubscribe()
@@ -32,8 +33,10 @@ export function Splash() {
   }, [navigate])
 
   return (
-    <main className={styles.splash} onClick={() => navigate('/cadastro', { replace: true })}>
-      <AppIcon size={178} />
+    <main className={styles.splash} onClick={() => navigate(auth.currentUser ? '/inicio' : '/login', { replace: true, viewTransition: !auth.currentUser })}>
+      <div className={styles.brandIcon}>
+        <AppIcon size={178} />
+      </div>
       <div className={styles.wordmark}>
         <Wordmark width={326} />
       </div>

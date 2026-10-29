@@ -357,10 +357,10 @@ export const ultimoRelatorio = {
 
 export const opcoes = {
   vegetacao: ['Caatinga', 'Cerrado', 'Mata Atlântica', 'Mata úmida', 'Restinga'],
-  tipoColmeia: ['Langstroth', 'Top Bar', 'Warré', 'Racional (nativas)'],
-  sintomas: ['Nenhum', 'Varroa', 'Cria pútrida', 'Traças', 'Formigas', 'Abandono'],
+  tipoColmeia: ['Langstroth', 'Schenk', 'Schirmer', 'Curtinaz', 'Outro'],
+  sintomas: ['Asas deformadas', 'Ácaros visíveis', 'Favos de cria com muitas falhas', 'Larvas em posições anormais', 'Odor pútrido'],
   unidades: ['kg', 'g', 'litros'],
-  tipoRelatorio: ['Produção consolidada', 'Inspeções', 'Alertas'],
+  tipoRelatorio: ['Produção', 'Inspeções', 'Alertas', 'Colmeias', 'Geral'],
 }
 
 export const findApiario = (id?: string) => apiarios.find((a) => a.id === id)

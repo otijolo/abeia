@@ -16,9 +16,13 @@ import { buscarColmeia } from '../../services/colmeiaService'
 import { buscarInspecao } from '../../services/inspecaoService'
 
 import type { Colmeia, Inspecao } from '../../data/types'
+import { formatarData } from '../../data/datas'
 
 import { NotFound } from '../NotFound'
 import { DetailHeading } from '../shared/DetailHeading'
+
+const forcaLabel: Record<string, string> = { fraca: 'Fraca', media: 'Média', forte: 'Forte' }
+const posturaLabel: Record<string, string> = { ruim: 'Ruim', padrao: 'Padrão', boa: 'Boa' }
 
 /** Tela de Detalhes da Inspeção */
 export function InspecaoDetalhes() {
@@ -123,20 +127,20 @@ export function InspecaoDetalhes() {
       <Stack gap={24}>
         <DetailHeading
           title={colmeia.nome}
-          date={inspecao.data}
+          date={formatarData(inspecao.data)}
           status={inspecao.status}
         />
 
         <KeyValueList
           items={[
-            ['Força da colônia', inspecao.forcaColonia],
+            ['Força da colônia', forcaLabel[inspecao.forcaColonia] || inspecao.forcaColonia],
             [
               'Rainha observada',
               inspecao.rainhaObservada ? 'Sim' : 'Não'
             ],
             ['Quadros com abelhas', inspecao.quadrosAbelhas],
             ['Quadros com cria', inspecao.quadrosCria],
-            ['Postura', inspecao.postura]
+            ['Postura', posturaLabel[inspecao.postura] || inspecao.postura]
           ]}
         />
 

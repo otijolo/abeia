@@ -2,6 +2,8 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
 import { Avatar } from '../../components/brand/Avatar'
+import { Wordmark } from '../../components/brand/Brand'
+import beeUrl from '../../assets/figma/abelha.png'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { Divider } from '../../components/ui/Divider'
@@ -127,7 +129,10 @@ export function Perfil() {
   return (
     <Screen title="Perfil" avatar={false} padding="form">
       <div className={styles.identity}>
-        <Avatar size="lg" iniciais={iniciais} />
+        <div className={styles.portrait}>
+          <Avatar size="lg" iniciais={iniciais} />
+          <img src={beeUrl} alt="" className={styles.bee} />
+        </div>
         <h2>{carregando ? 'Carregando...' : nome}</h2>
       </div>
 
@@ -179,6 +184,9 @@ export function Perfil() {
           </Button>
         </Stack>
       </form>
+      <div className={styles.wordmark}>
+        <Wordmark width={78} />
+      </div>
     </Screen>
   )
 }

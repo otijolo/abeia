@@ -1,4 +1,5 @@
 .icon {
+  view-transition-name: abeia-icon;
   display: inline-grid;
   place-items: center;
   background: #fff;
@@ -6,6 +7,7 @@
 }
 
 .wordmark {
+  view-transition-name: abeia-wordmark;
   height: auto;
 }
 

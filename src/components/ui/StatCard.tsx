@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { Card } from './Card'
-import { IconBubble } from './IconBubble'
 import styles from './StatCard.module.css'
 
 interface Props {
@@ -8,16 +7,17 @@ interface Props {
   label: string
   value: string | number
   to: string
+  indicator?: ReactNode
 }
 
-export function StatCard({ icon, label, value, to }: Props) {
+export function StatCard({ icon, label, value, to, indicator }: Props) {
   return (
     <Card to={to} className={styles.card}>
       <div className={styles.head}>
-        <IconBubble>{icon}</IconBubble>
         <span className={styles.label}>{label}</span>
+        {icon}
       </div>
-      <strong className={styles.value}>{value}</strong>
+      <strong className={styles.value}>{value}{indicator}</strong>
     </Card>
   )
 }

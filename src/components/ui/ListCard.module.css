@@ -1,9 +1,9 @@
 .item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   min-height: 88px;
-  padding: 0 10px 0 12px;
+  padding: 0 10px 0 11px;
 }
 
 .text {
@@ -16,15 +16,15 @@
 }
 
 .title {
-  font-size: 14.5px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .subtitle {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -34,6 +34,25 @@
 .chevron {
   color: var(--color-text-muted);
   flex-shrink: 0;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.status {
+  transition: transform 0.22s ease;
+}
+
+.item:is(:hover, :focus-visible, :active) .chevron {
+  opacity: 0;
+  transform: translateX(4px);
+}
+
+.item:is(:hover, :focus-visible, :active) .status {
+  transform: translateX(24px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron,
+  .status { transition: none; }
 }
 
 .stack {

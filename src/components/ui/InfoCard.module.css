@@ -1,4 +1,5 @@
 .card {
+  min-height: 140px;
   display: flex;
   flex-direction: column;
   gap: 9px;

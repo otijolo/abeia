@@ -113,7 +113,8 @@ export function ColmeiaForm({
 
         <SelectField
           label="Tipo de colmeia"
-          options={opcoes.tipoColmeia}
+          options={tipo && !opcoes.tipoColmeia.includes(tipo)
+            ? [tipo, ...opcoes.tipoColmeia] : opcoes.tipoColmeia}
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
           required

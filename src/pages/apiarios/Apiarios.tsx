@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/Button'
 import { ChipGroup } from '../../components/ui/ChipGroup'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
 import { SearchBar } from '../../components/ui/SearchBar'
+import { TextLink } from '../../components/ui/TextLink'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { listarApiarios } from '../../services/apiarioService'
 import type { Apiario } from '../../data/types'
@@ -124,6 +125,9 @@ export function Apiarios() {
           <Button to="/apiarios/novo">
             + Novo Apiário
           </Button>
+          <div className={styles.mapLink}>
+            <TextLink to="/mapa">Ver apiários no mapa</TextLink>
+          </div>
         </div>
       </Stack>
     </Screen>

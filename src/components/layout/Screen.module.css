@@ -21,6 +21,10 @@
   padding-right: 24px;
 }
 
+.none {
+  padding: 0;
+}
+
 .stack {
   display: flex;
   flex-direction: column;

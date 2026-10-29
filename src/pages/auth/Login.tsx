@@ -7,6 +7,7 @@ import { AuthLayout } from '../../components/layout/AuthLayout'
 import { Button } from '../../components/ui/Button'
 import { TextField } from '../../components/ui/Field'
 import { TextLink } from '../../components/ui/TextLink'
+import styles from './Login.module.css'
 
 /** 2 - Tela de Login */
 export function Login() {
@@ -79,10 +80,11 @@ export function Login() {
           <Button type="submit" disabled={carregando}>
             {carregando ? 'Entrando...' : 'Entrar'}
           </Button>
-          <div style={{ margin: '20px 0 30px' }}>
+          <div className={styles.recovery}>
             <TextLink to="/recuperar-senha">Esqueci minha senha</TextLink>
           </div>
-          <Button variant="muted" to="/cadastro">
+          <div className={styles.separator}>ou</div>
+          <Button variant="secondary" to="/cadastro">
             Criar conta
           </Button>
         </>
