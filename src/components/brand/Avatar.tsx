@@ -13,6 +13,9 @@ export function Avatar({ size = 'sm', to, iniciais }: Props) {
   const obterIniciaisDinamicas = () => {
     if (iniciais) return iniciais
 
+    const salvas = localStorage.getItem('abeia_iniciais')
+    if (salvas) return salvas
+
     const usuarioAtual = auth.currentUser
     if (usuarioAtual?.displayName) {
       return usuarioAtual.displayName
@@ -22,9 +25,6 @@ export function Avatar({ size = 'sm', to, iniciais }: Props) {
         .join('')
         .toUpperCase()
     }
-
-    const salvas = localStorage.getItem('abeia_iniciais')
-    if (salvas) return salvas
 
     if (usuarioAtual?.email) {
       return usuarioAtual.email.slice(0, 2).toUpperCase()

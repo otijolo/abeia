@@ -4,7 +4,8 @@ import br.unifor.abeia.model.Perfil;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Repositório em memória para persistência dos dados de Perfil do usuário.
@@ -12,10 +13,14 @@ import java.util.concurrent.atomic.AtomicReference;
 @Repository
 public class PerfilRepository {
 
-    private final AtomicReference<Perfil> perfilAtual = new AtomicReference<>();
+    private final Map<String, Perfil> perfis = new ConcurrentHashMap<>();
 
     public Optional<Perfil> obterPerfil() {
-        return Optional.ofNullable(perfilAtual.get());
+        return obterPerfil("usr-1");
+    }
+
+    public Optional<Perfil> obterPerfil(String id) {
+        return Optional.ofNullable(perfis.get(id));
     }
 
     public Perfil salvar(Perfil perfil) {
@@ -34,11 +39,15 @@ public class PerfilRepository {
                 perfil.setIniciais(sb.toString());
             }
         }
-        perfilAtual.set(perfil);
+        perfis.put(perfil.getId(), perfil);
         return perfil;
     }
 
     public void limpar() {
-        perfilAtual.set(null);
+        perfis.clear();
+    }
+
+    public boolean excluir(String id) {
+        return perfis.remove(id) != null;
     }
 }

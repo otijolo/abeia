@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import jakarta.validation.Valid;
 
 /**
  * Controller REST de Alertas na arquitetura MVC.
@@ -52,7 +53,7 @@ public class AlertaController {
      */
     @PostMapping
     @Operation(summary = "Criar alerta", description = "Cadastra um novo alerta para monitoramento.")
-    public ResponseEntity<Alerta> criar(@RequestBody Alerta alerta) {
+    public ResponseEntity<Alerta> criar(@Valid @RequestBody Alerta alerta) {
         Alerta criado = alertaService.criar(alerta);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
@@ -62,7 +63,7 @@ public class AlertaController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar alerta", description = "Atualiza os dados completos de um alerta existente.")
-    public ResponseEntity<Alerta> atualizar(@PathVariable String id, @RequestBody Alerta dados) {
+    public ResponseEntity<Alerta> atualizar(@PathVariable String id, @Valid @RequestBody Alerta dados) {
         return alertaService.atualizar(id, dados)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -75,7 +76,7 @@ public class AlertaController {
     @Operation(summary = "Atualizar estado do alerta", description = "Altera o estado do alerta (ex.: ativo, resolvido, ignorado).")
     public ResponseEntity<Alerta> atualizarEstado(@PathVariable String id, @RequestBody Map<String, String> payload) {
         String novoEstado = payload.get("estado");
-        if (novoEstado == null || novoEstado.isBlank()) {
+        if (novoEstado == null || !List.of("ativo", "resolvido", "ignorado").contains(novoEstado)) {
             return ResponseEntity.badRequest().build();
         }
         return alertaService.atualizarEstado(id, novoEstado)

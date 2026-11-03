@@ -44,6 +44,7 @@ export function Mapa() {
     if (!containerRef.current) return
     const map = L.map(containerRef.current, { scrollWheelZoom: false })
       .setView([-5.5, -39.3], 7)
+    map.on('click', () => setSelecionado(null))
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       maxZoom: 19,
@@ -59,7 +60,7 @@ export function Mapa() {
       const ponto = coordenadasDoApiario(apiario)
       if (!ponto) return
       pontos.push(ponto)
-      L.marker(ponto, { icon, title: apiario.nome, alt: apiario.nome })
+      L.marker(ponto, { icon, title: apiario.nome, alt: apiario.nome, bubblingMouseEvents: false })
         .addTo(map)
         .on('click', () => setSelecionado(apiario))
     })
@@ -100,9 +101,6 @@ export function Mapa() {
             ]}>
               <div className={styles.actions}>
                 <StatusBadge status={selecionado.status} />
-                <button type="button" className={styles.close} onClick={() => setSelecionado(null)}>
-                  Fechar
-                </button>
               </div>
               <Button to={`/apiarios/${selecionado.id}`}>Ver detalhes</Button>
             </InfoCard>

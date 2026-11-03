@@ -1,9 +1,18 @@
 /**
  * Cliente HTTP para comunicação com o backend em Java (Spring Boot MVC).
- * Endpoints baseados em http://localhost:8080/api
+ * Endpoints baseados em http://localhost:8088/api
  */
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || 'http://localhost:8088/api'
+
+export class ApiError extends Error {
+  status: number
+
+  constructor(status: number, message: string) {
+    super(message)
+    this.status = status
+  }
+}
 
 export async function apiFetch<T>(
   endpoint: string,
@@ -23,14 +32,17 @@ export async function apiFetch<T>(
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => '')
-    throw new Error(
-      errorText || `Erro na requisição (${response.status} ${response.statusText})`
-    )
+    let mensagem = errorText
+    try {
+      const dados = JSON.parse(errorText)
+      mensagem = dados.message || dados.mensagem || `Erro na requisição (${response.status})`
+    } catch { /* A API também pode retornar mensagens em texto. */ }
+    throw new ApiError(response.status, mensagem || `Erro na requisição (${response.status})`)
   }
 
   // Resposta vazia (ex.: 204 No Content)
   if (response.status === 204) {
-    return {} as T
+    return null as T
   }
 
   return response.json() as Promise<T>

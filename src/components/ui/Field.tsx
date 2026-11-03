@@ -43,7 +43,7 @@ export function TextArea({ label, className, ...textarea }: TextAreaProps) {
 
 type SelectFieldProps = SelectHTMLAttributes<HTMLSelectElement> & {
   label: string
-  options: string[]
+  options: (string | { value: string; label: string })[]
   placeholder?: string
 }
 
@@ -55,8 +55,8 @@ export function SelectField({ label, options, placeholder = 'Selecione...', clas
           <select id={id} className={`${styles.control} ${styles.select}`} {...select}>
             {placeholder && <option value="">{placeholder}</option>}
             {options.map((o) => (
-              <option key={o} value={o}>
-                {o}
+              <option key={typeof o === 'string' ? o : o.value} value={typeof o === 'string' ? o : o.value}>
+                {typeof o === 'string' ? o : o.label}
               </option>
             ))}
           </select>

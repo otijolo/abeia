@@ -1,4 +1,4 @@
-import { apiFetch } from './api'
+import { ApiError, apiFetch } from './api'
 import type { Producao } from '../data/types'
 
 type NovaProducao = Omit<Producao, 'id'>
@@ -28,8 +28,9 @@ export async function listarProducoesDaColmeia(
 export async function buscarProducao(id: string): Promise<Producao | null> {
   try {
     return await apiFetch<Producao>(`/producoes/${id}`)
-  } catch {
-    return null
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null
+    throw error
   }
 }
 

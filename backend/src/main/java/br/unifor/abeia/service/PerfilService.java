@@ -3,6 +3,8 @@ package br.unifor.abeia.service;
 import br.unifor.abeia.model.Perfil;
 import br.unifor.abeia.repository.PerfilRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -20,6 +22,32 @@ public class PerfilService {
 
     public Optional<Perfil> obterPerfil() {
         return repository.obterPerfil();
+    }
+
+    public Optional<Perfil> obterPerfil(String id) {
+        return repository.obterPerfil(id);
+    }
+
+    public Perfil criarPerfil(String id, Perfil perfil) {
+        if (repository.obterPerfil(id).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um perfil para este usuário.");
+        }
+        perfil.setId(id);
+        return repository.salvar(perfil);
+    }
+
+    public Optional<Perfil> atualizarPerfil(String id, Perfil novosDados) {
+        return repository.obterPerfil(id).map(atual -> {
+            atual.setNome(novosDados.getNome());
+            atual.setEmail(novosDados.getEmail());
+            atual.setIniciais(novosDados.getIniciais());
+            atual.setTelefone(novosDados.getTelefone());
+            return repository.salvar(atual);
+        });
+    }
+
+    public boolean excluirPerfil(String id) {
+        return repository.excluir(id);
     }
 
     public Perfil salvarPerfil(Perfil perfil) {

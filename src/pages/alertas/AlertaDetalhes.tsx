@@ -23,13 +23,14 @@ export function AlertaDetalhes() {
   const [erro, setErro] = useState('')
 
   const handleExcluirAlerta = async () => {
-    if (!id) return
+    if (!id || excluindo) return
+    setErro('')
     try {
       setExcluindo(true)
       await excluirAlerta(id)
       navigate('/alertas', { replace: true })
     } catch (e) {
-      console.error('Erro ao excluir alerta:', e)
+      setErro(e instanceof Error ? e.message : 'Não foi possível excluir o alerta.')
     } finally {
       setExcluindo(false)
       setConfirmandoExclusao(false)
@@ -78,13 +79,14 @@ export function AlertaDetalhes() {
   }, [id])
 
   const handleResolverAlerta = async () => {
-    if (!id || !alerta) return
+    if (!id || !alerta || atualizando) return
+    setErro('')
     try {
       setAtualizando(true)
       await atualizarEstadoAlerta(id, 'resolvido')
       setAlerta({ ...alerta, estado: 'resolvido' })
     } catch (e) {
-      console.error('Erro ao resolver alerta:', e)
+      setErro(e instanceof Error ? e.message : 'Não foi possível atualizar o alerta.')
     } finally {
       setAtualizando(false)
     }
@@ -98,7 +100,7 @@ export function AlertaDetalhes() {
     )
   }
 
-  if (erro) {
+  if (erro && !alerta) {
     return (
       <Screen title="Detalhes do Alerta" avatar={false}>
         <div role="alert">
@@ -113,6 +115,7 @@ export function AlertaDetalhes() {
 
   return (
     <Screen title="Detalhes do Alerta" avatar={false}>
+      {erro && <p role="alert">{erro}</p>}
       <Stack gap={30}>
         <DetailHeading
           title={alerta.tituloDetalhe || alerta.titulo}
@@ -138,6 +141,7 @@ export function AlertaDetalhes() {
 
       <div style={{ marginTop: 34, padding: '0 12px' }}>
         <Stack gap={12}>
+          <Button variant="secondary" to={`/alertas/${alerta.id}/editar`}>Editar alerta</Button>
           {alerta.colmeiaId && (
             <Button to={`/colmeias/${alerta.colmeiaId}`}>
               Ver Colmeia
@@ -164,7 +168,7 @@ export function AlertaDetalhes() {
         description="Esta ação não poderá ser desfeita e removerá o alerta do sistema."
         confirmLabel={excluindo ? 'Excluindo...' : 'Excluir'}
         onConfirm={handleExcluirAlerta}
-        onCancel={() => setConfirmandoExclusao(false)}
+        onCancel={() => { if (!excluindo) setConfirmandoExclusao(false) }}
       />
     </Screen>
   )

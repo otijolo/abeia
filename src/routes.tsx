@@ -3,6 +3,7 @@ import { AppFrame } from './components/layout/AppFrame'
 import { AlertaDetalhes } from './pages/alertas/AlertaDetalhes'
 import { Alertas } from './pages/alertas/Alertas'
 import { NovoAlerta } from './pages/alertas/NovoAlerta'
+import { EditarAlerta } from './pages/alertas/EditarAlerta'
 import { ApiarioDetalhes } from './pages/apiarios/ApiarioDetalhes'
 import { Apiarios } from './pages/apiarios/Apiarios'
 import { EditarApiario } from './pages/apiarios/EditarApiario'
@@ -25,6 +26,7 @@ import { AlterarSenha } from './pages/perfil/AlterarSenha'
 import { Perfil } from './pages/perfil/Perfil'
 import { Producao } from './pages/producao/Producao'
 import { RegistrarProducao } from './pages/producao/RegistrarProducao'
+import { EditarProducao } from './pages/producao/EditarProducao'
 import { Relatorios } from './pages/producao/Relatorios'
 
 function Root() {
@@ -70,10 +72,12 @@ export const router = createBrowserRouter([
       { path: '/alertas', element: <Alertas /> },
       { path: '/alertas/novo', element: <NovoAlerta /> },
       { path: '/alertas/:id', element: <AlertaDetalhes /> },
+      { path: '/alertas/:id/editar', element: <EditarAlerta /> },
 
       // Produção
       { path: '/producao', element: <Producao /> },
       { path: '/producao/registrar', element: <RegistrarProducao /> },
+      { path: '/producao/:id/editar', element: <EditarProducao /> },
       { path: '/relatorios', element: <Relatorios /> },
 
       // Perfil

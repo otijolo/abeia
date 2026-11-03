@@ -6,187 +6,167 @@ import { Wordmark } from '../../components/brand/Brand'
 import beeUrl from '../../assets/figma/abelha.png'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { Divider } from '../../components/ui/Divider'
 import { TextField } from '../../components/ui/Field'
 import { auth } from '../../services/firebase'
-import { buscarPerfil, atualizarPerfil } from '../../services/perfilService'
+import { buscarPerfil, criarPerfil, atualizarPerfil, excluirPerfil } from '../../services/perfilService'
 import styles from './Perfil.module.css'
 
-/** Tela de Perfil */
+function iniciaisDoNome(nome: string) {
+  return nome.trim().split(/\s+/).slice(0, 2).map((parte) => parte[0] || '').join('').toUpperCase()
+}
+
+/** Cadastro, consulta, edição e exclusão dos dados do perfil. */
 export function Perfil() {
   const navigate = useNavigate()
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
+  const [telefone, setTelefone] = useState('')
   const [iniciais, setIniciais] = useState('')
+  const [cadastrado, setCadastrado] = useState(false)
   const [carregando, setCarregando] = useState(true)
+  const [falhaCarga, setFalhaCarga] = useState(false)
+  const [tentativa, setTentativa] = useState(0)
   const [salvando, setSalvando] = useState(false)
-  const [sucesso, setSucesso] = useState(false)
+  const [excluindo, setExcluindo] = useState(false)
+  const [confirmandoExclusao, setConfirmandoExclusao] = useState(false)
+  const [sucesso, setSucesso] = useState('')
   const [erro, setErro] = useState('')
 
   useEffect(() => {
     let ativo = true
-
-    async function carregarPerfil() {
+    setCarregando(true)
+    setFalhaCarga(false)
+    setErro('')
+    async function carregar() {
       try {
-        setCarregando(true)
         const perfil = await buscarPerfil()
-
-        if (ativo) {
-          const nomeFinal =
-            perfil?.nome ||
-            auth.currentUser?.displayName ||
-            (auth.currentUser?.email ? auth.currentUser.email.split('@')[0] : '')
-          const emailFinal = perfil?.email || auth.currentUser?.email || ''
-          const iniciaisCalculadas =
-            perfil?.iniciais ||
-            (nomeFinal
-              ? nomeFinal
-                  .split(' ')
-                  .map((p) => p[0])
-                  .slice(0, 2)
-                  .join('')
-                  .toUpperCase()
-              : (emailFinal ? emailFinal.slice(0, 2).toUpperCase() : 'U'))
-
-          setNome(nomeFinal)
-          setEmail(emailFinal)
-          setIniciais(iniciaisCalculadas)
-
-          if (iniciaisCalculadas) {
-            localStorage.setItem('abeia_iniciais', iniciaisCalculadas)
-          }
-          if (nomeFinal) {
-            localStorage.setItem('abeia_nome', nomeFinal)
-          }
+        if (!ativo) return
+        const nomeInicial = perfil?.nome ?? auth.currentUser?.displayName ?? ''
+        setCadastrado(!!perfil)
+        setNome(nomeInicial)
+        setEmail(perfil?.email ?? auth.currentUser?.email ?? '')
+        setTelefone(perfil?.telefone ?? '')
+        setIniciais(perfil?.iniciais || iniciaisDoNome(nomeInicial))
+        if (perfil) {
+          localStorage.setItem('abeia_nome', perfil.nome)
+          localStorage.setItem('abeia_iniciais', perfil.iniciais || iniciaisDoNome(perfil.nome))
         }
-      } catch (err) {
-        console.error('Erro ao carregar perfil:', err)
+      } catch (error) {
         if (ativo) {
-          const emailFallback = auth.currentUser?.email || ''
-          const nomeFallback = auth.currentUser?.displayName || (emailFallback ? emailFallback.split('@')[0] : 'Produtor')
-          setNome(nomeFallback)
-          setEmail(emailFallback)
-          setIniciais(nomeFallback.slice(0, 2).toUpperCase())
+          setFalhaCarga(true)
+          setErro(error instanceof Error ? error.message : 'Não foi possível carregar o perfil.')
         }
       } finally {
-        if (ativo) {
-          setCarregando(false)
-        }
+        if (ativo) setCarregando(false)
       }
     }
+    void carregar()
+    return () => { ativo = false }
+  }, [tentativa])
 
-    void carregarPerfil()
-
-    return () => {
-      ativo = false
-    }
-  }, [])
-
-  const handleSubmit = async (e: FormEvent) => {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    setSucesso(false)
+    if (salvando || excluindo || falhaCarga) return
     setErro('')
-
-    const novasIniciais = nome
-      .split(' ')
-      .map((p) => p[0])
-      .slice(0, 2)
-      .join('')
-      .toUpperCase()
-
+    setSucesso('')
+    if (!nome.trim()) {
+      setErro('Informe seu nome.')
+      return
+    }
+    const dados = { nome: nome.trim(), email: email.trim(), telefone: telefone.trim(), iniciais: iniciaisDoNome(nome) }
     try {
       setSalvando(true)
-      await atualizarPerfil({
-        nome,
-        email,
-        iniciais: novasIniciais
-      })
-      setIniciais(novasIniciais)
-      localStorage.setItem('abeia_nome', nome)
-      localStorage.setItem('abeia_iniciais', novasIniciais)
-      setSucesso(true)
-      setTimeout(() => setSucesso(false), 3000)
-    } catch (err) {
-      console.error('Erro ao atualizar perfil:', err)
-      setErro(err instanceof Error ? err.message : 'Erro ao salvar alterações.')
+      if (cadastrado) await atualizarPerfil(dados)
+      else await criarPerfil(dados)
+      setCadastrado(true)
+      setNome(dados.nome)
+      setIniciais(dados.iniciais)
+      localStorage.setItem('abeia_nome', dados.nome)
+      localStorage.setItem('abeia_iniciais', dados.iniciais)
+      setSucesso('Perfil salvo com sucesso!')
+    } catch (error) {
+      setErro(error instanceof Error ? error.message : 'Não foi possível salvar o perfil.')
     } finally {
       setSalvando(false)
     }
   }
 
-  const handleSair = async () => {
+  async function handleExcluir() {
+    if (excluindo || salvando) return
+    setErro('')
+    setSucesso('')
     try {
+      setExcluindo(true)
+      await excluirPerfil()
+      setCadastrado(false)
+      setNome('')
+      setEmail('')
+      setTelefone('')
+      setIniciais('')
       localStorage.removeItem('abeia_nome')
       localStorage.removeItem('abeia_iniciais')
-      await signOut(auth)
-      navigate('/login', { replace: true })
-    } catch (err) {
-      console.error('Erro ao deslogar:', err)
-      navigate('/login', { replace: true })
+      setSucesso('Dados do perfil excluídos. Sua conta de acesso continua ativa.')
+    } catch (error) {
+      setErro(error instanceof Error ? error.message : 'Não foi possível excluir o perfil.')
+    } finally {
+      setExcluindo(false)
+      setConfirmandoExclusao(false)
     }
   }
 
+  async function handleSair() {
+    try {
+      await signOut(auth)
+      localStorage.removeItem('abeia_nome')
+      localStorage.removeItem('abeia_iniciais')
+      navigate('/login', { replace: true })
+    } catch {
+      setErro('Não foi possível sair. Tente novamente.')
+    }
+  }
+
+  const ocupado = carregando || salvando || excluindo
   return (
     <Screen title="Perfil" avatar={false} padding="form">
       <div className={styles.identity}>
         <div className={styles.portrait}>
-          <Avatar size="lg" iniciais={iniciais} />
+          <Avatar size="lg" iniciais={iniciais || 'U'} />
           <img src={beeUrl} alt="" className={styles.bee} />
         </div>
-        <h2>{carregando ? 'Carregando...' : nome}</h2>
+        <h2>{carregando ? 'Carregando...' : nome || 'Meu perfil'}</h2>
       </div>
-
+      {erro && <p role="alert" className={styles.error}>{erro}</p>}
+      {sucesso && <p role="status" className={styles.success}>{sucesso}</p>}
+      {falhaCarga && <Button onClick={() => setTentativa((valor) => valor + 1)}>Tentar novamente</Button>}
       <form onSubmit={handleSubmit}>
-        <Stack gap={18}>
-          {sucesso && (
-            <p style={{ color: '#2e7d32', fontSize: '14px', margin: 0 }}>
-              Perfil atualizado com sucesso!
-            </p>
-          )}
-
-          {erro && (
-            <p style={{ color: '#d32f2f', fontSize: '14px', margin: 0 }}>
-              {erro}
-            </p>
-          )}
-
-          <TextField
-            label="Nome"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            autoComplete="name"
-            required
-          />
-
-          <TextField
-            label="E-mail"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-            required
-          />
-        </Stack>
-
+        <fieldset disabled={ocupado || falhaCarga} className={styles.fields}>
+          <TextField label="Nome" value={nome} onChange={(e) => setNome(e.target.value)}
+            autoComplete="name" required />
+          <TextField label="E-mail" type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email" required />
+          <p className={styles.note}>O e-mail de contato não altera seu e-mail de acesso.</p>
+          <TextField label="Telefone (opcional)" type="tel" value={telefone}
+            onChange={(e) => setTelefone(e.target.value)} autoComplete="tel" />
+        </fieldset>
         <Stack gap={12} className={styles.actions}>
-          <Button type="submit" disabled={salvando || carregando}>
-            {salvando ? 'Salvando...' : 'Salvar alterações'}
+          <Button type="submit" disabled={ocupado || falhaCarga}>
+            {salvando ? 'Salvando...' : cadastrado ? 'Salvar alterações' : 'Criar perfil'}
           </Button>
-
-          <Button variant="secondary" to="/perfil/senha">
-            Alterar senha
-          </Button>
-
+          <Button variant="secondary" to="/perfil/senha">Alterar senha</Button>
+          {cadastrado && <Button variant="danger" type="button" disabled={ocupado || falhaCarga}
+            onClick={() => setConfirmandoExclusao(true)}>Excluir dados do perfil</Button>}
           <Divider />
-
-          <Button variant="danger" type="button" onClick={handleSair}>
-            Sair
-          </Button>
+          <Button variant="danger" type="button" onClick={() => void handleSair()} disabled={ocupado}>Sair</Button>
         </Stack>
       </form>
-      <div className={styles.wordmark}>
-        <Wordmark width={78} />
-      </div>
+      <ConfirmDialog open={confirmandoExclusao} title="Excluir dados do perfil?"
+        description="Remove seu nome, e-mail de contato e telefone cadastrados. Sua conta de acesso e os registros de apiários e colmeias serão mantidos."
+        confirmLabel={excluindo ? 'Excluindo...' : 'Excluir dados'}
+        onConfirm={() => void handleExcluir()}
+        onCancel={() => { if (!excluindo) setConfirmandoExclusao(false) }} />
+      <div className={styles.wordmark}><Wordmark width={78} /></div>
     </Screen>
   )
 }

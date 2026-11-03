@@ -1,12 +1,18 @@
 package br.unifor.abeia.model;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 /**
  * Modelo que representa os dados do Perfil do usuário.
  */
 public class Perfil {
 
     private String id;
+    @NotBlank(message = "Informe o nome.")
     private String nome;
+    @NotBlank(message = "Informe o e-mail.")
+    @Email(message = "Informe um e-mail válido.")
     private String email;
     private String iniciais;
     private String telefone;

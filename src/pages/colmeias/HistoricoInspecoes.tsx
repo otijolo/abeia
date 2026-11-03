@@ -14,7 +14,6 @@ import type { Colmeia, Inspecao } from '../../data/types'
 import { compararDatasDecrescente, formatarData } from '../../data/datas'
 
 import { NotFound } from '../NotFound'
-import styles from './HistoricoInspecoes.module.css'
 
 /** Tela de Histórico de Inspeções */
 export function HistoricoInspecoes() {
@@ -101,37 +100,31 @@ export function HistoricoInspecoes() {
       )}
 
       {colmeia && (
-        <>
-          <p className={styles.intro}>
-            Histórico cronológico da {colmeia.nome}.
-          </p>
+        <Stack gap={37}>
+          <ListStack gap={15}>
+            {lista.map(inspecao => (
+              <ListCard
+                key={inspecao.id}
+                to={`/inspecoes/${inspecao.id}`}
+                title={formatarData(inspecao.data)}
+                subtitle={inspecao.resumo}
+                status={inspecao.status}
+              />
+            ))}
 
-          <Stack gap={37}>
-            <ListStack gap={15}>
-              {lista.map(inspecao => (
-                <ListCard
-                  key={inspecao.id}
-                  to={`/inspecoes/${inspecao.id}`}
-                  title={formatarData(inspecao.data)}
-                  subtitle={inspecao.resumo}
-                  status={inspecao.status}
-                />
-              ))}
+            {lista.length === 0 && !erro && (
+              <EmptyState>
+                Nenhuma inspeção registrada.
+              </EmptyState>
+            )}
+          </ListStack>
 
-              {lista.length === 0 && !erro && (
-                <EmptyState>
-                  Nenhuma inspeção registrada.
-                </EmptyState>
-              )}
-            </ListStack>
-
-            <div style={{ padding: '0 10px' }}>
-              <Button to={`/colmeias/${colmeia.id}/inspecoes/nova`}>
-                + Nova Inspeção
-              </Button>
-            </div>
-          </Stack>
-        </>
+          <div style={{ padding: '0 10px' }}>
+            <Button to={`/colmeias/${colmeia.id}/inspecoes/nova`}>
+              + Nova Inspeção
+            </Button>
+          </div>
+        </Stack>
       )}
     </Screen>
   )

@@ -38,11 +38,3 @@
   justify-content: space-between;
   margin-bottom: 8px;
 }
-
-.close {
-  padding: 8px;
-  border: 0;
-  background: transparent;
-  color: var(--color-link);
-  font-size: 14px;
-}

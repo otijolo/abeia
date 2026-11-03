@@ -171,6 +171,16 @@ export function ApiarioDetalhes() {
             )}
           </ListStack>
         </Stack>
+
+        <Stack gap={18}>
+          <SectionTitle>Informações adicionais</SectionTitle>
+          <InfoCard lines={[
+            `Descrição: ${apiario.descricao || 'Não informada'}`,
+            `Latitude: ${apiario.latitude || 'Não informada'}`,
+            `Longitude: ${apiario.longitude || 'Não informada'}`,
+            `Observações: ${apiario.observacoes || 'Nenhuma'}`,
+          ]} />
+        </Stack>
       </Stack>
 
       <Actions>
@@ -195,16 +205,6 @@ export function ApiarioDetalhes() {
           Excluir Apiário
         </Button>
       </Actions>
-
-      <details>
-        <summary>Informações adicionais</summary>
-        <InfoCard lines={[
-          `Descrição: ${apiario.descricao || 'Não informada'}`,
-          `Latitude: ${apiario.latitude || 'Não informada'}`,
-          `Longitude: ${apiario.longitude || 'Não informada'}`,
-          `Observações: ${apiario.observacoes || 'Nenhuma'}`,
-        ]} />
-      </details>
 
       <ConfirmDialog
         open={confirmando}

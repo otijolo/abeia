@@ -87,9 +87,9 @@ export function Producao() {
     const data = dataDaProducao(p.data)
     if (data) dadosGrafico[data.getMonth()].kg += quantidadeEmKg(p)
   })
-  const recentes = [...registros].sort((a, b) =>
+  const historico = [...registros].sort((a, b) =>
     (dataDaProducao(b.data)?.getTime() ?? 0) - (dataDaProducao(a.data)?.getTime() ?? 0)
-  ).slice(0, 4)
+  )
 
   async function handleExcluirProducao() {
     if (!exclusao || excluindo) return
@@ -155,19 +155,22 @@ export function Producao() {
         <Button variant="secondary" to="/relatorios">Relatórios</Button>
       </Actions>
 
-      {recentes.length > 0 && (
+      {historico.length > 0 && (
         <Stack gap={18} className={styles.harvests}>
           <SectionTitle>Colheitas registradas</SectionTitle>
           <ListStack gap={10}>
-            {recentes.map((p) => (
+            {historico.map((p) => (
               <Card key={p.id} className={styles.harvest}>
                 <div>
                   <strong>{colmeias.find((c) => c.id === p.colmeiaId)?.nome || 'Colmeia'}</strong>
-                  <span>{p.data} • {p.quantidade} {p.unidade}</span>
+                  <span>{p.data} • {formatarKg(p.quantidade)} {p.unidade}</span>
                   {p.observacoes && <span>{p.observacoes}</span>}
                 </div>
-                <button type="button" className={styles.delete} onClick={() => setExclusao(p)}
-                  aria-label={`Excluir registro de ${p.data}`}>Excluir</button>
+                <div className={styles.recordActions}>
+                  <Button variant="secondary" to={`/producao/${p.id}/editar`}>Editar</Button>
+                  <button type="button" className={styles.delete} onClick={() => setExclusao(p)}
+                    aria-label={`Excluir registro de ${p.data}`} disabled={excluindo}>Excluir</button>
+                </div>
               </Card>
             ))}
           </ListStack>

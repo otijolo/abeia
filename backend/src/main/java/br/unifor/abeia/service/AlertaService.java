@@ -2,7 +2,10 @@ package br.unifor.abeia.service;
 
 import br.unifor.abeia.model.Alerta;
 import br.unifor.abeia.repository.AlertaRepository;
+import br.unifor.abeia.repository.ColmeiaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +17,11 @@ import java.util.Optional;
 public class AlertaService {
 
     private final AlertaRepository repository;
+    private final ColmeiaRepository colmeiaRepository;
 
-    public AlertaService(AlertaRepository repository) {
+    public AlertaService(AlertaRepository repository, ColmeiaRepository colmeiaRepository) {
         this.repository = repository;
+        this.colmeiaRepository = colmeiaRepository;
     }
 
     public List<Alerta> listarTodos() {
@@ -28,11 +33,14 @@ public class AlertaService {
     }
 
     public Alerta criar(Alerta alerta) {
+        validarColmeia(alerta);
+        alerta.setId(null);
         return repository.salvar(alerta);
     }
 
     public Optional<Alerta> atualizar(String id, Alerta dadosAtualizados) {
         return repository.buscarPorId(id).map(alerta -> {
+            validarColmeia(dadosAtualizados);
             if (dadosAtualizados.getTitulo() != null) alerta.setTitulo(dadosAtualizados.getTitulo());
             if (dadosAtualizados.getTituloDetalhe() != null) alerta.setTituloDetalhe(dadosAtualizados.getTituloDetalhe());
             if (dadosAtualizados.getOrigem() != null) alerta.setOrigem(dadosAtualizados.getOrigem());
@@ -56,5 +64,12 @@ public class AlertaService {
 
     public boolean excluir(String id) {
         return repository.excluir(id);
+    }
+
+    private void validarColmeia(Alerta alerta) {
+        String id = alerta.getColmeiaId();
+        if (id != null && !id.isBlank() && !colmeiaRepository.existe(id)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A colmeia selecionada não existe.");
+        }
     }
 }

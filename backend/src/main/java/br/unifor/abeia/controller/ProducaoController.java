@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import jakarta.validation.Valid;
 
 /**
  * Controller REST de Produção na arquitetura MVC.
@@ -63,7 +64,7 @@ public class ProducaoController {
      */
     @PostMapping
     @Operation(summary = "Registrar colheita", description = "Cadastra uma nova colheita de mel ou produto apícola.")
-    public ResponseEntity<Producao> criar(@RequestBody Producao producao) {
+    public ResponseEntity<Producao> criar(@Valid @RequestBody Producao producao) {
         Producao criada = producaoService.criar(producao);
         return ResponseEntity.status(HttpStatus.CREATED).body(criada);
     }
@@ -73,7 +74,7 @@ public class ProducaoController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar produção", description = "Atualiza os dados de um registro de colheita existente.")
-    public ResponseEntity<Producao> atualizar(@PathVariable String id, @RequestBody Producao dados) {
+    public ResponseEntity<Producao> atualizar(@PathVariable String id, @Valid @RequestBody Producao dados) {
         return producaoService.atualizar(id, dados)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

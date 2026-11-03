@@ -1,9 +1,8 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { ref, set } from 'firebase/database'
-import { auth, db } from '../../services/firebase'
-import { atualizarPerfil } from '../../services/perfilService'
+import { auth } from '../../services/firebase'
+import { criarPerfil } from '../../services/perfilService'
 import { AuthLayout } from '../../components/layout/AuthLayout'
 import { Button } from '../../components/ui/Button'
 import { TextField } from '../../components/ui/Field'
@@ -60,18 +59,9 @@ export function Cadastro() {
       localStorage.setItem('abeia_nome', nome.trim())
       localStorage.setItem('abeia_iniciais', iniciais)
 
-      // 5. Salva os dados do usuário no Realtime Database
-      await set(ref(db, `usuarios/${usuario.uid}`), {
-        nome: nome.trim(),
-        email: usuario.email,
-        iniciais,
-        criadoEm: new Date().toISOString()
-      })
-
-      // 6. Cadastra o perfil no backend Java
+      // Cadastra os dados do perfil na mesma API usada pela tela de perfil.
       try {
-        await atualizarPerfil({
-          id: usuario.uid,
+        await criarPerfil({
           nome: nome.trim(),
           email: usuario.email || email,
           iniciais,

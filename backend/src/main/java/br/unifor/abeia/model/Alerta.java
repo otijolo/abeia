@@ -2,6 +2,8 @@ package br.unifor.abeia.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 /**
  * Modelo que representa um Alerta na arquitetura MVC.
@@ -9,13 +11,18 @@ import java.util.List;
 public class Alerta {
 
     private String id;
+    @NotBlank(message = "Informe o título do alerta.")
     private String titulo;
     private String tituloDetalhe;
     private String origem;
     private String quando;
     private String data;
+    @NotBlank(message = "Informe a gravidade do alerta.")
+    @Pattern(regexp = "normal|atencao|critico", message = "Gravidade inválida.")
     private String status; // normal, atencao, critico
+    @Pattern(regexp = "ativo|resolvido|ignorado", message = "Situação do alerta inválida.")
     private String estado; // ativo, resolvido, ignorado
+    @NotBlank(message = "Informe o motivo do alerta.")
     private String motivo;
     private List<String> afetados = new ArrayList<>();
     private String colmeiaId;

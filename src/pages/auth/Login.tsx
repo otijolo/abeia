@@ -28,15 +28,13 @@ export function Login() {
       const usuario = cred.user
 
       let nomeUsuario = usuario.displayName || ''
-      if (!nomeUsuario) {
-        try {
-          const perfil = await buscarPerfil()
-          if (perfil?.nome) {
-            nomeUsuario = perfil.nome
-          }
-        } catch {
-          // ignore
+      try {
+        const perfil = await buscarPerfil()
+        if (perfil?.nome) {
+          nomeUsuario = perfil.nome
         }
+      } catch {
+        // O login continua disponível quando a API de perfil está fora do ar.
       }
 
       if (!nomeUsuario && usuario.email) {

@@ -70,3 +70,9 @@
   font-size: 13px;
   font-weight: 600;
 }
+.recordActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 82px;
+}

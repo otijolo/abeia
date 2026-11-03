@@ -1,4 +1,4 @@
-import { apiFetch } from './api'
+import { ApiError, apiFetch } from './api'
 import type { Alerta, AlertaEstado } from '../data/types'
 
 type NovoAlerta = Omit<Alerta, 'id' | 'estado'> &
@@ -19,8 +19,9 @@ export async function listarAlertas(): Promise<Alerta[]> {
 export async function buscarAlerta(id: string): Promise<Alerta | null> {
   try {
     return await apiFetch<Alerta>(`/alertas/${id}`)
-  } catch {
-    return null
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null
+    throw error
   }
 }
 
