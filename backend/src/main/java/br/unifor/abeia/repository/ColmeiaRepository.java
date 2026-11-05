@@ -16,32 +16,33 @@ public class ColmeiaRepository {
     private final Map<String, Colmeia> dados = new ConcurrentHashMap<>();
 
     public ColmeiaRepository() {
+        semearDadosIniciais();
     }
 
     public void semearDadosIniciais() {
         salvar(new Colmeia(
                 "j14", "Colmeia J14", "mata-fresca", "Langstroth", "14",
-                "12/08/2021", "", "atencao", "Dentro do prazo",
+                "12/08/2021", "Colmeia produtiva com rainha jovem.", "atencao", "Dentro do prazo",
                 "Inspeção dentro do prazo", 58.0, List.of("Varroa em nível leve.")
         ));
         salvar(new Colmeia(
                 "d03", "Colmeia D03", "sabia", "Langstroth", "07",
-                "05/03/1967", "Caixa revisada e em boas condições.", "normal", "Em 3 dias",
+                "05/03/2021", "Caixa revisada e em boas condições.", "normal", "Em 3 dias",
                 "Inspeção daqui 3 dias", 72.0, List.of()
         ));
         salvar(new Colmeia(
                 "k07", "Colmeia K07", "batalha", "Langstroth", "03",
-                "20/01/2020", "", "critico", "Atrasada",
-                "Inspeção atrasada", 31.0, List.of("Alta infestação de varroa.")
+                "20/01/2020", "Colônia sob tratamento sanitário.", "critico", "Atrasada",
+                "Inspeção atrasada", 31.0, List.of("Alta infestação de varroa.", "População reduzida.")
         ));
         salvar(new Colmeia(
                 "e17", "Colmeia E17", "santo-antonio", "Langstroth", "17",
-                "02/02/2022", "", "normal", "Em 2 dias",
+                "02/02/2022", "Boa vedação e ventilação adequada.", "normal", "Em 2 dias",
                 "Inspeção daqui 2 dias", 67.0, List.of()
         ));
         salvar(new Colmeia(
                 "f10", "Colmeia F10", "sabia", "Langstroth", "10",
-                "10/10/2019", "", "atencao", "Dentro do prazo",
+                "10/10/2019", "Necessita reposição de xarope energético.", "atencao", "Dentro do prazo",
                 "Inspeção dentro do prazo", 44.0, List.of("Reserva de alimento baixa.")
         ));
     }

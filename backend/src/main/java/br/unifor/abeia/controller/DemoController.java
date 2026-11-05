@@ -50,7 +50,7 @@ public class DemoController {
         producaoRepository.semearDadosIniciais();
         alertaRepository.semearDadosIniciais();
         inspecaoRepository.semearDadosIniciais();
-        perfilRepository.salvar(new Perfil("usr-1", "Ildo Ramos", "ildo@email.com", "IR", "(85) 98888-7777"));
+        perfilRepository.semearDadosIniciais();
 
         return ResponseEntity.ok(Map.of("mensagem", "Dados de demonstração inseridos com sucesso!"));
     }

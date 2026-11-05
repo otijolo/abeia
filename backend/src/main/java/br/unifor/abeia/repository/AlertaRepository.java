@@ -15,6 +15,7 @@ public class AlertaRepository {
     private final Map<String, Alerta> dados = new ConcurrentHashMap<>();
 
     public AlertaRepository() {
+        semearDadosIniciais();
     }
 
     public void semearDadosIniciais() {
@@ -55,6 +56,58 @@ public class AlertaRepository {
                 "ativo",
                 "A produção do apiário no período ficou abaixo da média dos últimos meses.",
                 List.of("Apiário Mata Fresca"),
+                null
+        ));
+        salvar(new Alerta(
+                "temperatura-batalha",
+                "Temperatura elevada",
+                "Temperatura elevada",
+                "Apiário Batalha",
+                "Há 1 semana",
+                "12/11/2026",
+                "atencao",
+                "ativo",
+                "Foram registradas temperaturas acima do ideal na região serrana do apiário.",
+                List.of("Apiário Batalha"),
+                null
+        ));
+        salvar(new Alerta(
+                "enxameacao-d03",
+                "Risco de enxameação",
+                "Risco de enxameação",
+                "Colmeia D03",
+                "Há 1 mês",
+                "10/10/2026",
+                "atencao",
+                "resolvido",
+                "Foi adicionada uma melgueira para ampliar o espaço da colônia e instalada nova cera.",
+                List.of("Apiário Sabiá: Colmeia D03"),
+                "d03"
+        ));
+        salvar(new Alerta(
+                "reserva-f10",
+                "Alimentação artificial suprida",
+                "Alimentação artificial suprida",
+                "Colmeia F10",
+                "Há 3 semanas",
+                "18/10/2026",
+                "normal",
+                "resolvido",
+                "Administrado xarope invertido 2:1 para restabelecer o estoque energético.",
+                List.of("Apiário Sabiá: Colmeia F10"),
+                "f10"
+        ));
+        salvar(new Alerta(
+                "umidade-santo-antonio",
+                "Umidade relativa alta",
+                "Umidade relativa alta",
+                "Apiário Santo Antônio",
+                "Há 2 meses",
+                "02/09/2026",
+                "normal",
+                "ignorado",
+                "Umidade relativa costeira acima de 85% por três dias seguidos, sem risco imediato.",
+                List.of("Apiário Santo Antônio"),
                 null
         ));
     }

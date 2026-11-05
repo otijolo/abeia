@@ -22,9 +22,10 @@ export function Splash() {
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      const destino = user ? '/inicio' : '/login'
+      const temUsuario = Boolean(user || localStorage.getItem('abeia_nome'))
+      const destino = temUsuario ? '/inicio' : '/login'
       clearTimeout(timer)
-      timer = setTimeout(() => navigate(destino, { replace: true, viewTransition: !user }), SPLASH_DURATION_MS)
+      timer = setTimeout(() => navigate(destino, { replace: true, viewTransition: !temUsuario }), SPLASH_DURATION_MS)
     })
     return () => {
       unsubscribe()
@@ -32,8 +33,10 @@ export function Splash() {
     }
   }, [navigate])
 
+  const temUsuario = Boolean(auth.currentUser || localStorage.getItem('abeia_nome'))
+
   return (
-    <main className={styles.splash} onClick={() => navigate(auth.currentUser ? '/inicio' : '/login', { replace: true, viewTransition: !auth.currentUser })}>
+    <main className={styles.splash} onClick={() => navigate(temUsuario ? '/inicio' : '/login', { replace: true, viewTransition: !temUsuario })}>
       <div className={styles.brandIcon}>
         <AppIcon size={178} />
       </div>

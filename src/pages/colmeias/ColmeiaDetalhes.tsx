@@ -15,6 +15,7 @@ import {
   buscarColmeia,
   excluirColmeia
 } from '../../services/colmeiaService'
+import { listarInspecoesDaColmeia } from '../../services/inspecaoService'
 
 import type { Apiario, Colmeia } from '../../data/types'
 
@@ -50,7 +51,10 @@ export function ColmeiaDetalhes() {
         setCarregando(true)
         setErro('')
 
-        const colmeiaEncontrada = await buscarColmeia(id)
+        const [colmeiaEncontrada, inspecoes] = await Promise.all([
+          buscarColmeia(id),
+          listarInspecoesDaColmeia(id).catch(() => [])
+        ])
 
         if (!ativo) return
 
@@ -58,6 +62,23 @@ export function ColmeiaDetalhes() {
           setColmeia(null)
           setApiario(null)
           return
+        }
+
+        if (!colmeiaEncontrada.ultimaInspecao && inspecoes.length > 0) {
+          const ult = inspecoes[0]
+          colmeiaEncontrada.ultimaInspecao = {
+            resumo: ult.resumo,
+            detalhes: [
+              `${ult.quadrosCria} quadros com cria`,
+              ...(ult.pragas.length > 0 ? ult.pragas : ['Sem sinais de pragas'])
+            ],
+            saude:
+              ult.status === 'normal'
+                ? 'Saudável'
+                : ult.status === 'atencao'
+                  ? 'Atenção'
+                  : 'Crítico'
+          }
         }
 
         setColmeia(colmeiaEncontrada)

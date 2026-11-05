@@ -75,6 +75,8 @@ npm run dev
 É necessário um JDK 17 ou superior. A primeira execução do Maven baixa suas
 dependências. Para testar o backend: `cd backend` e `.\mvnw.cmd test`.
 
-Firebase Authentication continua responsável pelo acesso. Os dados da API ficam
-em memória e são perdidos ao encerrar o backend; ainda não há persistência desses
-registros no Firebase ou em outro banco. As funções de relatórios continuam demonstrativas.
+Firebase Authentication e Firebase Realtime Database são responsáveis pela autenticação
+e persistência em nuvem das entidades (apiários, colmeias, inspeções, alertas, produções
+e perfil). O backend Spring Boot em `backend/` permanece disponível como API REST com
+auto-semeadura em memória e documentação Swagger em http://localhost:8088/swagger-ui.html.
+O frontend também conta com modo de demonstração local para apresentações rápidas.

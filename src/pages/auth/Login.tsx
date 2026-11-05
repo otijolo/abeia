@@ -85,6 +85,19 @@ export function Login() {
           <Button variant="secondary" to="/cadastro">
             Criar conta
           </Button>
+          <div style={{ marginTop: '10px', width: '100%' }}>
+            <Button
+              type="button"
+              variant="muted"
+              onClick={() => {
+                localStorage.setItem('abeia_nome', 'Ildo Ramos')
+                localStorage.setItem('abeia_iniciais', 'IR')
+                navigate('/inicio')
+              }}
+            >
+              Acessar modo de demonstração
+            </Button>
+          </div>
         </>
       }
     >

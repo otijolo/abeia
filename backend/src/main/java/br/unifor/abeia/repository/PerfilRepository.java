@@ -15,7 +15,13 @@ public class PerfilRepository {
 
     private final Map<String, Perfil> perfis = new ConcurrentHashMap<>();
 
-    public Optional<Perfil> obterPerfil() {
+    public PerfilRepository() {
+        semearDadosIniciais();
+    }
+
+    public void semearDadosIniciais() {
+        salvar(new Perfil("usr-1", "Ildo Ramos", "ildo@email.com", "IR", "(85) 98888-7777"));
+    }
         return obterPerfil("usr-1");
     }
 

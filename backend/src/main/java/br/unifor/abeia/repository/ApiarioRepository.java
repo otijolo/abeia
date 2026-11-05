@@ -15,31 +15,32 @@ public class ApiarioRepository {
     private final Map<String, Apiario> dados = new ConcurrentHashMap<>();
 
     public ApiarioRepository() {
+        semearDadosIniciais();
     }
 
     public void semearDadosIniciais() {
         salvar(new Apiario(
                 "sabia", "Apiário Sabiá", "Juazeiro do Norte", "CE",
                 "Área principal de produção", "Caatinga", true,
-                "-3.8907...", "-38.3905...", "Acesso pela estrada lateral",
+                "-7.2130", "-39.3150", "Acesso pela estrada lateral",
                 12, "normal"
         ));
         salvar(new Apiario(
                 "mata-fresca", "Apiário Mata Fresca", "Aracati", "CE",
                 "Área de mata nativa", "Mata Atlântica", true,
-                "-4.5617...", "-37.7695...", "",
+                "-4.5617", "-37.7695", "",
                 8, "atencao"
         ));
         salvar(new Apiario(
                 "santo-antonio", "Apiário Santo Antônio", "Beberibe", "CE",
                 "Área litorânea", "Restinga", false,
-                "-4.1797...", "-38.1305...", "",
+                "-4.1797", "-38.1305", "",
                 15, "normal"
         ));
         salvar(new Apiario(
                 "batalha", "Apiário Batalha", "Guaramiranga", "CE",
                 "Área de serra", "Mata úmida", true,
-                "-4.2625...", "-38.9322...", "",
+                "-4.2625", "-38.9322", "",
                 6, "critico"
         ));
     }

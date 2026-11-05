@@ -7,6 +7,7 @@ import { getDatabase } from 'firebase/database'
 const firebaseConfig = {
   apiKey: "AIzaSyCfoKYRrKA2qRtnPRgkeYirHVbqPwPZvDk",
   authDomain: "abeia-cc22d.firebaseapp.com",
+  databaseURL: "https://abeia-cc22d-default-rtdb.firebaseio.com",
   projectId: "abeia-cc22d",
   storageBucket: "abeia-cc22d.firebasestorage.app",
   messagingSenderId: "362744264790",

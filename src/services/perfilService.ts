@@ -1,53 +1,117 @@
-import { ApiError, apiFetch } from './api'
-import { auth } from './firebase'
+import {
+  get,
+  ref,
+  set,
+  update,
+  remove
+} from 'firebase/database'
+import { auth, db } from './firebase'
+import { handleLocalMockRequest } from './mockStore'
 import type { Perfil } from '../data/types'
 
-async function endpointPerfil() {
-  await auth.authStateReady()
-  return `/perfil/${encodeURIComponent(auth.currentUser?.uid ?? 'usr-1')}`
+function obterCaminhoPerfil(): string | null {
+  const usuario = auth.currentUser
+  if (!usuario) return null
+  return `usuarios/${usuario.uid}/perfil`
 }
 
 /**
- * Obtém os dados do perfil através da API Java (Spring Boot MVC).
- * Endpoint: GET /api/perfil/{uid}
+ * Busca os dados do perfil do usuário autenticado no Firebase Realtime Database.
  */
 export async function buscarPerfil(): Promise<Perfil | null> {
-  try {
-    return await apiFetch<Perfil | null>(await endpointPerfil())
-  } catch (error) {
-    if (error instanceof ApiError && error.status === 404) return null
-    throw error
+  const caminho = obterCaminhoPerfil()
+  if (!caminho || !auth.currentUser) {
+    return handleLocalMockRequest<Perfil | null>('/perfil', { method: 'GET' })
   }
+
+  const referencia = ref(db, caminho)
+  const snapshot = await get(referencia)
+
+  if (!snapshot.exists()) {
+    const usuarioAuth = auth.currentUser
+    if (!usuarioAuth) return null
+
+    return {
+      id: usuarioAuth.uid,
+      nome: usuarioAuth.displayName ?? '',
+      email: usuarioAuth.email ?? '',
+      iniciais: usuarioAuth.displayName
+        ? usuarioAuth.displayName
+            .split(/\s+/)
+            .map((p) => p[0])
+            .slice(0, 2)
+            .join('')
+            .toUpperCase()
+        : 'U'
+    }
+  }
+
+  return snapshot.val() as Perfil
 }
 
 /**
- * Cria os dados do perfil via API Java.
- * Endpoint: POST /api/perfil/{uid}
+ * Cria ou inicializa os dados do perfil do usuário autenticado no Firebase.
  */
 export async function criarPerfil(dados: Omit<Perfil, 'id'>): Promise<Perfil> {
-  return apiFetch<Perfil>(await endpointPerfil(), {
-    method: 'POST',
-    body: JSON.stringify(dados)
-  })
+  const usuario = auth.currentUser
+  if (!usuario) {
+    return handleLocalMockRequest<Perfil>('/perfil', {
+      method: 'POST',
+      body: JSON.stringify(dados)
+    })
+  }
+
+  const perfil: Perfil = {
+    ...dados,
+    id: usuario.uid,
+    email: dados.email || usuario.email || ''
+  }
+
+  const referencia = ref(db, `usuarios/${usuario.uid}/perfil`)
+  await set(referencia, perfil)
+  return perfil
 }
 
 /**
- * Atualiza os campos do perfil do usuário via API Java.
- * Endpoint: PUT /api/perfil/{uid}
+ * Atualiza os campos do perfil do usuário autenticado no Firebase.
  */
 export async function atualizarPerfil(dados: Partial<Perfil>): Promise<void> {
-  await apiFetch<Perfil>(await endpointPerfil(), {
-    method: 'PUT',
-    body: JSON.stringify(dados)
-  })
+  const usuario = auth.currentUser
+  if (!usuario) {
+    await handleLocalMockRequest<void>('/perfil', {
+      method: 'PUT',
+      body: JSON.stringify(dados)
+    })
+    return
+  }
+
+  const referencia = ref(db, `usuarios/${usuario.uid}/perfil`)
+  const snapshot = await get(referencia)
+
+  if (!snapshot.exists()) {
+    await criarPerfil({
+      nome: dados.nome ?? '',
+      email: dados.email ?? usuario.email ?? '',
+      ...dados
+    })
+    return
+  }
+
+  await update(referencia, dados)
 }
 
 /**
- * Exclui os dados do perfil na API, mantendo a conta de acesso.
- * Endpoint: DELETE /api/perfil/{uid}
+ * Exclui os dados do perfil do usuário autenticado no Firebase Realtime Database.
  */
 export async function excluirPerfil(): Promise<void> {
-  await apiFetch<void>(await endpointPerfil(), {
-    method: 'DELETE'
-  })
+  const caminho = obterCaminhoPerfil()
+  if (!caminho) {
+    await handleLocalMockRequest<void>('/perfil', {
+      method: 'DELETE'
+    })
+    return
+  }
+
+  const referencia = ref(db, caminho)
+  await remove(referencia)
 }
