@@ -13,6 +13,11 @@
   --color-danger: #d64545;
   --color-danger-hover: #bb3535;
   --color-link: #3973e6;
+  --color-success: #1f9d55;
+  --color-warning: #d98300;
+  --color-info: #2563eb;
+
+  --focus-ring: 0 0 0 3px rgba(249, 197, 2, 0.35);
 
   --color-text: #000000;
   --color-text-muted: #7f7c70;

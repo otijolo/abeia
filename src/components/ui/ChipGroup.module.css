@@ -10,11 +10,16 @@
   background: var(--color-chip);
   font-size: 14.5px;
   white-space: nowrap;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  user-select: none;
 }
 
 .chip:hover {
   background: #e4e4e4;
+}
+
+.chip:active {
+  transform: scale(0.97);
 }
 
 .chip[aria-checked='true'] {

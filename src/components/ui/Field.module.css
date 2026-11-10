@@ -1,18 +1,47 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
   min-width: 0;
+  width: 100%;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .label {
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13.5px;
+  font-weight: 500;
   color: var(--color-label);
+}
+
+.requiredStar {
+  color: var(--color-danger);
+  font-weight: 700;
+}
+
+.optionalBadge {
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .control {
   width: 100%;
-  height: 45px;
+  height: 46px;
   padding: 0 16px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -20,32 +49,92 @@
   font-size: 14px;
   color: var(--color-text);
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .control::placeholder {
   color: var(--color-placeholder);
+  opacity: 0.85;
+}
+
+.control:hover:not(:disabled) {
+  border-color: #cacaca;
 }
 
 .control:focus {
   border-color: var(--color-primary);
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
+  box-shadow: var(--focus-ring);
+}
+
+.control:disabled {
+  background: #f1f1ef;
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 
 .control[type='password'] {
   letter-spacing: 0.12em;
 }
 
+.hasStart {
+  padding-left: 40px;
+}
+
+.hasEnd {
+  padding-right: 42px;
+}
+
+.startAdornment {
+  position: absolute;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--color-text-muted);
+}
+
+.endAdornment {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.passwordToggle:hover {
+  color: var(--color-text);
+  background: rgba(0, 0, 0, 0.05);
+}
+
 .textarea {
-  height: 88px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  resize: none;
+  height: 92px;
+  padding: 12px 16px;
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.4;
 }
 
 .selectWrap {
   position: relative;
+  width: 100%;
 }
 
 .select {
@@ -54,10 +143,48 @@
   cursor: pointer;
 }
 
+.placeholderActive {
+  color: var(--color-placeholder);
+}
+
+.select option {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
 .selectIcon {
   position: absolute;
   right: 14px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
+  color: var(--color-text-muted);
+  transition: transform 0.2s ease;
+}
+
+.selectWrap:focus-within .selectIcon {
+  color: var(--color-text);
+}
+
+/* Erros e mensagens */
+.controlError {
+  border-color: var(--color-danger) !important;
+}
+
+.controlError:focus {
+  box-shadow: 0 0 0 3px rgba(214, 69, 69, 0.25) !important;
+}
+
+.errorMessage {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--color-danger);
+  line-height: 1.3;
+}
+
+.helperMessage {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.3;
 }
