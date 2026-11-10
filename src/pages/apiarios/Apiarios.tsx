@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { ChipGroup } from '../../components/ui/ChipGroup'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
 import { SearchBar } from '../../components/ui/SearchBar'
@@ -71,36 +72,45 @@ export function Apiarios() {
 
   return (
     <Screen title="Apiários" nav="apiarios">
-      <div className={styles.filters}>
-        <SearchBar
-          placeholder="Buscar apiários..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-        />
+      <div className={styles.topBar}>
+        <div className={styles.filters}>
+          <SearchBar
+            placeholder="Buscar apiários..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
 
-        <ChipGroup
-          label="Filtrar por status"
-          options={statusFilterOptions}
-          value={filtro}
-          onChange={setFiltro}
-        />
+          <ChipGroup
+            label="Filtrar por status"
+            options={statusFilterOptions}
+            value={filtro}
+            onChange={setFiltro}
+          />
+        </div>
+
+        <div className={styles.topActions}>
+          <Button to="/apiarios/novo" className={styles.topActionBtn}>
+            + Novo Apiário
+          </Button>
+        </div>
       </div>
 
       <Stack gap={37} className={styles.results}>
         <ListStack gap={15}>
           {carregando && (
-            <p>Carregando apiários...</p>
+            <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '24px 0' }}>
+              Carregando apiários...
+            </p>
           )}
 
           {!carregando && erro && (
-            <div role="alert">
-              <p>Não foi possível carregar os apiários.</p>
-              <p>{erro}</p>
-              <Button
-                onClick={() => window.location.reload()}
-              >
-                Tentar novamente
-              </Button>
+            <div>
+              <AlertBanner variant="error" title="Erro ao carregar apiários">
+                {erro}
+              </AlertBanner>
+              <div style={{ marginTop: 12 }}>
+                <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
+              </div>
             </div>
           )}
 
@@ -115,9 +125,19 @@ export function Apiarios() {
           ))}
 
           {!carregando && !erro && lista.length === 0 && (
-            <EmptyState>
-              Nenhum apiário encontrado.
-            </EmptyState>
+            <EmptyState
+              title={busca || filtro !== 'todos' ? 'Nenhum apiário encontrado' : 'Nenhum apiário cadastrado'}
+              description={
+                busca || filtro !== 'todos'
+                  ? 'Não encontramos nenhum apiário correspondente aos filtros selecionados.'
+                  : 'Cadastre seu primeiro apiário para começar a gerenciar suas colmeias e produções.'
+              }
+              action={
+                busca || filtro !== 'todos'
+                  ? { label: 'Limpar filtros', onClick: () => { setBusca(''); setFiltro('todos') } }
+                  : { label: '+ Novo Apiário', to: '/apiarios/novo' }
+              }
+            />
           )}
         </ListStack>
 

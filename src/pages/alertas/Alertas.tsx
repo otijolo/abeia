@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Screen } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { ChipGroup } from '../../components/ui/ChipGroup'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
+import { AlertCircleIcon } from '../../components/icons'
 import { listarAlertas } from '../../services/alertaService'
 import type { Alerta, AlertaEstado } from '../../data/types'
+import styles from '../shared/ListPage.module.css'
 
 const abas: { value: AlertaEstado; label: string }[] = [
   { value: 'ativo', label: 'Ativos' },
@@ -63,18 +66,34 @@ export function Alertas() {
 
   return (
     <Screen title="Alertas" nav="alertas">
-      <div style={{ margin: '-8px -5px 0' }}>
-        <ChipGroup label="Situação dos alertas" options={abas} value={aba} onChange={setAba} gap={12} size="lg" />
+      <div className={styles.topBar}>
+        <div style={{ maxWidth: 440 }}>
+          <ChipGroup label="Situação dos alertas" options={abas} value={aba} onChange={setAba} gap={12} size="lg" />
+        </div>
+
+        <div className={styles.topActions}>
+          <Button to="/alertas/novo" className={styles.topActionBtn}>
+            + Novo Alerta
+          </Button>
+        </div>
       </div>
+
       <div style={{ marginTop: 26 }}>
         <ListStack gap={15}>
-          {carregando && <p>Carregando alertas...</p>}
+          {carregando && (
+            <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '24px 0' }}>
+              Carregando alertas...
+            </p>
+          )}
 
           {!carregando && erro && (
-            <div role="alert">
-              <p>Não foi possível carregar os alertas.</p>
-              <p>{erro}</p>
-              <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
+            <div>
+              <AlertBanner variant="error" title="Erro ao carregar alertas">
+                {erro}
+              </AlertBanner>
+              <div style={{ marginTop: 12 }}>
+                <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
+              </div>
             </div>
           )}
 
@@ -89,12 +108,33 @@ export function Alertas() {
                   status={a.status}
                 />
               ))}
-              {lista.length === 0 && <EmptyState>Nenhum alerta nesta categoria.</EmptyState>}
+              {lista.length === 0 && (
+                <EmptyState
+                  icon={<AlertCircleIcon size={24} />}
+                  title={
+                    aba === 'ativo'
+                      ? 'Nenhum alerta ativo'
+                      : aba === 'resolvido'
+                        ? 'Nenhum alerta resolvido'
+                        : 'Nenhum alerta ignorado'
+                  }
+                  description={
+                    aba === 'ativo'
+                      ? 'Tudo calmo no apiário! Não há ocorrências ou alertas pendentes no momento.'
+                      : `Não há alertas classificados como ${aba}s no histórico.`
+                  }
+                  action={
+                    aba === 'ativo'
+                      ? { label: '+ Novo Alerta', to: '/alertas/novo' }
+                      : undefined
+                  }
+                />
+              )}
             </>
           )}
         </ListStack>
 
-        <div style={{ marginTop: 24, paddingBottom: 16 }}>
+        <div className={styles.cta}>
           <Button to="/alertas/novo">+ Novo Alerta</Button>
         </div>
       </div>

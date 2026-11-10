@@ -59,3 +59,17 @@
   display: flex;
   flex-direction: column;
 }
+
+@media (min-width: 840px) {
+  .stack {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px !important;
+  }
+}
+
+@media (min-width: 840px) and (max-width: 1020px) {
+  .stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

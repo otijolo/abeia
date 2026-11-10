@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { ChipGroup } from '../../components/ui/ChipGroup'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { FilterDropdown } from '../../components/ui/FilterDropdown'
@@ -113,22 +114,30 @@ export function Colmeias() {
 
   return (
     <Screen title="Colmeias" nav="colmeias">
-      <div className={styles.filters}>
-        <SearchBar
-          placeholder="Buscar colmeias..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-        />
+      <div className={styles.topBar}>
+        <div className={styles.filters}>
+          <SearchBar
+            placeholder="Buscar colmeias..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
 
-        <ChipGroup
-          label="Filtrar por status"
-          options={statusFilterOptions}
-          value={filtro}
-          onChange={setFiltro}
-        />
+          <ChipGroup
+            label="Filtrar por status"
+            options={statusFilterOptions}
+            value={filtro}
+            onChange={setFiltro}
+          />
+        </div>
+
+        <div className={styles.topActions}>
+          <Button to="/colmeias/nova" className={styles.topActionBtn}>
+            + Nova Colmeia
+          </Button>
+        </div>
       </div>
 
-      <div style={{ padding: '12px 6px 0' }}>
+      <div style={{ padding: '4px 0 0' }}>
         <FilterDropdown
           label="Apiários"
           options={opcoesApiarios}
@@ -139,17 +148,20 @@ export function Colmeias() {
 
       <Stack gap={37} className={styles.results}>
         <ListStack gap={15}>
-          {carregando && <p>Carregando colmeias...</p>}
+          {carregando && (
+            <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '24px 0' }}>
+              Carregando colmeias...
+            </p>
+          )}
 
           {!carregando && erro && (
-            <div role="alert">
-              <p>Não foi possível carregar as colmeias.</p>
-              <p>{erro}</p>
-              <Button
-                onClick={() => window.location.reload()}
-              >
-                Tentar novamente
-              </Button>
+            <div>
+              <AlertBanner variant="error" title="Erro ao carregar colmeias">
+                {erro}
+              </AlertBanner>
+              <div style={{ marginTop: 12 }}>
+                <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
+              </div>
             </div>
           )}
 
@@ -170,9 +182,26 @@ export function Colmeias() {
           })}
 
           {!carregando && !erro && lista.length === 0 && (
-            <EmptyState>
-              Nenhuma colmeia encontrada.
-            </EmptyState>
+            <EmptyState
+              title={busca || filtro !== 'todos' || apiarioSelecionado ? 'Nenhuma colmeia encontrada' : 'Nenhuma colmeia cadastrada'}
+              description={
+                busca || filtro !== 'todos' || apiarioSelecionado
+                  ? 'Nenhuma colmeia corresponde aos filtros ativos. Tente limpar ou trocar os filtros.'
+                  : 'Cadastre sua primeira colmeia em um apiário para acompanhar inspeções e saúde.'
+              }
+              action={
+                busca || filtro !== 'todos' || apiarioSelecionado
+                  ? {
+                      label: 'Limpar filtros',
+                      onClick: () => {
+                        setBusca('')
+                        setFiltro('todos')
+                        setApiarioSelecionado('')
+                      }
+                    }
+                  : { label: '+ Nova Colmeia', to: '/colmeias/nova' }
+              }
+            />
           )}
         </ListStack>
 
