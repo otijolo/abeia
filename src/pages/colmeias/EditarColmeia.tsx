@@ -4,8 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { Screen } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
-
-import {listarApiarios } from '../../services/apiarioService'
+import { AlertBanner } from '../../components/ui/AlertBanner'
+import { listarApiarios } from '../../services/apiarioService'
 import {
   atualizarColmeia,
   buscarColmeia
@@ -112,10 +112,12 @@ export function EditarColmeia() {
   if (erro && !colmeia) {
     return (
       <Screen title="Editar Colmeia" padding="form">
-        <p role="alert">{erro}</p>
-        <Button onClick={() => navigate('/colmeias')}>
-          Voltar para colmeias
-        </Button>
+        <AlertBanner variant="error">{erro}</AlertBanner>
+        <div style={{ marginTop: 16 }}>
+          <Button onClick={() => navigate('/colmeias')}>
+            Voltar para colmeias
+          </Button>
+        </div>
       </Screen>
     )
   }
@@ -127,17 +129,23 @@ export function EditarColmeia() {
   if (apiarios.length === 0) {
     return (
       <Screen title="Editar Colmeia" padding="form">
-        <p role="alert">
+        <AlertBanner variant="warning">
           Não foi possível encontrar apiários para associar à colmeia.
-        </p>
-        <Button to="/apiarios/novo">Cadastrar apiário</Button>
+        </AlertBanner>
+        <div style={{ marginTop: 16 }}>
+          <Button to="/apiarios/novo">Cadastrar apiário</Button>
+        </div>
       </Screen>
     )
   }
 
   return (
     <Screen title="Editar Colmeia" padding="form">
-      {erro && <p role="alert">{erro}</p>}
+      {erro && (
+        <div style={{ marginBottom: 16 }}>
+          <AlertBanner variant="error">{erro}</AlertBanner>
+        </div>
+      )}
 
       <ColmeiaForm
         key={colmeia.id}

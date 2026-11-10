@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { TextField } from '../../components/ui/Field'
 import { auth } from '../../services/firebase'
 
@@ -51,7 +52,7 @@ export function AlterarSenha() {
     <Screen title="Alterar senha" avatar={false} padding="form">
       <form onSubmit={handleSubmit} style={{ paddingTop: 11 }}>
         <Stack gap={20}>
-          {erro && <p role="alert">{erro}</p>}
+          {erro && <AlertBanner variant="error">{erro}</AlertBanner>}
           <TextField label="Senha atual" type="password" placeholder="••••••••" autoComplete="current-password"
             value={atual} onChange={(e) => setAtual(e.target.value)} required disabled={salvando} />
           <TextField label="Nova senha" type="password" placeholder="••••••••" autoComplete="new-password"

@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Screen } from '../../components/layout/Screen'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { ApiarioForm } from './ApiarioForm'
 import { criarApiario } from '../../services/apiarioService'
 
@@ -35,9 +36,11 @@ export function NovoApiario() {
   return (
     <Screen title="Novo Apiário" padding="form">
       {erro && (
-        <p role="alert">
-          Não foi possível cadastrar o apiário: {erro}
-        </p>
+        <div style={{ marginBottom: 16 }}>
+          <AlertBanner variant="error" title="Erro no cadastro">
+            {erro}
+          </AlertBanner>
+        </div>
       )}
 
       <ApiarioForm

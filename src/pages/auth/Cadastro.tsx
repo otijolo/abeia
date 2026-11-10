@@ -5,6 +5,7 @@ import { auth } from '../../services/firebase'
 import { criarPerfil } from '../../services/perfilService'
 import { AuthLayout } from '../../components/layout/AuthLayout'
 import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { TextField } from '../../components/ui/Field'
 import { TextLink } from '../../components/ui/TextLink'
 
@@ -94,15 +95,9 @@ export function Cadastro() {
       actions={
         <>
           {erro && (
-            <p
-              style={{
-                color: 'red',
-                fontSize: '14px',
-                marginBottom: '10px'
-              }}
-            >
-              {erro}
-            </p>
+            <div style={{ marginBottom: 14 }}>
+              <AlertBanner variant="error">{erro}</AlertBanner>
+            </div>
           )}
 
           <Button type="submit" disabled={carregando}>

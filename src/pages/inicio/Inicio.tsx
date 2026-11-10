@@ -112,7 +112,7 @@ export function Inicio() {
         </hgroup>
 
         <div className={styles.stats}>
-          <Columns gap={20} rowGap={16}>
+          <Columns gap={20} rowGap={16} desktopCount={4}>
             <StatCard
               to="/apiarios"
               icon={<DesignIcon name="resumo-apiarios" />}
@@ -163,7 +163,10 @@ export function Inicio() {
                 )
               })
             ) : (
-              <EmptyState>Nenhuma inspeção pendente no momento.</EmptyState>
+              <EmptyState
+                title="Tudo em dia!"
+                description="Não há colmeias com inspeções pendentes ou sob atenção no momento."
+              />
             )}
           </ListStack>
         </section>

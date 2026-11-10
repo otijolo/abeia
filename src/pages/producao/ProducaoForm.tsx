@@ -1,12 +1,15 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { SelectField, TextArea, TextField } from '../../components/ui/Field'
+import { CalendarIcon } from '../../components/icons'
 import { opcoes } from '../../data/mock'
 import { listarColmeias } from '../../services/colmeiaService'
+import { listarApiarios } from '../../services/apiarioService'
 import { atualizarProducao, buscarProducao, criarProducao } from '../../services/producaoService'
-import type { Colmeia, Producao } from '../../data/types'
+import type { Apiario, Colmeia, Producao } from '../../data/types'
 import { dataDaProducao } from '../../data/producao'
 import { formatarData } from '../../data/datas'
 import { NotFound } from '../NotFound'
@@ -23,10 +26,15 @@ function obterDataFormatada(): string {
 /** Formulário compartilhado pelo registro e edição de colheitas. */
 export function ProducaoForm() {
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+
+  const colmeiaParam = searchParams.get('colmeiaId') ?? ''
+
   const [colmeias, setColmeias] = useState<Colmeia[]>([])
+  const [apiarios, setApiarios] = useState<Apiario[]>([])
   const [data, setData] = useState(obterDataFormatada())
-  const [colmeiaId, setColmeiaId] = useState('')
+  const [colmeiaId, setColmeiaId] = useState(colmeiaParam)
   const [quantidade, setQuantidade] = useState('')
   const [unidade, setUnidade] = useState('kg')
   const [observacoes, setObservacoes] = useState('')
@@ -41,14 +49,17 @@ export function ProducaoForm() {
     setErro('')
     async function carregarDados() {
       try {
-        const [dados, encontrada] = await Promise.all([
-          listarColmeias(), id ? buscarProducao(id) : Promise.resolve(null),
+        const [dadosColmeias, dadosApiarios, encontrada] = await Promise.all([
+          listarColmeias(),
+          listarApiarios().catch(() => []),
+          id ? buscarProducao(id) : Promise.resolve(null),
         ])
         if (!ativo) return
-        setColmeias(dados)
+        setColmeias(dadosColmeias)
+        setApiarios(dadosApiarios)
         setProducao(encontrada)
         setData(formatarData(encontrada?.data ?? obterDataFormatada()))
-        setColmeiaId(encontrada?.colmeiaId ?? '')
+        setColmeiaId(encontrada?.colmeiaId ?? colmeiaParam)
         setQuantidade(encontrada ? String(encontrada.quantidade).replace('.', ',') : '')
         setUnidade(encontrada?.unidade ?? 'kg')
         setObservacoes(encontrada?.observacoes ?? '')
@@ -60,7 +71,7 @@ export function ProducaoForm() {
     }
     void carregarDados()
     return () => { ativo = false }
-  }, [id])
+  }, [id, colmeiaParam])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -68,17 +79,18 @@ export function ProducaoForm() {
     setErro('')
 
     if (!colmeiaId) {
-      setErro('Selecione uma colmeia.')
+      setErro('Selecione uma colmeia para registrar a produção.')
       return
     }
 
     if (!dataDaProducao(data.trim())) {
-      setErro('Informe uma data válida no formato dia/mês/ano.')
+      setErro('Informe uma data válida no formato dia/mês/ano (DD/MM/AAAA).')
       return
     }
+
     const valorQuantidade = Number(quantidade.trim().replace(',', '.'))
     if (!Number.isFinite(valorQuantidade) || valorQuantidade <= 0) {
-      setErro('Informe uma quantidade válida.')
+      setErro('Informe uma quantidade produzida válida (maior que zero).')
       return
     }
 
@@ -102,37 +114,83 @@ export function ProducaoForm() {
     }
   }
 
+  const apiarioPorId = new Map(apiarios.map((a) => [a.id, a.nome]))
+
+  const opcoesColmeia = colmeias.map((c) => {
+    const nomeApiario = apiarioPorId.get(c.apiarioId)
+    return {
+      value: c.id,
+      label: nomeApiario ? `${c.nome} • ${nomeApiario}` : c.nome
+    }
+  })
+
   const tituloTela = id ? 'Editar Produção' : 'Registrar Produção'
-  if (carregando) return <Screen title={tituloTela} avatar={false}><p>Carregando dados...</p></Screen>
-  if (erro && (id ? !producao : colmeias.length === 0)) {
-    return <Screen title={tituloTela} avatar={false}><p role="alert">{erro}</p>
-      <Button onClick={() => window.location.reload()}>Tentar novamente</Button></Screen>
+
+  if (carregando) {
+    return (
+      <Screen title={tituloTela} avatar={false}>
+        <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '32px 0' }}>
+          Carregando dados...
+        </p>
+      </Screen>
+    )
   }
+
+  if (erro && (id ? !producao : colmeias.length === 0)) {
+    return (
+      <Screen title={tituloTela} avatar={false}>
+        <AlertBanner variant="error">{erro}</AlertBanner>
+        <div style={{ marginTop: 16 }}>
+          <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
+        </div>
+      </Screen>
+    )
+  }
+
   if (id && !producao) return <NotFound />
 
   return (
     <Screen title={tituloTela} avatar={false} padding="form" backTo="/producao">
       <form onSubmit={handleSubmit}>
         <Stack gap={20}>
-          {erro && (
-            <p role="alert" style={{ color: '#d32f2f', fontSize: '14px', margin: 0 }}>
-              {erro}
-            </p>
-          )}
+          {erro && <AlertBanner variant="error">{erro}</AlertBanner>}
 
           <fieldset disabled={salvando || colmeias.length === 0} className={styles.fields}>
-            {colmeias.length === 0 && <p>Cadastre uma colmeia antes de registrar uma produção.</p>}
+            {colmeias.length === 0 && (
+              <AlertBanner variant="warning">
+                Cadastre pelo menos uma colmeia antes de registrar colheitas de mel.
+              </AlertBanner>
+            )}
+
             <TextField
-              label="Data"
-              placeholder="Ex: 26/08/1980"
+              label="Data da colheita"
+              placeholder="DD/MM/AAAA"
               value={data}
               onChange={(e) => setData(e.target.value)}
               required
+              startAdornment={<CalendarIcon size={16} />}
+              endAdornment={
+                <button
+                  type="button"
+                  onClick={() => setData(obterDataFormatada())}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--color-link)',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    padding: '2px 4px'
+                  }}
+                >
+                  Hoje
+                </button>
+              }
             />
 
             <SelectField
-              label="Colmeia"
-              options={colmeias.map((c) => ({ value: c.id, label: c.nome }))}
+              label="Colmeia de origem"
+              options={opcoesColmeia}
               value={colmeiaId}
               onChange={(e) => setColmeiaId(e.target.value)}
               placeholder="Selecione a colmeia..."
@@ -141,7 +199,7 @@ export function ProducaoForm() {
 
             <div className={styles.row}>
               <TextField
-                label="Quantidade produzida"
+                label="Quantidade colhida"
                 placeholder="Ex: 12,5"
                 inputMode="decimal"
                 value={quantidade}
@@ -157,16 +215,17 @@ export function ProducaoForm() {
             </div>
 
             <TextArea
-              label="Observações"
-              placeholder="Ex: Mel claro, colheita sem intercorrências."
+              label="Observações da colheita"
+              placeholder="Ex: Mel claro, excelente viscosidade, favos operculados."
               value={observacoes}
               onChange={(e) => setObservacoes(e.target.value)}
+              optional
             />
           </fieldset>
 
           <div style={{ marginTop: 16 }}>
             <Button type="submit" disabled={salvando || colmeias.length === 0}>
-              {salvando ? 'Salvando...' : id ? 'Salvar alterações' : 'Registrar'}
+              {salvando ? 'Salvando...' : id ? 'Salvar alterações' : 'Registrar colheita'}
             </Button>
           </div>
         </Stack>

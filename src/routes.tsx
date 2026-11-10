@@ -1,5 +1,6 @@
 import { createBrowserRouter, Outlet, ScrollRestoration } from 'react-router-dom'
 import { AppFrame } from './components/layout/AppFrame'
+import { RootErrorBoundary } from './pages/RootErrorBoundary'
 import { AlertaDetalhes } from './pages/alertas/AlertaDetalhes'
 import { Alertas } from './pages/alertas/Alertas'
 import { NovoAlerta } from './pages/alertas/NovoAlerta'
@@ -42,6 +43,7 @@ function Root() {
 export const router = createBrowserRouter([
   {
     element: <Root />,
+    errorElement: <RootErrorBoundary />,
     children: [
       // Autenticação
       { path: '/', element: <Splash /> },

@@ -1,7 +1,7 @@
-
 import { useState, type FormEvent } from 'react'
-import { Stack } from '../../components/layout/Screen'
+import { Columns, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { SelectField, TextArea, TextField } from '../../components/ui/Field'
 import { opcoes } from '../../data/mock'
 import type { Apiario, Colmeia } from '../../data/types'
@@ -15,6 +15,14 @@ interface Props {
   onSubmit: (dados: Omit<Colmeia, 'id'>) => void | Promise<void>
 }
 
+function obterDataHojeBR() {
+  const agora = new Date()
+  const dia = String(agora.getDate()).padStart(2, '0')
+  const mes = String(agora.getMonth() + 1).padStart(2, '0')
+  const ano = agora.getFullYear()
+  return `${dia}/${mes}/${ano}`
+}
+
 /** Formulário compartilhado entre "Nova Colmeia" e "Editar Colmeia" */
 export function ColmeiaForm({
   colmeia,
@@ -25,19 +33,11 @@ export function ColmeiaForm({
   onSubmit
 }: Props) {
   const [nome, setNome] = useState(colmeia?.nome ?? '')
-
-  const [apiarioId, setApiarioId] = useState(
-    colmeia?.apiarioId ?? apiarioInicialId
-  )
-
-  const [tipo, setTipo] = useState(colmeia?.tipo ?? '')
+  const [apiarioId, setApiarioId] = useState(colmeia?.apiarioId ?? apiarioInicialId)
+  const [tipo, setTipo] = useState(colmeia?.tipo ?? 'Langstroth')
   const [posicao, setPosicao] = useState(colmeia?.posicao ?? '')
-  const [instaladaEm, setInstaladaEm] = useState(
-    colmeia?.instaladaEm ?? ''
-  )
-  const [observacoes, setObservacoes] = useState(
-    colmeia?.observacoes ?? ''
-  )
+  const [instaladaEm, setInstaladaEm] = useState(colmeia?.instaladaEm ?? '')
+  const [observacoes, setObservacoes] = useState(colmeia?.observacoes ?? '')
   const [erro, setErro] = useState('')
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -49,12 +49,10 @@ export function ColmeiaForm({
       return
     }
 
-    const apiarioSelecionado = apiarios.find(
-      (apiario) => apiario.id === apiarioId
-    )
+    const apiarioSelecionado = apiarios.find((apiario) => apiario.id === apiarioId)
 
     if (!apiarioSelecionado) {
-      setErro('Selecione um apiário válido.')
+      setErro('Selecione um apiário válido para a colmeia.')
       return
     }
 
@@ -69,7 +67,7 @@ export function ColmeiaForm({
         apiarioId: apiarioSelecionado.id,
         tipo,
         posicao: posicao.trim(),
-        instaladaEm: instaladaEm.trim(),
+        instaladaEm: instaladaEm.trim() || obterDataHojeBR(),
         observacoes: observacoes.trim(),
         status: colmeia?.status ?? 'normal',
         prazoInspecao: colmeia?.prazoInspecao ?? 'Não definida',
@@ -84,11 +82,18 @@ export function ColmeiaForm({
     }
   }
 
+  const opcoesApiario = apiarios.map((a) => ({
+    value: a.id,
+    label: `${a.nome} (${a.cidade} - ${a.uf})`
+  }))
+
   return (
     <form onSubmit={handleSubmit}>
       <Stack gap={20}>
+        {erro && <AlertBanner variant="error">{erro}</AlertBanner>}
+
         <TextField
-          label="Identificação"
+          label="Identificação da colmeia"
           placeholder="Ex: Colmeia P03"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
@@ -98,55 +103,73 @@ export function ColmeiaForm({
 
         <SelectField
           label="Apiário"
-          options={apiarios.map((apiario) => apiario.nome)}
-          value={apiarios.find((apiario) => apiario.id === apiarioId)?.nome ?? ''}
-          onChange={(e) => {
-            const selecionado = apiarios.find(
-              (apiario) => apiario.nome === e.target.value
-            )
-
-            setApiarioId(selecionado?.id ?? '')
-          }}
+          options={opcoesApiario}
+          value={apiarioId}
+          onChange={(e) => setApiarioId(e.target.value)}
+          placeholder="Selecione o apiário..."
           required
           disabled={desabilitado}
         />
 
         <SelectField
           label="Tipo de colmeia"
-          options={tipo && !opcoes.tipoColmeia.includes(tipo)
-            ? [tipo, ...opcoes.tipoColmeia] : opcoes.tipoColmeia}
+          options={
+            tipo && !opcoes.tipoColmeia.includes(tipo)
+              ? [tipo, ...opcoes.tipoColmeia]
+              : opcoes.tipoColmeia
+          }
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
           required
           disabled={desabilitado}
         />
 
-        <TextField
-          label="Posição"
-          placeholder="Ex: 07"
-          value={posicao}
-          onChange={(e) => setPosicao(e.target.value)}
-          inputMode="numeric"
-          disabled={desabilitado}
-        />
+        <Columns gap={12}>
+          <TextField
+            label="Posição"
+            placeholder="Ex: 07"
+            value={posicao}
+            onChange={(e) => setPosicao(e.target.value)}
+            inputMode="numeric"
+            disabled={desabilitado}
+            optional
+          />
 
-        <TextField
-          label="Data de instalação"
-          placeholder="Ex: 03/10/2026"
-          value={instaladaEm}
-          onChange={(e) => setInstaladaEm(e.target.value)}
-          disabled={desabilitado}
-        />
+          <TextField
+            label="Data de instalação"
+            placeholder="DD/MM/AAAA"
+            value={instaladaEm}
+            onChange={(e) => setInstaladaEm(e.target.value)}
+            disabled={desabilitado}
+            optional
+            endAdornment={
+              <button
+                type="button"
+                onClick={() => setInstaladaEm(obterDataHojeBR())}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--color-link)',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  padding: '2px 4px'
+                }}
+              >
+                Hoje
+              </button>
+            }
+          />
+        </Columns>
 
         <TextArea
           label="Observações"
-          placeholder="Ex: Próxima à linha de árvores"
+          placeholder="Ex: Próxima à linha de árvores, rainha jovem introduzida"
           value={observacoes}
           onChange={(e) => setObservacoes(e.target.value)}
           disabled={desabilitado}
+          optional
         />
-
-        {erro && <p role="alert">{erro}</p>}
 
         <div style={{ marginTop: 12 }}>
           <Button type="submit" disabled={desabilitado}>

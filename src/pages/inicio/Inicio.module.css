@@ -37,3 +37,23 @@
 @media (prefers-reduced-motion: reduce) {
   .trend { animation: none; }
 }
+
+@media (min-width: 840px) {
+  .greeting {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+  .greeting h1 {
+    font-size: 28px;
+  }
+  .greeting p {
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .stats {
+    margin-top: 20px;
+  }
+  .section {
+    margin-top: 28px;
+  }
+}

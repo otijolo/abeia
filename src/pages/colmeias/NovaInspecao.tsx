@@ -6,6 +6,7 @@ import { Columns, Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { Checkbox } from '../../components/ui/Checkbox'
 import { ChipGroup } from '../../components/ui/ChipGroup'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { Field, TextArea, TextField } from '../../components/ui/Field'
 import { MultiSelectField } from '../../components/ui/MultiSelectField'
 import { Stepper } from '../../components/ui/Stepper'
@@ -200,9 +201,10 @@ export function NovaInspecao() {
             value={observacoes}
             onChange={(e) => setObservacoes(e.target.value)}
             disabled={salvando}
+            optional
           />
 
-          {erro && <p role="alert">{erro}</p>}
+          {erro && <AlertBanner variant="error">{erro}</AlertBanner>}
 
           <div style={{ marginTop: 8 }}>
             <Button type="submit" disabled={salvando}>

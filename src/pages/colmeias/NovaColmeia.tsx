@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Screen } from '../../components/layout/Screen'
-import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
+import { EmptyState } from '../../components/ui/EmptyState'
 import { listarApiarios } from '../../services/apiarioService'
 import { criarColmeia } from '../../services/colmeiaService'
 import type { Apiario, Colmeia } from '../../data/types'
@@ -82,20 +83,25 @@ export function NovaColmeia() {
 
   return (
     <Screen title="Nova Colmeia" padding="form">
-      {erro && <p role="alert">{erro}</p>}
+      {erro && (
+        <div style={{ marginBottom: 16 }}>
+          <AlertBanner variant="error">{erro}</AlertBanner>
+        </div>
+      )}
 
       {carregando ? (
-        <p>Carregando apiários...</p>
+        <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '24px 0' }}>
+          Carregando apiários...
+        </p>
       ) : apiarios.length === 0 ? (
-        <div>
-          <p>
-            Cadastre um apiário antes de adicionar uma colmeia.
-          </p>
-
-          <Button to="/apiarios/novo">
-            Cadastrar apiário
-          </Button>
-        </div>
+        <EmptyState
+          title="Nenhum apiário cadastrado"
+          description="Para cadastrar uma colmeia, você precisa ter pelo menos um apiário para vinculá-la."
+          action={{
+            label: '+ Cadastrar apiário',
+            to: '/apiarios/novo'
+          }}
+        />
       ) : (
         <ColmeiaForm
           apiarios={apiarios}

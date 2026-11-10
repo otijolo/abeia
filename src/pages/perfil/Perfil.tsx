@@ -8,6 +8,7 @@ import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { Divider } from '../../components/ui/Divider'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { TextField } from '../../components/ui/Field'
 import { auth } from '../../services/firebase'
 import { buscarPerfil, criarPerfil, atualizarPerfil, excluirPerfil } from '../../services/perfilService'
@@ -15,6 +16,14 @@ import styles from './Perfil.module.css'
 
 function iniciaisDoNome(nome: string) {
   return nome.trim().split(/\s+/).slice(0, 2).map((parte) => parte[0] || '').join('').toUpperCase()
+}
+
+function formatarTelefone(valor: string) {
+  const digitos = valor.replace(/\D/g, '').slice(0, 11)
+  if (digitos.length <= 2) return digitos
+  if (digitos.length <= 6) return `(${digitos.slice(0, 2)}) ${digitos.slice(2)}`
+  if (digitos.length <= 10) return `(${digitos.slice(0, 2)}) ${digitos.slice(2, 6)}-${digitos.slice(6)}`
+  return `(${digitos.slice(0, 2)}) ${digitos.slice(2, 7)}-${digitos.slice(7)}`
 }
 
 /** Cadastro, consulta, edição e exclusão dos dados do perfil. */
@@ -137,18 +146,27 @@ export function Perfil() {
         </div>
         <h2>{carregando ? 'Carregando...' : nome || 'Meu perfil'}</h2>
       </div>
-      {erro && <p role="alert" className={styles.error}>{erro}</p>}
-      {sucesso && <p role="status" className={styles.success}>{sucesso}</p>}
+      {erro && (
+        <div style={{ marginBottom: 16 }}>
+          <AlertBanner variant="error">{erro}</AlertBanner>
+        </div>
+      )}
+      {sucesso && (
+        <div style={{ marginBottom: 16 }}>
+          <AlertBanner variant="success">{sucesso}</AlertBanner>
+        </div>
+      )}
       {falhaCarga && <Button onClick={() => setTentativa((valor) => valor + 1)}>Tentar novamente</Button>}
       <form onSubmit={handleSubmit}>
         <fieldset disabled={ocupado || falhaCarga} className={styles.fields}>
-          <TextField label="Nome" value={nome} onChange={(e) => setNome(e.target.value)}
+          <TextField label="Nome completo" value={nome} onChange={(e) => setNome(e.target.value)}
             autoComplete="name" required />
-          <TextField label="E-mail" type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email" required />
-          <p className={styles.note}>O e-mail de contato não altera seu e-mail de acesso.</p>
-          <TextField label="Telefone (opcional)" type="tel" value={telefone}
-            onChange={(e) => setTelefone(e.target.value)} autoComplete="tel" />
+          <TextField label="E-mail de contato" type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email" required
+            helperText="O e-mail de contato não altera seu login de acesso." />
+          <TextField label="Telefone" type="tel" value={telefone}
+            placeholder="(00) 00000-0000"
+            onChange={(e) => setTelefone(formatarTelefone(e.target.value))} autoComplete="tel" optional />
         </fieldset>
         <Stack gap={12} className={styles.actions}>
           <Button type="submit" disabled={ocupado || falhaCarga}>

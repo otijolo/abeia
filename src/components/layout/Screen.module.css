@@ -5,10 +5,23 @@
   background: var(--color-bg);
 }
 
+.mainArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
 .content {
   flex: 1;
   padding-top: 22px;
   padding-bottom: 32px;
+}
+
+.innerContainer {
+  width: 100%;
 }
 
 .list {
@@ -32,4 +45,50 @@
 
 .columns {
   display: grid;
+}
+
+/* Versão Desktop / Telas maiores */
+@media (min-width: 840px) {
+  .screen {
+    flex-direction: row;
+    background: var(--color-bg);
+  }
+
+  .mainArea {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .content {
+    padding-top: 28px;
+    padding-bottom: 56px;
+  }
+
+  .list,
+  .form {
+    padding-left: 36px;
+    padding-right: 36px;
+  }
+
+  .innerContainer {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .form .innerContainer {
+    max-width: 720px;
+    background: var(--color-surface);
+    padding: 36px 40px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  }
+
+  .desktopCols3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .desktopCols4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
 }

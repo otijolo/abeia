@@ -1,8 +1,9 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { ChipGroup } from '../../components/ui/ChipGroup'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { Field, SelectField, TextArea, TextField } from '../../components/ui/Field'
 import { listarColmeias } from '../../services/colmeiaService'
 import { atualizarAlerta, buscarAlerta, criarAlerta } from '../../services/alertaService'
@@ -26,13 +27,17 @@ function obterDataFormatada(): string {
 /** Formulário compartilhado pelo cadastro e edição de alertas. */
 export function AlertaForm() {
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+
+  const colmeiaParam = searchParams.get('colmeiaId') ?? ''
+
   const [titulo, setTitulo] = useState('')
   const [origem, setOrigem] = useState('')
   const [status, setStatus] = useState<Status>('atencao')
   const [motivo, setMotivo] = useState('')
   const [afetados, setAfetados] = useState('')
-  const [colmeiaId, setColmeiaId] = useState('')
+  const [colmeiaId, setColmeiaId] = useState(colmeiaParam)
   const [colmeias, setColmeias] = useState<Colmeia[]>([])
   const [alerta, setAlerta] = useState<Alerta | null>(null)
   const [estado, setEstado] = useState<AlertaEstado>('ativo')
@@ -47,7 +52,8 @@ export function AlertaForm() {
     async function carregarDados() {
       try {
         const [dados, encontrado] = await Promise.all([
-          listarColmeias(), id ? buscarAlerta(id) : Promise.resolve(null),
+          listarColmeias(),
+          id ? buscarAlerta(id) : Promise.resolve(null),
         ])
         if (!ativo) return
         setColmeias(dados)
@@ -58,7 +64,16 @@ export function AlertaForm() {
         setEstado(encontrado?.estado ?? 'ativo')
         setMotivo(encontrado?.motivo ?? '')
         setAfetados(encontrado?.afetados.join('\n') ?? '')
-        setColmeiaId(encontrado?.colmeiaId ?? '')
+
+        const idInicial = encontrado?.colmeiaId ?? colmeiaParam
+        setColmeiaId(idInicial)
+
+        if (!encontrado && colmeiaParam) {
+          const colmeiaPre = dados.find((c) => c.id === colmeiaParam)
+          if (colmeiaPre) {
+            setOrigem(colmeiaPre.nome)
+          }
+        }
       } catch (error) {
         if (ativo) setErro(error instanceof Error ? error.message : 'Não foi possível carregar os dados.')
       } finally {
@@ -67,7 +82,7 @@ export function AlertaForm() {
     }
     void carregarDados()
     return () => { ativo = false }
-  }, [id])
+  }, [id, colmeiaParam])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -80,9 +95,10 @@ export function AlertaForm() {
     }
 
     if (!motivo.trim()) {
-      setErro('Informe o motivo do alerta.')
+      setErro('Informe o motivo detalhado do alerta.')
       return
     }
+
     try {
       setSalvando(true)
       const dataHoje = obterDataFormatada()
@@ -115,22 +131,34 @@ export function AlertaForm() {
 
   const tituloTela = id ? 'Editar Alerta' : 'Novo Alerta'
 
-  if (carregando) return <Screen title={tituloTela} avatar={false}><p>Carregando dados...</p></Screen>
-  if (erro && (id ? !alerta : colmeias.length === 0)) {
-    return <Screen title={tituloTela} avatar={false}><p role="alert">{erro}</p>
-      <Button onClick={() => window.location.reload()}>Tentar novamente</Button></Screen>
+  if (carregando) {
+    return (
+      <Screen title={tituloTela} avatar={false}>
+        <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '32px 0' }}>
+          Carregando dados...
+        </p>
+      </Screen>
+    )
   }
+
+  if (erro && (id ? !alerta : colmeias.length === 0)) {
+    return (
+      <Screen title={tituloTela} avatar={false}>
+        <AlertBanner variant="error">{erro}</AlertBanner>
+        <div style={{ marginTop: 16 }}>
+          <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
+        </div>
+      </Screen>
+    )
+  }
+
   if (id && !alerta) return <NotFound />
 
   return (
     <Screen title={tituloTela} avatar={false} padding="form" backTo={id ? `/alertas/${id}` : '/alertas'}>
       <form onSubmit={handleSubmit}>
         <Stack gap={20}>
-          {erro && (
-            <p role="alert" style={{ color: '#d32f2f', fontSize: '14px', margin: 0 }}>
-              {erro}
-            </p>
-          )}
+          {erro && <AlertBanner variant="error">{erro}</AlertBanner>}
 
           <TextField
             label="Título do alerta"
@@ -153,17 +181,24 @@ export function AlertaForm() {
             )}
           </Field>
 
-          {id && <SelectField label="Situação do alerta" value={estado}
-            options={[
-              { value: 'ativo', label: 'Ativo' },
-              { value: 'resolvido', label: 'Resolvido' },
-              { value: 'ignorado', label: 'Ignorado' },
-            ]} placeholder="" disabled={salvando}
-            onChange={(e) => setEstado(e.target.value as AlertaEstado)} />}
+          {id && (
+            <SelectField
+              label="Situação do alerta"
+              value={estado}
+              options={[
+                { value: 'ativo', label: 'Ativo' },
+                { value: 'resolvido', label: 'Resolvido' },
+                { value: 'ignorado', label: 'Ignorado' },
+              ]}
+              placeholder=""
+              disabled={salvando}
+              onChange={(e) => setEstado(e.target.value as AlertaEstado)}
+            />
+          )}
 
           {colmeias.length > 0 && (
             <SelectField
-              label="Colmeia relacionada (opcional)"
+              label="Colmeia relacionada"
               options={colmeias.map((c) => ({ value: c.id, label: c.nome }))}
               value={colmeiaId}
               disabled={salvando}
@@ -174,7 +209,8 @@ export function AlertaForm() {
                   setOrigem(achada.nome)
                 }
               }}
-              placeholder="Nenhuma ou Geral"
+              placeholder="Nenhuma ou Geral (Todas)"
+              optional
             />
           )}
 
@@ -184,15 +220,21 @@ export function AlertaForm() {
             value={origem}
             onChange={(e) => setOrigem(e.target.value)}
             disabled={salvando}
+            optional
           />
 
-          <TextArea label="Afetados (um por linha)" value={afetados}
-            onChange={(e) => setAfetados(e.target.value)} disabled={salvando}
-            placeholder="Se não preencher, será usada a origem do alerta." />
+          <TextArea
+            label="Afetados (um por linha)"
+            value={afetados}
+            onChange={(e) => setAfetados(e.target.value)}
+            disabled={salvando}
+            placeholder="Se não preencher, será usada a origem do alerta."
+            optional
+          />
 
           <TextArea
             label="Motivo detalhado"
-            placeholder="Ex: Identificado acúmulo excessivo de abelhas na entrada..."
+            placeholder="Ex: Identificado acúmulo excessivo de abelhas na entrada e sinais prévios de enxameação..."
             value={motivo}
             onChange={(e) => setMotivo(e.target.value)}
             required

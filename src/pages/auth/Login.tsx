@@ -5,6 +5,7 @@ import { auth } from '../../services/firebase'
 import { buscarPerfil } from '../../services/perfilService'
 import { AuthLayout } from '../../components/layout/AuthLayout'
 import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { TextField } from '../../components/ui/Field'
 import { TextLink } from '../../components/ui/TextLink'
 import styles from './Login.module.css'
@@ -71,9 +72,9 @@ export function Login() {
       actions={
         <>
           {erro && (
-            <p style={{ color: 'red', fontSize: '14px', marginBottom: '10px' }}>
-              {erro}
-            </p>
+            <div style={{ marginBottom: 14 }}>
+              <AlertBanner variant="error">{erro}</AlertBanner>
+            </div>
           )}
           <Button type="submit" disabled={carregando}>
             {carregando ? 'Entrando...' : 'Entrar'}

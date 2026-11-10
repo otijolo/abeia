@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Screen } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { AlertBanner } from '../../components/ui/AlertBanner'
 import { buscarApiario, atualizarApiario } from '../../services/apiarioService'
 import type { Apiario } from '../../data/types'
 import { NotFound } from '../NotFound'
@@ -100,10 +101,12 @@ export function EditarApiario() {
   if (erro && !apiario) {
     return (
       <Screen title="Editar Apiário" padding="form">
-        <p role="alert">{erro}</p>
-        <Button onClick={() => navigate('/apiarios')}>
-          Voltar para apiários
-        </Button>
+        <AlertBanner variant="error">{erro}</AlertBanner>
+        <div style={{ marginTop: 16 }}>
+          <Button onClick={() => navigate('/apiarios')}>
+            Voltar para apiários
+          </Button>
+        </div>
       </Screen>
     )
   }
@@ -114,7 +117,11 @@ export function EditarApiario() {
 
   return (
     <Screen title="Editar Apiário" padding="form">
-      {erro && <p role="alert">{erro}</p>}
+      {erro && (
+        <div style={{ marginBottom: 16 }}>
+          <AlertBanner variant="error">{erro}</AlertBanner>
+        </div>
+      )}
 
       <ApiarioForm
         key={apiario.id}

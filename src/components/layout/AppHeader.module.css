@@ -5,10 +5,18 @@
   flex-shrink: 0;
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
   height: calc(var(--header-height) + env(safe-area-inset-top));
-  padding: env(safe-area-inset-top) 24px 0 0;
-  background: var(--color-surface);
+  padding: env(safe-area-inset-top) 16px 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerInner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .titleRow {
@@ -16,18 +24,21 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
-  padding: 0 0 9px 13px;
+  padding: 0 0 9px 0;
 }
 
 .back {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
-  margin-top: 4px;
+  width: 32px;
+  height: 32px;
+  margin-top: 2px;
   border: 0;
   border-radius: 50%;
   background: none;
+  cursor: pointer;
+  color: var(--color-text);
+  transition: background 0.15s;
 }
 
 .back:hover {
@@ -42,12 +53,87 @@
   text-overflow: ellipsis;
 }
 
-.brand {
+.brandWrapper {
   display: flex;
-  padding: 0 0 15px 23px;
+  align-items: center;
+}
+
+.brandMobile {
+  display: flex;
+  padding: 0 0 15px 4px;
+}
+
+.contextDesktop {
+  display: none;
 }
 
 .avatar {
   align-self: flex-end;
   margin-bottom: 12px;
+}
+
+.avatarLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+}
+
+.avatarLink:hover {
+  transform: scale(1.05);
+}
+
+/* Versão Desktop (≥ 840px) */
+@media (min-width: 840px) {
+  .header {
+    height: 64px;
+    padding: 0 36px;
+    align-items: center;
+    background: var(--color-surface);
+  }
+
+  .headerInner {
+    max-width: 1080px;
+    margin: 0 auto;
+    align-items: center;
+  }
+
+  .titleRow {
+    padding: 0;
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .brandMobile {
+    display: none;
+  }
+
+  .contextDesktop {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .crumb {
+    color: var(--color-text-muted);
+  }
+
+  .crumbSep {
+    color: var(--color-border);
+  }
+
+  .crumbCurrent {
+    color: var(--color-text);
+  }
+
+  .avatar {
+    align-self: center;
+    margin-bottom: 0;
+  }
 }

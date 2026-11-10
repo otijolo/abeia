@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { AppHeader } from './AppHeader'
 import { BottomNav, type NavSection } from './BottomNav'
+import { Sidebar } from './Sidebar'
 import styles from './Screen.module.css'
 
 interface Props {
@@ -20,9 +21,14 @@ interface Props {
 export function Screen({ children, title, avatar = true, backTo, nav, padding = 'list' }: Props) {
   return (
     <div className={styles.screen}>
-      <AppHeader title={title} avatar={avatar} backTo={backTo} />
-      <main className={`${styles.content} ${styles[padding]}`}>{children}</main>
-      {nav && <BottomNav active={nav} />}
+      <Sidebar active={nav} />
+      <div className={styles.mainArea}>
+        <AppHeader title={title} avatar={avatar} backTo={backTo} />
+        <main className={`${styles.content} ${styles[padding]}`}>
+          <div className={styles.innerContainer}>{children}</div>
+        </main>
+        {nav && <BottomNav active={nav} />}
+      </div>
     </div>
   )
 }
@@ -42,16 +48,30 @@ export function Columns({
   gap = 16,
   rowGap,
   count = 2,
+  desktopCount,
+  className
 }: {
   children: ReactNode
   gap?: number
   rowGap?: number
   count?: number
+  desktopCount?: number
+  className?: string
 }) {
   return (
     <div
-      className={styles.columns}
-      style={{ columnGap: gap, rowGap: rowGap ?? gap, gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}
+      className={[
+        styles.columns,
+        desktopCount ? styles[`desktopCols${desktopCount}`] : '',
+        className
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={{
+        columnGap: gap,
+        rowGap: rowGap ?? gap,
+        gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))`
+      }}
     >
       {children}
     </div>
