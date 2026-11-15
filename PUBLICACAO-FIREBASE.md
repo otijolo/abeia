@@ -1,8 +1,9 @@
 # Publicação do frontend no Firebase Hosting
 
-Esta pasta contém a versão do ZIP recebido em 15/11/2026, preparada para publicar
-somente o frontend. O login e os seis cadastros usam o Firebase diretamente quando
-o usuário está autenticado. Não é necessário executar o backend Java para esses fluxos.
+O Hosting publica somente os arquivos do frontend/PWA. O login usa Firebase
+Authentication e os cadastros são enviados à API Java em
+https://abeia-api.onrender.com/api, configurada em `.env.production`.
+A API valida a sessão e acessa o Realtime Database do usuário.
 
 ## Publicar
 
@@ -14,26 +15,23 @@ firebase login
 firebase deploy --only hosting --project abeia-cc22d
 ```
 
-O comando executa o build automaticamente antes de publicar a pasta `dist`.
-Não publica regras do banco nem Cloud Functions. A conta Google usada no CLI
-precisa ter permissão de publicação no projeto `abeia-cc22d`.
+O comando executa o build antes de publicar `dist`. Não publica regras do banco,
+Cloud Functions nem o backend Java. A conta Google usada no CLI precisa ter
+permissão de publicação no projeto `abeia-cc22d`.
 
-O Hosting configura todas as rotas do aplicativo para abrir `index.html`, inclusive
-quando `/apiarios`, `/perfil` ou outra tela for aberta diretamente pelo navegador.
-
-## Ajuste incluído nesta preparação
-
-A inicialização de dados de exemplo em `firebaseSync.ts` passa a ocorrer somente
-se não existir dado algum para o usuário. Excluir todos os apiários não deve
-recriar exemplos nem substituir perfil, colheitas, inspeções ou alertas existentes.
+O endereço do aplicativo é https://abeia-cc22d.web.app. As rotas do aplicativo
+abrem `index.html`, inclusive quando `/apiarios` ou `/perfil` são acessadas
+diretamente. O layout mobile, manifest e service worker do PWA são mantidos.
 
 ## Verificar
 
-1. Abra o endereço retornado pelo comando de publicação e entre em sua conta.
-2. Crie um apiário, recarregue a página e confirme que ele continua cadastrado.
-3. Abra a mesma conta em outro navegador ou celular e confira o registro.
-4. Confira também o acesso direto a uma rota como `/apiarios`.
+1. Confirme que https://abeia-api.onrender.com/health responde antes de publicar.
+2. Abra o aplicativo e entre em sua conta.
+3. Crie um apiário, recarregue e confira o mesmo registro em outro dispositivo.
+4. Confira o acesso direto a `/apiarios` e `/perfil`.
+5. Feche e reabra o PWA para receber uma atualização já publicada.
 
-O backend Java contido no ZIP continua separado. Não é compilado nem publicado por
-esta configuração de Hosting, e seus endpoints Swagger não ganham persistência
-Firebase automaticamente.
+Contas autenticadas usam a API Java. Sem login, o modo de demonstração salva
+somente no navegador. Uma falha de rede da API não aciona demonstração automática.
+
+Veja PUBLICACAO-RENDER.md para a publicação do backend e o acesso ao Swagger.

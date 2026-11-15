@@ -1,6 +1,6 @@
 # Integração dos CRUDs
 
-## Bases comparadas
+## Bases comparadas na integração original
 
 - `abeia-main.zip`: conteúdo correspondente à `main` em `cbf2e66`.
 - `abeia-inaxxestudo-wq-patch-Apiario-colmeia.zip`: conteúdo correspondente ao commit `efaa7b3`.
@@ -8,7 +8,9 @@
 
 O commit do colega já é ancestral da `main`, que por sua vez é ancestral do frontend.
 Não foi necessário copiar arquivos antigos sobre o frontend. A continuação está
-na branch local `feat/integracao-crud`, criada a partir de `2967195`.
+na branch `feat/integracao-crud`, criada a partir de `2967195`.
+A publicação com persistência Firebase continua em `feat/publicacao-render`,
+baseada na main `643c3e9`. Consulte `PUBLICACAO-RENDER.md` para os endereços.
 
 ## Operações disponíveis
 
@@ -30,9 +32,10 @@ a colmeias inexistentes. Uma edição inválida não deve alterar o registro ori
 
 ## Perfil e autenticação
 
-O frontend usa `/api/perfil/{uid}` com o identificador da sessão do Firebase.
-O endpoint antigo `/api/perfil` permanece disponível para o perfil de demonstração
-`usr-1`. Cada identificador tem seu próprio cadastro em memória.
+O frontend usa `/api/perfil` e envia o token do Firebase em `Authorization: Bearer`.
+A API identifica o usuário pela sessão validada e acessa apenas `usuarios/{uid}` no
+Realtime Database. A rota antiga `/api/perfil/{uid}` continua disponível, mas
+rejeita um identificador diferente do usuário autenticado.
 
 O cadastro deixou de depender de uma gravação adicional no Realtime Database e
 usa a mesma API da tela de perfil. Se a conta Firebase for criada e a API estiver
@@ -43,10 +46,9 @@ conta Firebase nem apiários, colmeias, alertas ou produções. Alterar o e-mail
 contato também não modifica o endereço de login. A tela Alterar senha usa a senha
 atual para reautenticar no Firebase antes da atualização.
 
-O identificador na URL separa os registros, mas não é uma prova de identidade.
-A API existente ainda não valida tokens do Firebase nem restringe os dados de
-negócio por usuário. Isso precisa ser implementado antes de disponibilizar dados
-reais de usuários em um servidor público.
+Sem token válido, a API responde 401. Os repositórios não usam mais memória para
+os cadastros: todas as operações consultam e persistem no Firebase usando o token
+do próprio usuário e as regras existentes do banco. Não há chave administrativa.
 
 ## Como conferir
 
@@ -60,18 +62,21 @@ reais de usuários em um servidor público.
 8. No perfil, crie os dados, recarregue, edite nome e telefone e recarregue novamente.
 9. Exclua somente os dados do perfil e confira a opção de criar o cadastro novamente.
 
-Para preencher uma instância local vazia com exemplos, há `POST /api/demo/seed`.
-Ele altera os dados daquela instância; não é necessário para usar os cadastros.
+O controller `/api/demo` fica desativado no perfil padrão usado na publicação.
+Contas novas não recebem exemplos automaticamente; o modo de demonstração sem
+login continua disponível no frontend.
 
 ## Verificações e limites
 
 - `npm run build`: compilação TypeScript e build do frontend.
 - `backend/mvnw.cmd test`: testes de integração com MockMvc para os ciclos de CRUD,
   validações, atualização de estado de alertas e independência dos perfis.
-- Os testes Java usam seus próprios repositórios em memória, sem alterar o Firebase.
-- Os formulários são conferidos em uma API isolada na porta 8089, conectada ao Vite
-  pela variável temporária `VITE_API_URL=http://localhost:8089/api`.
+- Os testes Java usam um servidor Firebase simulado, sem alterar o banco real.
+  Também verificam token ausente/inválido, isolamento por usuário, CORS, falha do
+  banco, contagem de colmeias e resumo de inspeção.
+- A verificação remota usou a conta de teste e um cadastro temporário removido ao
+  final, confirmando que a API do Render grava no Firebase real.
 - A troca real de senha exige uma conta Firebase; não é exercitada pelos testes Java.
 - A geração de relatórios permanece demonstrativa e não integra este escopo de CRUD.
-- Os repositórios continuam em memória. Encerrar a API perde os dados. Firebase Auth
-  armazena as contas de acesso, mas não persiste os dados enviados para esses endpoints.
+- Reiniciar a API não apaga cadastros. O plano gratuito do Render pode suspender o
+  servidor por inatividade e atrasar a primeira requisição seguinte.

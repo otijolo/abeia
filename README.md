@@ -75,8 +75,14 @@ npm run dev
 É necessário um JDK 17 ou superior. A primeira execução do Maven baixa suas
 dependências. Para testar o backend: `cd backend` e `.\mvnw.cmd test`.
 
-Firebase Authentication e Firebase Realtime Database são responsáveis pela autenticação
-e persistência em nuvem das entidades (apiários, colmeias, inspeções, alertas, produções
-e perfil). O backend Spring Boot em `backend/` permanece disponível como API REST com
-auto-semeadura em memória e documentação Swagger em http://localhost:8088/swagger-ui.html.
-O frontend também conta com modo de demonstração local para apresentações rápidas.
+O login usa Firebase Authentication. O frontend envia o token da sessão para a
+API Java, que valida o usuário e salva os cadastros no Firebase Realtime Database.
+Os dados ficam separados em `usuarios/{uid}` e não são perdidos ao reiniciar a API.
+Sem login, o modo de demonstração usa somente o armazenamento local.
+
+Aplicativo: https://abeia-cc22d.web.app
+Swagger: https://abeia-api.onrender.com/swagger-ui.html
+
+O build de produção usa a API do Render configurada em `.env.production`.
+O desenvolvimento com `npm run dev` usa `http://localhost:8088/api` por padrão.
+Consulte [a configuração de publicação](PUBLICACAO-RENDER.md).
