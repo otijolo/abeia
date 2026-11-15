@@ -1,6 +1,9 @@
 # Publicação do backend Java
 
-Estado: integração preparada e testada localmente; ainda não publicada no Render.
+Estado: backend publicado e validado em https://abeia-api.onrender.com.
+Frontend/PWA publicado em https://abeia-cc22d.web.app.
+Swagger: https://abeia-api.onrender.com/swagger-ui.html.
+A publicação usa a branch feat/publicacao-render; a main não foi alterada.
 
 ## Como funciona
 
@@ -51,8 +54,8 @@ Os valores públicos padrão de FIREBASE_DATABASE_URL e FIREBASE_API_KEY já apo
 para o projeto Abeia. ALLOWED_ORIGINS permite o domínio web.app, firebaseapp.com e
 localhost:5173. Não inclua senha, refresh token nem conta de serviço no Git.
 
-Depois que o serviço estiver saudável, configure VITE_API_URL com
-https://ENDERECO-REAL.onrender.com/api no frontend e execute
+A configuração pública VITE_API_URL=https://abeia-api.onrender.com/api já está
+em .env.production para os builds de produção. Para atualizar o frontend, execute
 `firebase deploy --only hosting --project abeia-cc22d`. Não publique o frontend
 antes de confirmar o backend. Teste login, leitura, gravação, atualização de página
 e o mesmo registro no Swagger. Feche e reabra o PWA para receber a atualização.
@@ -60,5 +63,9 @@ e o mesmo registro no Swagger. Feche e reabra o PWA para receber a atualização
 O plano gratuito do Render suspende o serviço após inatividade; o primeiro acesso
 pode demorar. O banco continua no Firebase durante essa suspensão.
 
-Nenhum commit ou push faz parte da preparação local. Antes de publicar, obter a
-autorização do responsável para enviar somente a branch de publicação.
+Os testes remotos também conferiram autenticação, CORS, leitura das seis áreas,
+Swagger e criação/edição/exclusão de um apiário temporário pela API no Render.
+O registro temporário foi removido após a verificação.
+
+Para mudanças futuras, usar a branch de publicação e combinar o envio com o
+responsável. Não fazer merge na main como parte do deploy.
