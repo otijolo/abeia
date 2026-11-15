@@ -1,14 +1,4 @@
-import {
-  get,
-  push,
-  ref,
-  set,
-  update,
-  remove
-} from 'firebase/database'
-import { auth, db } from './firebase'
-import { garantirDadosIniciaisFirebase } from './firebaseSync'
-import { handleLocalMockRequest } from './mockStore'
+import { ApiError, apiFetch } from './api'
 import type { Apiario } from '../data/types'
 
 type NovoApiario = Omit<
@@ -16,129 +6,62 @@ type NovoApiario = Omit<
   'id' | 'totalColmeias' | 'status'
 > & Partial<Pick<Apiario, 'totalColmeias' | 'status'>>
 
-function obterCaminhoApiarios(): string | null {
-  const usuario = auth.currentUser
-  if (!usuario) return null
-  return `usuarios/${usuario.uid}/apiarios`
-}
-
 /**
- * Lista todos os apiários do usuário autenticado no Firebase Realtime Database.
- * Em modo de demonstração sem login, utiliza o armazenamento local.
+ * Lista todos os apiários através da API Java (Spring Boot MVC).
+ * Endpoint: GET /api/apiarios
  */
 export async function listarApiarios(): Promise<Apiario[]> {
-  const caminho = obterCaminhoApiarios()
-  if (!caminho || !auth.currentUser) {
-    return handleLocalMockRequest<Apiario[]>('/apiarios', { method: 'GET' })
-  }
-
-  await garantirDadosIniciaisFirebase(auth.currentUser.uid)
-
-  const referencia = ref(db, caminho)
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    return []
-  }
-
-  const dados = snapshot.val() as Record<string, Omit<Apiario, 'id'>>
-  return Object.entries(dados).map(([id, apiario]) => ({
-    ...apiario,
-    id
-  }))
+  return apiFetch<Apiario[]>('/apiarios')
 }
 
 /**
- * Busca um apiário pelo ID no Firebase Realtime Database.
+ * Busca um apiário pelo ID na API Java.
+ * Endpoint: GET /api/apiarios/{id}
  */
 export async function buscarApiario(id: string): Promise<Apiario | null> {
-  const caminho = obterCaminhoApiarios()
-  if (!caminho) {
-    try {
-      return await handleLocalMockRequest<Apiario>(`/apiarios/${id}`, { method: 'GET' })
-    } catch {
-      return null
-    }
+  try {
+    return await apiFetch<Apiario>(`/apiarios/${id}`)
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null
+    throw error
   }
-
-  const referencia = ref(db, `${caminho}/${id}`)
-  const snapshot = await get(referencia)
-
-  if (!snapshot.exists()) {
-    return null
-  }
-
-  return {
-    ...snapshot.val(),
-    id
-  } as Apiario
 }
 
 /**
- * Cadastra um novo apiário no Firebase Realtime Database.
+ * Cadastra um novo apiário no backend Java.
+ * Endpoint: POST /api/apiarios
  */
 export async function criarApiario(dados: NovoApiario): Promise<Apiario> {
-  const caminho = obterCaminhoApiarios()
-  if (!caminho) {
-    return handleLocalMockRequest<Apiario>('/apiarios', {
-      method: 'POST',
-      body: JSON.stringify(dados)
+  return apiFetch<Apiario>('/apiarios', {
+    method: 'POST',
+    body: JSON.stringify({
+      ...dados,
+      totalColmeias: dados.totalColmeias ?? 0,
+      status: dados.status ?? 'normal'
     })
-  }
-
-  const referencia = push(ref(db, caminho))
-  if (!referencia.key) {
-    throw new Error('Não foi possível gerar a chave do apiário no Firebase.')
-  }
-
-  const apiario: Apiario = {
-    ...dados,
-    id: referencia.key,
-    totalColmeias: dados.totalColmeias ?? 0,
-    status: dados.status ?? 'normal'
-  }
-
-  await set(referencia, apiario)
-  return apiario
+  })
 }
 
 /**
- * Atualiza os campos de um apiário existente no Firebase.
+ * Atualiza os campos de um apiário via API Java.
+ * Endpoint: PUT /api/apiarios/{id}
  */
 export async function atualizarApiario(
   id: string,
   dados: Partial<Omit<Apiario, 'id'>>
 ): Promise<void> {
-  const caminho = obterCaminhoApiarios()
-  if (!caminho) {
-    await handleLocalMockRequest<void>(`/apiarios/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(dados)
-    })
-    return
-  }
-
-  const referencia = ref(db, `${caminho}/${id}`)
-  const snapshot = await get(referencia)
-  if (!snapshot.exists()) {
-    throw new Error('Apiário não encontrado no Firebase.')
-  }
-
-  await update(referencia, dados)
+  await apiFetch<Apiario>(`/apiarios/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(dados)
+  })
 }
 
 /**
- * Exclui um apiário existente no Firebase.
+ * Exclui um apiário existente via API Java.
+ * Endpoint: DELETE /api/apiarios/{id}
  */
 export async function excluirApiario(id: string): Promise<void> {
-  const caminho = obterCaminhoApiarios()
-  if (!caminho) {
-    await handleLocalMockRequest<void>(`/apiarios/${id}`, {
-      method: 'DELETE'
-    })
-    return
-  }
-
-  const referencia = ref(db, `${caminho}/${id}`)
-  await remove(referencia)
+  await apiFetch<void>(`/apiarios/${id}`, {
+    method: 'DELETE'
+  })
 }

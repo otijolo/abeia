@@ -1,13 +1,8 @@
+import { auth } from './firebase'
 import { handleLocalMockRequest } from './mockStore'
 
-/**
- * Cliente HTTP para comunicação com o backend em Java (Spring Boot MVC).
- * Endpoints baseados em http://localhost:8088/api.
- * Quando o backend está offline, utiliza automaticamente os dados de demonstração
- * locais (mockStore) para garantir a navegabilidade completa do protótipo.
- */
-export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:8088/api'
+/** Endereço da API Java. O modo de demonstração é usado somente sem login. */
+export const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8088/api').replace(/\/$/, '')
 
 export class ApiError extends Error {
   status: number
@@ -18,46 +13,31 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiFetch<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`
+export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  await auth.authStateReady()
+  const usuario = auth.currentUser
+  if (!usuario) return handleLocalMockRequest<T>(endpoint, options)
 
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...(options.headers || {})
-  }
+  const headers = new Headers(options.headers)
+  headers.set('Content-Type', 'application/json')
+  headers.set('Authorization', `Bearer ${await usuario.getIdToken()}`)
 
+  let response: Response
   try {
-    const response = await fetch(url, {
+    response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
-      headers
+      headers,
+      signal: options.signal ?? AbortSignal.timeout(90000)
     })
-
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => '')
-      let mensagem = errorText
-      try {
-        const dados = JSON.parse(errorText)
-        mensagem = dados.message || dados.mensagem || `Erro na requisição (${response.status})`
-      } catch { /* A API também pode retornar mensagens em texto. */ }
-      throw new ApiError(response.status, mensagem || `Erro na requisição (${response.status})`)
-    }
-
-    // Resposta vazia (ex.: 204 No Content)
-    if (response.status === 204) {
-      return null as T
-    }
-
-    return response.json() as Promise<T>
-  } catch (error) {
-    // Se o erro foi um ApiError retornado pelo backend (ex: 400, 404), propaga
-    if (error instanceof ApiError) {
-      throw error
-    }
-
-    // Backend offline / erro de rede: aciona o armazenamento de demonstração local
-    return handleLocalMockRequest<T>(endpoint, options)
+  } catch {
+    // Falhas de rede não devem fazer uma gravação parecer salva no banco.
+    throw new Error('Não foi possível acessar o servidor. Ele pode estar iniciando; tente novamente em instantes.')
   }
+
+  if (!response.ok) {
+    const dados = await response.json().catch(() => null) as { message?: string } | null
+    throw new ApiError(response.status, dados?.message || `Não foi possível concluir a operação (${response.status}).`)
+  }
+  if (response.status === 204) return null as T
+  return response.json() as Promise<T>
 }

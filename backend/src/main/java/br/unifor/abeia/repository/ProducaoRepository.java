@@ -4,19 +4,18 @@ import br.unifor.abeia.model.Producao;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * Repositório em memória para persistência de Produções / Colheitas.
+ * Repositório de Producao no Firebase, separado por usuário.
  */
 @Repository
 public class ProducaoRepository {
 
-    private final Map<String, Producao> dados = new ConcurrentHashMap<>();
+    private final FirebaseDatabase database;
 
-    public ProducaoRepository() {
-        semearDadosIniciais();
+    public ProducaoRepository(FirebaseDatabase database) {
+        this.database = database;
     }
 
     public void semearDadosIniciais() {
@@ -35,21 +34,21 @@ public class ProducaoRepository {
     }
 
     public void limpar() {
-        dados.clear();
+        database.excluir("producoes");
     }
 
     public List<Producao> listarTodas() {
-        return new ArrayList<>(dados.values());
+        return database.listar("producoes", Producao.class);
     }
 
     public List<Producao> listarPorColmeia(String colmeiaId) {
-        return dados.values().stream()
+        return database.listar("producoes", Producao.class).stream()
                 .filter(p -> Objects.equals(p.getColmeiaId(), colmeiaId))
                 .collect(Collectors.toList());
     }
 
     public Optional<Producao> buscarPorId(String id) {
-        return Optional.ofNullable(dados.get(id));
+        return database.buscar("producoes/" + id, Producao.class);
     }
 
     public Producao salvar(Producao producao) {
@@ -59,15 +58,15 @@ public class ProducaoRepository {
         if (producao.getUnidade() == null || producao.getUnidade().isBlank()) {
             producao.setUnidade("kg");
         }
-        dados.put(producao.getId(), producao);
+        database.salvar("producoes/" + producao.getId(), producao);
         return producao;
     }
 
     public boolean excluir(String id) {
-        return dados.remove(id) != null;
+        return database.excluir("producoes/" + id);
     }
 
     public boolean existe(String id) {
-        return dados.containsKey(id);
+        return database.buscar("producoes/" + id, Producao.class).isPresent();
     }
 }

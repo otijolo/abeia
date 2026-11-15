@@ -12,9 +12,9 @@ import java.util.Map;
 /**
  * Controller utilitário para povoar ou resetar os dados de teste sob demanda.
  */
+@org.springframework.context.annotation.Profile("demo")
 @RestController
 @RequestMapping("/api/demo")
-@CrossOrigin(origins = "*")
 @Tag(name = "Demonstração", description = "Utilitários para semear dados de teste e resetar os repositórios em memória")
 public class DemoController {
 

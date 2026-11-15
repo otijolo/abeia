@@ -17,7 +17,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/colmeias")
-@CrossOrigin(origins = "*")
 @Tag(name = "Colmeias", description = "Endpoints para gerenciamento de colmeias")
 public class ColmeiaController {
 

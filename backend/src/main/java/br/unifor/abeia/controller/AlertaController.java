@@ -18,7 +18,6 @@ import jakarta.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/alertas")
-@CrossOrigin(origins = "*")
 @Tag(name = "Alertas", description = "Endpoints para gerenciamento e acompanhamento de alertas apícolas")
 public class AlertaController {
 

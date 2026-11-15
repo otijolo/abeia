@@ -4,18 +4,17 @@ import br.unifor.abeia.model.Apiario;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Repositório em memória para persistência de Apiários.
+ * Repositório de Apiario no Firebase, separado por usuário.
  */
 @Repository
 public class ApiarioRepository {
 
-    private final Map<String, Apiario> dados = new ConcurrentHashMap<>();
+    private final FirebaseDatabase database;
 
-    public ApiarioRepository() {
-        semearDadosIniciais();
+    public ApiarioRepository(FirebaseDatabase database) {
+        this.database = database;
     }
 
     public void semearDadosIniciais() {
@@ -46,30 +45,30 @@ public class ApiarioRepository {
     }
 
     public void limpar() {
-        dados.clear();
+        database.excluir("apiarios");
     }
 
     public List<Apiario> listarTodos() {
-        return new ArrayList<>(dados.values());
+        return database.listar("apiarios", Apiario.class);
     }
 
     public Optional<Apiario> buscarPorId(String id) {
-        return Optional.ofNullable(dados.get(id));
+        return database.buscar("apiarios/" + id, Apiario.class);
     }
 
     public Apiario salvar(Apiario apiario) {
         if (apiario.getId() == null || apiario.getId().isBlank()) {
             apiario.setId(UUID.randomUUID().toString());
         }
-        dados.put(apiario.getId(), apiario);
+        database.salvar("apiarios/" + apiario.getId(), apiario);
         return apiario;
     }
 
     public boolean excluir(String id) {
-        return dados.remove(id) != null;
+        return database.excluir("apiarios/" + id);
     }
 
     public boolean existe(String id) {
-        return dados.containsKey(id);
+        return database.buscar("apiarios/" + id, Apiario.class).isPresent();
     }
 }

@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: abeia-api
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeployTrigger: off
+    envVars:
+      - key: FIREBASE_DATABASE_URL
+        value: https://abeia-cc22d-default-rtdb.firebaseio.com
+      - key: FIREBASE_API_KEY
+        value: AIzaSyCfoKYRrKA2qRtnPRgkeYirHVbqPwPZvDk
+      - key: ALLOWED_ORIGINS
+        value: https://abeia-cc22d.web.app,https://abeia-cc22d.firebaseapp.com,http://localhost:5173

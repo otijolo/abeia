@@ -4,35 +4,41 @@ import br.unifor.abeia.model.Perfil;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Repositório em memória para persistência dos dados de Perfil do usuário.
+ * Repositório de Perfil no Firebase do usuário autenticado.
  */
 @Repository
 public class PerfilRepository {
 
-    private final Map<String, Perfil> perfis = new ConcurrentHashMap<>();
+    private final FirebaseDatabase database;
 
-    public PerfilRepository() {
-        semearDadosIniciais();
+    public PerfilRepository(FirebaseDatabase database) {
+        this.database = database;
     }
 
     public void semearDadosIniciais() {
-        salvar(new Perfil("usr-1", "Ildo Ramos", "ildo@email.com", "IR", "(85) 98888-7777"));
+        salvar(new Perfil(database.usuarioId(), "Ildo Ramos", "ildo@email.com", "IR", ""));
     }
-        return obterPerfil("usr-1");
+
+    public Optional<Perfil> obterPerfil() {
+        return database.buscar("perfil", Perfil.class);
     }
 
     public Optional<Perfil> obterPerfil(String id) {
-        return Optional.ofNullable(perfis.get(id));
+        conferirUsuario(id);
+        return obterPerfil();
+    }
+
+    private void conferirUsuario(String id) {
+        if (!database.usuarioId().equals(id)) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.FORBIDDEN, "O perfil pertence a outro usuário.");
+        }
     }
 
     public Perfil salvar(Perfil perfil) {
-        if (perfil.getId() == null || perfil.getId().isBlank()) {
-            perfil.setId("usr-1");
-        }
+        perfil.setId(database.usuarioId());
         if (perfil.getIniciais() == null || perfil.getIniciais().isBlank()) {
             if (perfil.getNome() != null && !perfil.getNome().isBlank()) {
                 String[] partes = perfil.getNome().trim().split("\\s+");
@@ -45,15 +51,16 @@ public class PerfilRepository {
                 perfil.setIniciais(sb.toString());
             }
         }
-        perfis.put(perfil.getId(), perfil);
+        database.salvar("perfil", perfil);
         return perfil;
     }
 
     public void limpar() {
-        perfis.clear();
+        database.excluir("perfil");
     }
 
     public boolean excluir(String id) {
-        return perfis.remove(id) != null;
+        conferirUsuario(id);
+        return database.excluir("perfil");
     }
 }

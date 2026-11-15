@@ -4,19 +4,18 @@ import br.unifor.abeia.model.Inspecao;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * Repositório em memória para persistência de Inspeções.
+ * Repositório de Inspecao no Firebase, separado por usuário.
  */
 @Repository
 public class InspecaoRepository {
 
-    private final Map<String, Inspecao> dados = new ConcurrentHashMap<>();
+    private final FirebaseDatabase database;
 
-    public InspecaoRepository() {
-        semearDadosIniciais();
+    public InspecaoRepository(FirebaseDatabase database) {
+        this.database = database;
     }
 
     public void semearDadosIniciais() {
@@ -63,33 +62,33 @@ public class InspecaoRepository {
     }
 
     public void limpar() {
-        dados.clear();
+        database.excluir("inspecoes");
     }
 
     public List<Inspecao> listarTodas() {
-        return new ArrayList<>(dados.values());
+        return database.listar("inspecoes", Inspecao.class);
     }
 
     public List<Inspecao> listarPorColmeia(String colmeiaId) {
-        return dados.values().stream()
+        return database.listar("inspecoes", Inspecao.class).stream()
                 .filter(i -> Objects.equals(i.getColmeiaId(), colmeiaId))
                 .sorted((a, b) -> b.getData().compareTo(a.getData()))
                 .collect(Collectors.toList());
     }
 
     public Optional<Inspecao> buscarPorId(String id) {
-        return Optional.ofNullable(dados.get(id));
+        return database.buscar("inspecoes/" + id, Inspecao.class);
     }
 
     public Inspecao salvar(Inspecao inspecao) {
         if (inspecao.getId() == null || inspecao.getId().isBlank()) {
             inspecao.setId(UUID.randomUUID().toString());
         }
-        dados.put(inspecao.getId(), inspecao);
+        database.salvar("inspecoes/" + inspecao.getId(), inspecao);
         return inspecao;
     }
 
     public boolean excluir(String id) {
-        return dados.remove(id) != null;
+        return database.excluir("inspecoes/" + id);
     }
 }

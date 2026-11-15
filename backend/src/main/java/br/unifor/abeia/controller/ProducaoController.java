@@ -18,7 +18,6 @@ import jakarta.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/producoes")
-@CrossOrigin(origins = "*")
 @Tag(name = "Produção", description = "Endpoints para registro e acompanhamento de colheitas e produção")
 public class ProducaoController {
 

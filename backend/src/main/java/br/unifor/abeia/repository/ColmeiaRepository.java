@@ -4,19 +4,18 @@ import br.unifor.abeia.model.Colmeia;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * Repositório em memória para persistência de Colmeias.
+ * Repositório de Colmeia no Firebase, separado por usuário.
  */
 @Repository
 public class ColmeiaRepository {
 
-    private final Map<String, Colmeia> dados = new ConcurrentHashMap<>();
+    private final FirebaseDatabase database;
 
-    public ColmeiaRepository() {
-        semearDadosIniciais();
+    public ColmeiaRepository(FirebaseDatabase database) {
+        this.database = database;
     }
 
     public void semearDadosIniciais() {
@@ -48,36 +47,36 @@ public class ColmeiaRepository {
     }
 
     public void limpar() {
-        dados.clear();
+        database.excluir("colmeias");
     }
 
     public List<Colmeia> listarTodas() {
-        return new ArrayList<>(dados.values());
+        return database.listar("colmeias", Colmeia.class);
     }
 
     public List<Colmeia> listarPorApiario(String apiarioId) {
-        return dados.values().stream()
+        return database.listar("colmeias", Colmeia.class).stream()
                 .filter(c -> Objects.equals(c.getApiarioId(), apiarioId))
                 .collect(Collectors.toList());
     }
 
     public Optional<Colmeia> buscarPorId(String id) {
-        return Optional.ofNullable(dados.get(id));
+        return database.buscar("colmeias/" + id, Colmeia.class);
     }
 
     public Colmeia salvar(Colmeia colmeia) {
         if (colmeia.getId() == null || colmeia.getId().isBlank()) {
             colmeia.setId(UUID.randomUUID().toString());
         }
-        dados.put(colmeia.getId(), colmeia);
+        database.salvar("colmeias/" + colmeia.getId(), colmeia);
         return colmeia;
     }
 
     public boolean excluir(String id) {
-        return dados.remove(id) != null;
+        return database.excluir("colmeias/" + id);
     }
 
     public boolean existe(String id) {
-        return dados.containsKey(id);
+        return database.buscar("colmeias/" + id, Colmeia.class).isPresent();
     }
 }

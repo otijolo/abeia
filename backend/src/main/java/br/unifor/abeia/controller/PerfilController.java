@@ -2,6 +2,7 @@ package br.unifor.abeia.controller;
 
 import br.unifor.abeia.model.Perfil;
 import br.unifor.abeia.service.PerfilService;
+import br.unifor.abeia.repository.FirebaseDatabase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +16,14 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/perfil")
-@CrossOrigin(origins = "*")
 @Tag(name = "Perfil", description = "Endpoints para gerenciamento do perfil do usuário produtor")
 public class PerfilController {
 
     private final PerfilService perfilService;
+    private final FirebaseDatabase database;
 
-    public PerfilController(PerfilService perfilService) {
+    public PerfilController(PerfilService perfilService, FirebaseDatabase database) {
+        this.database = database;
         this.perfilService = perfilService;
     }
 
@@ -31,7 +33,7 @@ public class PerfilController {
     @GetMapping({"", "/{id}"})
     @Operation(summary = "Obter perfil", description = "Retorna os dados do perfil do usuário logado (ou 204 se ainda não cadastrado).")
     public ResponseEntity<Perfil> obter(@PathVariable(required = false) String id) {
-        return perfilService.obterPerfil(id == null ? "usr-1" : id)
+        return perfilService.obterPerfil(id == null ? database.usuarioId() : id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
     }
@@ -43,7 +45,7 @@ public class PerfilController {
     @Operation(summary = "Criar perfil", description = "Cria o perfil do identificador informado. Retorna 409 se já existir.")
     public ResponseEntity<Perfil> salvar(@PathVariable(required = false) String id, @Valid @RequestBody Perfil perfil) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(perfilService.criarPerfil(id == null ? "usr-1" : id, perfil));
+                .body(perfilService.criarPerfil(id == null ? database.usuarioId() : id, perfil));
     }
 
     /**
@@ -52,7 +54,7 @@ public class PerfilController {
     @PutMapping({"", "/{id}"})
     @Operation(summary = "Atualizar perfil", description = "Atualiza os dados cadastrais do perfil do usuário.")
     public ResponseEntity<Perfil> atualizar(@PathVariable(required = false) String id, @Valid @RequestBody Perfil perfil) {
-        return perfilService.atualizarPerfil(id == null ? "usr-1" : id, perfil)
+        return perfilService.atualizarPerfil(id == null ? database.usuarioId() : id, perfil)
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
@@ -62,7 +64,7 @@ public class PerfilController {
     @DeleteMapping({"", "/{id}"})
     @Operation(summary = "Excluir perfil", description = "Remove apenas o perfil do identificador informado, sem excluir sua conta Firebase.")
     public ResponseEntity<Void> limpar(@PathVariable(required = false) String id) {
-        return perfilService.excluirPerfil(id == null ? "usr-1" : id)
+        return perfilService.excluirPerfil(id == null ? database.usuarioId() : id)
                 ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }

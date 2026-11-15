@@ -35,12 +35,27 @@ public class InspecaoService {
     }
 
     public Inspecao criar(Inspecao inspecao) {
+        if (inspecao.getColmeiaId() == null || !colmeiaRepository.existe(inspecao.getColmeiaId())) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "A colmeia selecionada não existe.");
+        }
+        inspecao.setId(null);
         Inspecao salva = inspecaoRepository.salvar(inspecao);
 
         // Atualiza o status da colmeia correspondente caso exista
         if (salva.getColmeiaId() != null && salva.getStatus() != null) {
             colmeiaRepository.buscarPorId(salva.getColmeiaId()).ifPresent(colmeia -> {
                 colmeia.setStatus(salva.getStatus());
+                colmeia.setResumoInspecao(salva.getResumo());
+                var resumo = new com.fasterxml.jackson.databind.ObjectMapper().createObjectNode();
+                resumo.put("resumo", salva.getResumo());
+                resumo.put("saude", "normal".equals(salva.getStatus()) ? "Saudável"
+                        : "atencao".equals(salva.getStatus()) ? "Atenção" : "Crítico");
+                var detalhes = resumo.putArray("detalhes");
+                detalhes.add(salva.getQuadrosCria() + " quadros com cria");
+                if (salva.getPragas() == null || salva.getPragas().isEmpty()) detalhes.add("Sem sinais de pragas");
+                else salva.getPragas().forEach(detalhes::add);
+                colmeia.setUltimaInspecao(resumo);
                 colmeiaRepository.salvar(colmeia);
             });
         }

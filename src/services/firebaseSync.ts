@@ -11,7 +11,7 @@ import {
 
 /**
  * Garante que a conta do usuário no Firebase Realtime Database possua os dados iniciais
- * caso seja um cadastro novo ou ainda não possua apiários cadastrados.
+ * somente quando ainda não existir nenhum dado para o usuário.
  */
 export async function garantirDadosIniciaisFirebase(uid: string): Promise<void> {
   try {
@@ -20,8 +20,8 @@ export async function garantirDadosIniciaisFirebase(uid: string): Promise<void> 
 
     const dados = snap.val()
 
-    // Se o usuário ainda não tiver apiários cadastrados, inicializa com o dataset de demonstração
-    if (!dados || !dados.apiarios || Object.keys(dados.apiarios).length === 0) {
+    // Excluir o último apiário não deve repor exemplos nem sobrescrever outros cadastros.
+    if (!snap.exists()) {
       const apiariosMap: Record<string, unknown> = {}
       mockApiarios.forEach((a) => {
         apiariosMap[a.id] = a

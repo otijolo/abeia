@@ -16,7 +16,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/apiarios")
-@CrossOrigin(origins = "*")
 @Tag(name = "Apiários", description = "Endpoints para gerenciamento de apiários")
 public class ApiarioController {
 

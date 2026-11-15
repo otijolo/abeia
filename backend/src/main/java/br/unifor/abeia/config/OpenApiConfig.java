@@ -28,8 +28,11 @@ public class OpenApiConfig {
                                 .name("Equipe Abeia - Unifor")
                                 .email("suporte@abeia.unifor.br"))
                         .license(new License().name("Apache 2.0").url("https://springdoc.org")))
-                .servers(List.of(
-                        new Server().url("http://localhost:8088").description("Ambiente Local de Desenvolvimento")
-                ));
+                .components(new io.swagger.v3.oas.models.Components().addSecuritySchemes("firebase",
+                        new io.swagger.v3.oas.models.security.SecurityScheme()
+                                .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
+                                .scheme("bearer").bearerFormat("Firebase ID token")))
+                .addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList("firebase"))
+                .servers(List.of(new Server().url("/").description("Servidor atual")));
     }
 }

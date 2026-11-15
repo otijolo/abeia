@@ -8,6 +8,11 @@ import java.util.List;
  */
 public class Colmeia {
 
+    private com.fasterxml.jackson.databind.JsonNode ultimaInspecao;
+
+    public com.fasterxml.jackson.databind.JsonNode getUltimaInspecao() { return ultimaInspecao; }
+    public void setUltimaInspecao(com.fasterxml.jackson.databind.JsonNode valor) { ultimaInspecao = valor; }
+
     private String id;
     private String nome;
     private String apiarioId;

@@ -129,18 +129,3 @@
   height: 1px;
   background: var(--color-border-light, #eee);
 }
-
-/* Responsividade Desktop (≥ 840px) */
-@media (min-width: 840px) {
-  .layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr);
-    gap: 28px;
-    align-items: start;
-  }
-
-  .sideCol {
-    position: sticky;
-    top: 88px;
-  }
-}

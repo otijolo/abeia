@@ -4,18 +4,17 @@ import br.unifor.abeia.model.Alerta;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Repositório em memória para persistência de Alertas.
+ * Repositório de Alerta no Firebase, separado por usuário.
  */
 @Repository
 public class AlertaRepository {
 
-    private final Map<String, Alerta> dados = new ConcurrentHashMap<>();
+    private final FirebaseDatabase database;
 
-    public AlertaRepository() {
-        semearDadosIniciais();
+    public AlertaRepository(FirebaseDatabase database) {
+        this.database = database;
     }
 
     public void semearDadosIniciais() {
@@ -113,15 +112,15 @@ public class AlertaRepository {
     }
 
     public void limpar() {
-        dados.clear();
+        database.excluir("alertas");
     }
 
     public List<Alerta> listarTodos() {
-        return new ArrayList<>(dados.values());
+        return database.listar("alertas", Alerta.class);
     }
 
     public Optional<Alerta> buscarPorId(String id) {
-        return Optional.ofNullable(dados.get(id));
+        return database.buscar("alertas/" + id, Alerta.class);
     }
 
     public Alerta salvar(Alerta alerta) {
@@ -131,15 +130,15 @@ public class AlertaRepository {
         if (alerta.getEstado() == null || alerta.getEstado().isBlank()) {
             alerta.setEstado("ativo");
         }
-        dados.put(alerta.getId(), alerta);
+        database.salvar("alertas/" + alerta.getId(), alerta);
         return alerta;
     }
 
     public boolean excluir(String id) {
-        return dados.remove(id) != null;
+        return database.excluir("alertas/" + id);
     }
 
     public boolean existe(String id) {
-        return dados.containsKey(id);
+        return database.buscar("alertas/" + id, Alerta.class).isPresent();
     }
 }

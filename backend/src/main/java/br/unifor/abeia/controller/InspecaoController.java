@@ -17,7 +17,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/inspecoes")
-@CrossOrigin(origins = "*")
 @Tag(name = "Inspeções", description = "Endpoints para registro e acompanhamento de inspeções apícolas")
 public class InspecaoController {
 

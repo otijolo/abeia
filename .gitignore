@@ -19,3 +19,12 @@ target/
 # OS
 .DS_Store
 Thumbs.db
+
+# Configuração local de publicação
+.env
+.env.*
+!.env.example
+.firebase/
+firebase-debug.log
+
+*.log

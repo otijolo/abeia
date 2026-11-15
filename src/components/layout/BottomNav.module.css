@@ -38,9 +38,3 @@
   color: var(--color-label);
   font-weight: 700;
 }
-
-@media (min-width: 840px) {
-  .nav {
-    display: none;
-  }
-}
