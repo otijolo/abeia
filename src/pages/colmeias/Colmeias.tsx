@@ -4,7 +4,6 @@ import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { AlertBanner } from '../../components/ui/AlertBanner'
 import { ChipGroup } from '../../components/ui/ChipGroup'
-import { EmptyState } from '../../components/ui/EmptyState'
 import { FilterDropdown } from '../../components/ui/FilterDropdown'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
 import { SearchBar } from '../../components/ui/SearchBar'
@@ -137,7 +136,7 @@ export function Colmeias() {
         </div>
       </div>
 
-      <div style={{ padding: '4px 0 0' }}>
+      <div style={{ padding: '16px 0 0' }}>
         <FilterDropdown
           label="Apiários"
           options={opcoesApiarios}
@@ -181,28 +180,6 @@ export function Colmeias() {
             )
           })}
 
-          {!carregando && !erro && lista.length === 0 && (
-            <EmptyState
-              title={busca || filtro !== 'todos' || apiarioSelecionado ? 'Nenhuma colmeia encontrada' : 'Nenhuma colmeia cadastrada'}
-              description={
-                busca || filtro !== 'todos' || apiarioSelecionado
-                  ? 'Nenhuma colmeia corresponde aos filtros ativos. Tente limpar ou trocar os filtros.'
-                  : 'Cadastre sua primeira colmeia em um apiário para acompanhar inspeções e saúde.'
-              }
-              action={
-                busca || filtro !== 'todos' || apiarioSelecionado
-                  ? {
-                      label: 'Limpar filtros',
-                      onClick: () => {
-                        setBusca('')
-                        setFiltro('todos')
-                        setApiarioSelecionado('')
-                      }
-                    }
-                  : { label: '+ Nova Colmeia', to: '/colmeias/nova' }
-              }
-            />
-          )}
         </ListStack>
 
         <div className={styles.cta}>

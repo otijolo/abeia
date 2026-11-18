@@ -164,7 +164,7 @@ export function Inicio() {
               })
             ) : (
               <EmptyState
-                title="Tudo em dia!"
+                icon={null}
                 description="Não há colmeias com inspeções pendentes ou sob atenção no momento."
               />
             )}

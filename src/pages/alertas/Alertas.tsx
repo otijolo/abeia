@@ -3,9 +3,7 @@ import { Screen } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { AlertBanner } from '../../components/ui/AlertBanner'
 import { ChipGroup } from '../../components/ui/ChipGroup'
-import { EmptyState } from '../../components/ui/EmptyState'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
-import { AlertCircleIcon } from '../../components/icons'
 import { listarAlertas } from '../../services/alertaService'
 import type { Alerta, AlertaEstado } from '../../data/types'
 import styles from '../shared/ListPage.module.css'
@@ -108,28 +106,6 @@ export function Alertas() {
                   status={a.status}
                 />
               ))}
-              {lista.length === 0 && (
-                <EmptyState
-                  icon={<AlertCircleIcon size={24} />}
-                  title={
-                    aba === 'ativo'
-                      ? 'Nenhum alerta ativo'
-                      : aba === 'resolvido'
-                        ? 'Nenhum alerta resolvido'
-                        : 'Nenhum alerta ignorado'
-                  }
-                  description={
-                    aba === 'ativo'
-                      ? 'Tudo calmo no apiário! Não há ocorrências ou alertas pendentes no momento.'
-                      : `Não há alertas classificados como ${aba}s no histórico.`
-                  }
-                  action={
-                    aba === 'ativo'
-                      ? { label: '+ Novo Alerta', to: '/alertas/novo' }
-                      : undefined
-                  }
-                />
-              )}
             </>
           )}
         </ListStack>

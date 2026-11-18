@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { auth } from '../../services/firebase'
 import { buscarPerfil } from '../../services/perfilService'
 import { AuthLayout } from '../../components/layout/AuthLayout'
@@ -26,6 +26,7 @@ export function Login() {
       setCarregando(true)
       // Autentica o usuário com o Firebase
       const cred = await signInWithEmailAndPassword(auth, email, senha)
+      sessionStorage.removeItem('abeia_modo_demo')
       const usuario = cred.user
 
       let nomeUsuario = usuario.displayName || ''
@@ -64,6 +65,22 @@ export function Login() {
     }
   }
 
+  async function handleDemonstracao() {
+    setErro('')
+    setCarregando(true)
+    try {
+      await signOut(auth)
+      sessionStorage.setItem('abeia_modo_demo', '1')
+      localStorage.setItem('abeia_nome', 'Ildo Ramos')
+      localStorage.setItem('abeia_iniciais', 'IR')
+      navigate('/inicio')
+    } catch {
+      setErro('Não foi possível abrir a demonstração. Tente novamente.')
+    } finally {
+      setCarregando(false)
+    }
+  }
+
   return (
     <AuthLayout
       title="Bem-vindo de volta"
@@ -90,11 +107,8 @@ export function Login() {
             <Button
               type="button"
               variant="muted"
-              onClick={() => {
-                localStorage.setItem('abeia_nome', 'Ildo Ramos')
-                localStorage.setItem('abeia_iniciais', 'IR')
-                navigate('/inicio')
-              }}
+              disabled={carregando}
+              onClick={() => void handleDemonstracao()}
             >
               Acessar modo de demonstração
             </Button>

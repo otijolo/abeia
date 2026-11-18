@@ -22,7 +22,7 @@ export function Splash() {
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      const temUsuario = Boolean(user || localStorage.getItem('abeia_nome'))
+      const temUsuario = Boolean(user || sessionStorage.getItem('abeia_modo_demo') === '1')
       const destino = temUsuario ? '/inicio' : '/login'
       clearTimeout(timer)
       timer = setTimeout(() => navigate(destino, { replace: true, viewTransition: !temUsuario }), SPLASH_DURATION_MS)
@@ -33,7 +33,7 @@ export function Splash() {
     }
   }, [navigate])
 
-  const temUsuario = Boolean(auth.currentUser || localStorage.getItem('abeia_nome'))
+  const temUsuario = Boolean(auth.currentUser || sessionStorage.getItem('abeia_modo_demo') === '1')
 
   return (
     <main className={styles.splash} onClick={() => navigate(temUsuario ? '/inicio' : '/login', { replace: true, viewTransition: !temUsuario })}>

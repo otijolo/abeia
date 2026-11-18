@@ -42,6 +42,7 @@ export function Cadastro() {
         senha
       )
 
+      sessionStorage.removeItem('abeia_modo_demo')
       const usuario = credencial.user
 
       // 2. Atualiza o perfil no Firebase Auth com o nome

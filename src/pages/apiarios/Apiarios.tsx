@@ -7,7 +7,6 @@ import { ChipGroup } from '../../components/ui/ChipGroup'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
 import { SearchBar } from '../../components/ui/SearchBar'
 import { TextLink } from '../../components/ui/TextLink'
-import { EmptyState } from '../../components/ui/EmptyState'
 import { listarApiarios } from '../../services/apiarioService'
 import type { Apiario } from '../../data/types'
 import { statusFilterOptions, type StatusFilter } from '../../data/filters'
@@ -124,21 +123,6 @@ export function Apiarios() {
             />
           ))}
 
-          {!carregando && !erro && lista.length === 0 && (
-            <EmptyState
-              title={busca || filtro !== 'todos' ? 'Nenhum apiário encontrado' : 'Nenhum apiário cadastrado'}
-              description={
-                busca || filtro !== 'todos'
-                  ? 'Não encontramos nenhum apiário correspondente aos filtros selecionados.'
-                  : 'Cadastre seu primeiro apiário para começar a gerenciar suas colmeias e produções.'
-              }
-              action={
-                busca || filtro !== 'todos'
-                  ? { label: 'Limpar filtros', onClick: () => { setBusca(''); setFiltro('todos') } }
-                  : { label: '+ Novo Apiário', to: '/apiarios/novo' }
-              }
-            />
-          )}
         </ListStack>
 
         <div className={styles.cta}>

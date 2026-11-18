@@ -25,7 +25,7 @@ export function EmptyState({
   className
 }: Props) {
   // Se passou apenas children simples em string ou jsx, preserva comportamento compacto
-  const isSimple = !title && !action && !icon
+  const isSimple = !title && !description && !action && !icon
 
   if (isSimple) {
     return <p className={[styles.emptySimple, className].filter(Boolean).join(' ')}>{children}</p>
@@ -33,9 +33,11 @@ export function EmptyState({
 
   return (
     <div className={[styles.emptyContainer, className].filter(Boolean).join(' ')}>
-      <div className={styles.iconCircle} aria-hidden="true">
-        {icon ?? <HexagonsIcon size={26} />}
-      </div>
+      {icon !== null && (
+        <div className={styles.iconCircle} aria-hidden="true">
+          {icon ?? <HexagonsIcon size={26} />}
+        </div>
+      )}
 
       {title && <h3 className={styles.title}>{title}</h3>}
 

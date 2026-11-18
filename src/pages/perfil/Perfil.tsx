@@ -128,6 +128,7 @@ export function Perfil() {
   async function handleSair() {
     try {
       await signOut(auth)
+      sessionStorage.removeItem('abeia_modo_demo')
       localStorage.removeItem('abeia_nome')
       localStorage.removeItem('abeia_iniciais')
       navigate('/login', { replace: true })

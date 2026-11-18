@@ -77,8 +77,8 @@ function gerarId(): string {
 }
 
 /**
- * Roteia requisições localmente quando o backend Spring Boot estiver indisponível.
- * Garante que a apresentação e todos os fluxos de tela funcionem sem falhas.
+ * Roteia somente as requisições do modo de demonstração para o armazenamento local.
+ * Os cadastros autenticados são tratados pela API Java e não usam este armazenamento.
  */
 export async function handleLocalMockRequest<T>(
   endpoint: string,

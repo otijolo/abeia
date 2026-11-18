@@ -29,7 +29,7 @@ export function AlterarSenha() {
       return
     }
     const usuario = auth.currentUser
-    if (!usuario?.email) {
+    if (sessionStorage.getItem('abeia_modo_demo') === '1' || !usuario?.email) {
       setErro('Entre na sua conta antes de alterar a senha.')
       return
     }

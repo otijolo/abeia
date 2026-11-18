@@ -1,7 +1,7 @@
 import { auth } from './firebase'
 import { handleLocalMockRequest } from './mockStore'
 
-/** Endereço da API Java. O modo de demonstração é usado somente sem login. */
+/** Endereço da API Java. A demonstração precisa ser escolhida na tela de login. */
 export const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8088/api').replace(/\/$/, '')
 
 export class ApiError extends Error {
@@ -15,8 +15,11 @@ export class ApiError extends Error {
 
 export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   await auth.authStateReady()
+  if (sessionStorage.getItem('abeia_modo_demo') === '1') {
+    return handleLocalMockRequest<T>(endpoint, options)
+  }
   const usuario = auth.currentUser
-  if (!usuario) return handleLocalMockRequest<T>(endpoint, options)
+  if (!usuario) throw new ApiError(401, 'Sua sessão terminou. Entre novamente na sua conta.')
 
   const headers = new Headers(options.headers)
   headers.set('Content-Type', 'application/json')

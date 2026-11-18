@@ -73,7 +73,7 @@ export function ColmeiaForm({
         prazoInspecao: colmeia?.prazoInspecao ?? 'Não definida',
         resumoInspecao: colmeia?.resumoInspecao ?? 'Sem inspeções',
         producaoPeriodoKg: colmeia?.producaoPeriodoKg ?? 0,
-        ultimaInspecao: colmeia?.ultimaInspecao,
+        ...(colmeia?.ultimaInspecao ? { ultimaInspecao: colmeia.ultimaInspecao } : {}),
         problemas: colmeia?.problemas ?? []
       })
     } catch (error) {
