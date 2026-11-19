@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { AppIcon, Wordmark } from '../brand/Brand'
+import { AppIcon } from '../brand/Brand'
 import { Avatar } from '../brand/Avatar'
 import { DesignIcon, type DesignIconName } from '../ui/DesignIcon'
 import { MapPinIcon } from '../icons'
@@ -55,9 +55,8 @@ export function Sidebar({ active }: Props) {
   return (
     <aside className={styles.sidebar} aria-label="Navegação lateral desktop">
       <div className={styles.brandContainer}>
-        <Link to="/inicio" className={styles.brandLink}>
+        <Link to="/inicio" className={styles.brandLink} title="Início" aria-label="Início">
           <AppIcon size={38} />
-          <Wordmark width={96} />
         </Link>
       </div>
 
@@ -68,10 +67,12 @@ export function Sidebar({ active }: Props) {
             <NavLink
               key={item.key}
               to={item.to}
+              title={item.label}
+              aria-label={item.label}
               className={[styles.navItem, isActive ? styles.active : ''].filter(Boolean).join(' ')}
               aria-current={isActive ? 'page' : undefined}
             >
-              <span className={styles.iconWrapper}>
+              <span className={styles.iconWrapper} aria-hidden="true">
                 {item.isCustomIcon ? (
                   <MapPinIcon size={20} className={styles.customIcon} />
                 ) : (
@@ -80,19 +81,14 @@ export function Sidebar({ active }: Props) {
                   />
                 )}
               </span>
-              <span className={styles.label}>{item.label}</span>
             </NavLink>
           )
         })}
       </nav>
 
       <div className={styles.footer}>
-        <Link to="/perfil" className={styles.profileCard} aria-label="Abrir perfil">
+        <Link to="/perfil" className={styles.profileCard} aria-label="Abrir perfil" title="Meu perfil">
           <Avatar size="sm" iniciais={userInitials} />
-          <div className={styles.profileText}>
-            <strong className={styles.profileName}>{userName}</strong>
-            <span className={styles.profileRole}>Meu perfil</span>
-          </div>
         </Link>
       </div>
     </aside>

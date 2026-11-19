@@ -37,9 +37,7 @@ export function AppHeader({ title, avatar = true, backTo }: Props) {
               <Wordmark width={79} />
             </div>
             <div className={styles.contextDesktop}>
-              <span className={styles.crumb}>Abeia</span>
-              <span className={styles.crumbSep}>/</span>
-              <span className={styles.crumbCurrent}>Painel de Controle</span>
+              <h1 className={styles.title}>Início</h1>
             </div>
           </div>
         )}
