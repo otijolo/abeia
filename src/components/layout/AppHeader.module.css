@@ -87,7 +87,8 @@
 /* Versão Desktop (≥ 840px) */
 @media (min-width: 840px) {
   .header {
-    top: 80px;
+    position: static;
+    top: auto;
     height: 64px;
     padding: 0 24px;
     align-items: center;
