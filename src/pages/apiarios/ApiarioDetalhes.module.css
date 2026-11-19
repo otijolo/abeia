@@ -157,3 +157,17 @@
     top: 88px;
   }
 }
+
+/* No celular, ações ficam soltas e os dados gerais já estão no início. */
+@media (max-width: 839px) {
+  .actionPanel {
+    padding: 0 8px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .actionPanelTitle,
+  .actionPanelSubtitle,
+  .metricsCard { display: none; }
+}

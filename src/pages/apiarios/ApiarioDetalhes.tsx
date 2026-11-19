@@ -8,7 +8,6 @@ import { ListCard, ListStack } from '../../components/ui/ListCard'
 import { MapPreview } from '../../components/ui/MapPreview'
 import { SectionTitle } from '../../components/ui/SectionTitle'
 import { StatusBadge } from '../../components/ui/StatusBadge'
-import { EmptyState } from '../../components/ui/EmptyState'
 import {
   buscarApiario,
   excluirApiario
@@ -195,13 +194,6 @@ export function ApiarioDetalhes() {
           <Stack gap={16}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <SectionTitle>Colmeias instaladas</SectionTitle>
-              <Button
-                to={`/colmeias/nova?apiarioId=${apiario.id}`}
-                variant="secondary"
-                style={{ padding: '6px 14px', fontSize: '13px' }}
-              >
-                + Nova Colmeia
-              </Button>
             </div>
 
             <ListStack gap={10}>
@@ -216,14 +208,9 @@ export function ApiarioDetalhes() {
               ))}
 
               {colmeias.length === 0 && (
-                <EmptyState
-                  title="Nenhuma colmeia neste apiário"
-                  description={`O apiário ${apiario.nome} ainda não possui colmeias cadastradas.`}
-                  action={{
-                    label: '+ Adicionar Colmeia',
-                    to: `/colmeias/nova?apiarioId=${apiario.id}`
-                  }}
-                />
+                <p style={{ color: 'var(--color-text-muted)', padding: '16px 0' }}>
+                  Nenhuma colmeia cadastrada neste apiário.
+                </p>
               )}
             </ListStack>
           </Stack>
