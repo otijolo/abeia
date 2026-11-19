@@ -14,6 +14,7 @@ const mesesCompletos: Record<string, string> = {
 export function BarChart({ data, label }: { data: ProducaoMensal[]; label: string }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [thumb, setThumb] = useState({ width: 20, left: 0 })
+  const [temRolagem, setTemRolagem] = useState(false)
   const [posicao, setPosicao] = useState(0)
   const [intervalo, setIntervalo] = useState('')
   const max = Math.max(1, ...data.map((d) => d.kg))
@@ -24,6 +25,7 @@ export function BarChart({ data, label }: { data: ProducaoMensal[]; label: strin
     const update = () => {
       const ratio = el.clientWidth / el.scrollWidth
       const scrollable = el.scrollWidth - el.clientWidth
+      setTemRolagem(scrollable > 1)
       const width = ratio * 100
       const left = scrollable > 0 ? (el.scrollLeft / scrollable) * (100 - width) : 0
       setThumb({ width, left })
@@ -40,10 +42,12 @@ export function BarChart({ data, label }: { data: ProducaoMensal[]; label: strin
     }
     update()
     el.addEventListener('scroll', update, { passive: true })
-    window.addEventListener('resize', update)
+    const observer = new ResizeObserver(update)
+    observer.observe(el)
+    if (el.firstElementChild) observer.observe(el.firstElementChild)
     return () => {
       el.removeEventListener('scroll', update)
-      window.removeEventListener('resize', update)
+      observer.disconnect()
     }
   }, [data])
 
@@ -69,7 +73,7 @@ export function BarChart({ data, label }: { data: ProducaoMensal[]; label: strin
           </ul>
         </div>
       </Card>
-      <div className={styles.track}>
+      {temRolagem && <div className={styles.track}>
         <span className={styles.thumb} aria-hidden="true" style={{ width: `${thumb.width}%`, left: `${thumb.left}%` }} />
         <input type="range" min={0} max={100} step="any" value={posicao}
           aria-label="Rolar meses do gráfico" className={styles.range}
@@ -77,7 +81,7 @@ export function BarChart({ data, label }: { data: ProducaoMensal[]; label: strin
             const el = scrollRef.current
             if (el) el.scrollLeft = (Number(e.target.value) / 100) * (el.scrollWidth - el.clientWidth)
           }} />
-      </div>
+      </div>}
     </figure>
   )
 }
