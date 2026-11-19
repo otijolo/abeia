@@ -220,6 +220,16 @@ export function ColmeiaDetalhes() {
                   {colmeia.instaladaEm || 'Não informada'}
                 </strong>
               </div>
+              <div className={styles.specItem}>
+                <span className={styles.specLabel}>Prazo de Inspeção</span>
+                <strong className={styles.specValue}>{colmeia.prazoInspecao || 'Não definido'}</strong>
+              </div>
+              <div className={styles.specItem}>
+                <span className={styles.specLabel}>Produção do Período</span>
+                <strong className={styles.specValue}>
+                  {(colmeia.producaoPeriodoKg ?? 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} kg
+                </strong>
+              </div>
             </div>
             {colmeia.observacoes && (
               <p className={styles.observacoesText}>
@@ -277,14 +287,9 @@ export function ColmeiaDetalhes() {
           </Stack>
         </div>
 
-        {/* Coluna Lateral: Painel de Gestão e Indicadores */}
+        {/* Ações após as informações da colmeia */}
         <aside className={styles.sideCol}>
           <div className={styles.actionPanel}>
-            <h3 className={styles.actionPanelTitle}>Gestão da Colmeia</h3>
-            <p className={styles.actionPanelSubtitle}>
-              Ações rápidas e registros de campo
-            </p>
-
             <div className={styles.actionList}>
               <Button to={`/colmeias/${colmeia.id}/inspecoes/nova`}>
                 + Nova Inspeção
@@ -332,30 +337,6 @@ export function ColmeiaDetalhes() {
             </div>
           </div>
 
-          {/* Card de Indicadores Rápidos */}
-          <div className={styles.metricsCard}>
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Status Geral</span>
-              <StatusBadge status={colmeia.status} />
-            </div>
-            <div className={styles.metricsDivider} />
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Prazo de Inspeção</span>
-              <span className={styles.metricsValue}>
-                {colmeia.prazoInspecao || 'Em dia'}
-              </span>
-            </div>
-            <div className={styles.metricsDivider} />
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Produção do Período</span>
-              <span className={styles.metricsValue}>
-                {(colmeia.producaoPeriodoKg ?? 0).toLocaleString('pt-BR', {
-                  maximumFractionDigits: 1
-                })}{' '}
-                kg
-              </span>
-            </div>
-          </div>
         </aside>
       </div>
 
