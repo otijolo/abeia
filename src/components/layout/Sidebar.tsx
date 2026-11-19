@@ -1,5 +1,6 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { AppIcon } from '../brand/Brand'
+import { useState } from 'react'
+import beeUrl from '../../assets/abeia-logo.png'
 import { DesignIcon, type DesignIconName } from '../ui/DesignIcon'
 import { MapPinIcon } from '../icons'
 import type { NavSection } from './BottomNav'
@@ -27,6 +28,7 @@ const navItems: NavItem[] = [
 ]
 
 export function Sidebar({ active }: Props) {
+  const [batendoAsas, setBatendoAsas] = useState(false)
   const location = useLocation()
   const pathname = location.pathname
 
@@ -44,9 +46,19 @@ export function Sidebar({ active }: Props) {
   return (
     <aside className={styles.sidebar} aria-label="Navegação lateral desktop">
       <div className={styles.brandContainer}>
-        <Link to="/inicio" className={styles.brandLink} title="Início" aria-label="Início">
-          <AppIcon size={38} />
-        </Link>
+        <button
+          type="button"
+          className={styles.beeButton}
+          aria-label="Bater as asas da abelha"
+          onClick={() => setBatendoAsas(true)}
+          onAnimationEnd={() => setBatendoAsas(false)}
+        >
+          <span className={[styles.bee, batendoAsas ? styles.flapping : ''].filter(Boolean).join(' ')} aria-hidden="true">
+            <img src={beeUrl} alt="" className={styles.beeBody} />
+            <img src={beeUrl} alt="" className={styles.upperWing} />
+            <img src={beeUrl} alt="" className={styles.lowerWing} />
+          </span>
+        </button>
       </div>
 
       <nav className={styles.nav}>
@@ -63,7 +75,7 @@ export function Sidebar({ active }: Props) {
             >
               <span className={styles.iconWrapper} aria-hidden="true">
                 {item.isCustomIcon ? (
-                  <MapPinIcon size={20} className={styles.customIcon} />
+                  <MapPinIcon size={28} className={styles.customIcon} />
                 ) : (
                   <DesignIcon
                     name={(isActive ? `${item.designIcon}-ativo` : item.designIcon) as DesignIconName}
