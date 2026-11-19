@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { AppHeader } from './AppHeader'
 import { BottomNav, type NavSection } from './BottomNav'
-import { Sidebar } from './Sidebar'
 import styles from './Screen.module.css'
 
 interface Props {
@@ -23,7 +22,6 @@ interface Props {
 export function Screen({ children, title, avatar = true, backTo, nav, padding = 'list', fullMap = false }: Props) {
   return (
     <div className={[styles.screen, fullMap ? styles.mapScreen : ''].filter(Boolean).join(' ')}>
-      <Sidebar active={nav} />
       <div className={styles.mainArea}>
         <AppHeader title={title} avatar={avatar} backTo={backTo} />
         <main className={`${styles.content} ${styles[padding]}`}>

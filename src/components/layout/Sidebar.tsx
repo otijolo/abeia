@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import titleUrl from '../../assets/abeia-titulo.png'
 import { auth } from '../../services/firebase'
 import beeUrl from '../../assets/abeia-logo.png'
@@ -66,7 +66,8 @@ export function Sidebar({ active }: Props) {
         <img src={titleUrl} alt="Abeia" className={styles.wordmark} />
       </div>
 
-      <nav className={styles.nav}>
+      <nav className={styles.nav} style={{ '--active-index': navItems.findIndex((item) => item.key === currentSection) } as CSSProperties}>
+        <span className={styles.indicator} style={{ opacity: currentSection ? 1 : 0 }} aria-hidden="true" />
         {navItems.map((item) => {
           const isActive = currentSection === item.key
           return (
@@ -80,7 +81,7 @@ export function Sidebar({ active }: Props) {
             >
               <span className={styles.iconWrapper} aria-hidden="true">
                 {item.isCustomIcon ? (
-                  <MapPinIcon size={28} className={styles.customIcon} />
+                  <MapPinIcon size={28} strokeWidth={2.6} className={styles.customIcon} />
                 ) : (
                   <DesignIcon
                     name={(isActive ? `${item.designIcon}-ativo` : item.designIcon) as DesignIconName}

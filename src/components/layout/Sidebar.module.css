@@ -26,6 +26,9 @@
   }
   .wordmark { width: 105px; height: auto; }
   .nav {
+    --nav-step: 60px;
+    --indicator-left: 12px;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -43,16 +46,17 @@
   }
   .navItem:hover, .profileCard:hover { background: var(--color-chip); }
   .active, .active:hover { background: transparent; color: #f9c502; }
-  .active::after {
-    content: '';
+  .indicator {
     position: absolute;
     width: 24px;
-    height: 3px;
+    height: 4px;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 2px;
+    left: var(--indicator-left);
+    transform: translateX(calc(var(--active-index) * var(--nav-step)));
+    border-radius: 999px;
     background: #111;
+    pointer-events: none;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease;
   }
   .iconWrapper { display: grid; place-items: center; width: 28px; height: 28px; }
   .customIcon { color: currentColor; }
@@ -77,7 +81,7 @@
 
 @media (min-width: 840px) and (max-width: 1040px) {
   .sidebar { padding: 0 16px; gap: 12px; }
-  .nav { gap: 2px; }
+  .nav { gap: 2px; --nav-step: 46px; --indicator-left: 10px; }
   .navItem { width: 44px; height: 44px; }
   .wordmark { width: 86px; }
   .profileCard { padding: 8px; }
@@ -141,4 +145,8 @@
 @media (prefers-reduced-motion: reduce) {
   .flapping .upperWing,
   .flapping .lowerWing { animation-duration: 1ms; animation-iteration-count: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indicator { transition: none; }
 }

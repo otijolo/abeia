@@ -51,6 +51,7 @@
 @media (min-width: 840px) {
   .screen {
     flex-direction: column;
+    min-height: calc(100dvh - 112px);
     background: var(--color-bg);
   }
 
