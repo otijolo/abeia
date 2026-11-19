@@ -110,7 +110,7 @@ export function Alertas() {
           )}
         </ListStack>
 
-        <div className={styles.cta}>
+        <div className={styles.cta} style={{ marginTop: 28 }}>
           <Button to="/alertas/novo">+ Novo Alerta</Button>
         </div>
       </div>
