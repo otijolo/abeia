@@ -166,7 +166,7 @@
 @media (min-width: 840px) {
   .actionPanel {
     width: 100%;
-    max-width: 720px;
+    max-width: 800px;
     margin: 0 auto;
   }
 
@@ -181,6 +181,13 @@
 
 .primaryActions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 840px) {
+  .primaryActions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
 }
