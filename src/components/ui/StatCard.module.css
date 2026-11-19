@@ -30,29 +30,3 @@
   font-weight: 800;
   line-height: 1;
 }
-
-@media (min-width: 840px) {
-  .card {
-    height: 112px;
-    padding: 16px;
-    border-radius: 6px;
-    border: 0;
-    border-bottom: 1px solid var(--color-border);
-    background: transparent;
-    box-shadow: none;
-  }
-  .card:hover {
-    background: #fff8dc;
-  }
-  .label {
-    font-size: 13px;
-    color: var(--color-label);
-  }
-  .value {
-    left: 16px;
-    bottom: 16px;
-    font-size: 34px;
-    letter-spacing: -1px;
-    font-variant-numeric: tabular-nums;
-  }
-}

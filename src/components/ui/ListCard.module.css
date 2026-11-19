@@ -73,15 +73,3 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
-
-@media (min-width: 840px) {
-  .item {
-    min-height: 84px;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: none;
-    gap: 14px;
-  }
-  .title { font-size: 15px; }
-  .subtitle { font-size: 12px; }
-}
