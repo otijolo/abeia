@@ -55,11 +55,3 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .brandIcon,
-  .brandIcon img,
-  .wordmark,
-  .loader,
-  .hex { animation: none; transition: none; }
-}
