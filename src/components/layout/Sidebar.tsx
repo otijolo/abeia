@@ -1,9 +1,7 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AppIcon } from '../brand/Brand'
-import { Avatar } from '../brand/Avatar'
 import { DesignIcon, type DesignIconName } from '../ui/DesignIcon'
 import { MapPinIcon } from '../icons'
-import { auth } from '../../services/firebase'
 import type { NavSection } from './BottomNav'
 import styles from './Sidebar.module.css'
 
@@ -43,15 +41,6 @@ export function Sidebar({ active }: Props) {
     return undefined
   })()
 
-  const userName =
-    localStorage.getItem('abeia_nome') ||
-    auth.currentUser?.displayName ||
-    (auth.currentUser?.email ? auth.currentUser.email.split('@')[0] : 'Produtor')
-
-  const userInitials =
-    localStorage.getItem('abeia_iniciais') ||
-    (userName ? userName.slice(0, 2).toUpperCase() : 'U')
-
   return (
     <aside className={styles.sidebar} aria-label="Navegação lateral desktop">
       <div className={styles.brandContainer}>
@@ -88,7 +77,7 @@ export function Sidebar({ active }: Props) {
 
       <div className={styles.footer}>
         <Link to="/perfil" className={styles.profileCard} aria-label="Abrir perfil" title="Meu perfil">
-          <Avatar size="sm" iniciais={userInitials} />
+          <DesignIcon name="perfil" />
         </Link>
       </div>
     </aside>

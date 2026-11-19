@@ -88,14 +88,14 @@
 @media (min-width: 840px) {
   .header {
     height: 64px;
-    padding: 0 36px;
+    padding: 0 24px;
     align-items: center;
     background: var(--color-surface);
   }
 
   .headerInner {
-    max-width: 1080px;
-    margin: 0 auto;
+    max-width: none;
+    margin: 0;
     align-items: center;
   }
 
@@ -133,7 +133,6 @@
   }
 
   .avatar {
-    align-self: center;
-    margin-bottom: 0;
+    display: none;
   }
 }
