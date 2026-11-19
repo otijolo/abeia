@@ -193,7 +193,7 @@ export function ColmeiaDetalhes() {
               <h2 className={styles.cardTitle}>Dados da Colmeia</h2>
               {apiario && (
                 <Link to={`/apiarios/${apiario.id}`} className={styles.apiarioLink}>
-                  Ver {apiario.nome} →
+                  Ver apiário
                 </Link>
               )}
             </div>
@@ -295,6 +295,10 @@ export function ColmeiaDetalhes() {
                 + Nova Inspeção
               </Button>
 
+              <Button to={`/alertas/novo?colmeiaId=${colmeia.id}`}>
+                + Novo Alerta
+              </Button>
+
               <div className={styles.actionGrid}>
                 <Button
                   variant="secondary"
@@ -310,12 +314,6 @@ export function ColmeiaDetalhes() {
                   Produção
                 </Button>
 
-                <Button
-                  variant="secondary"
-                  to={`/alertas/novo?colmeiaId=${colmeia.id}`}
-                >
-                  Criar Alerta
-                </Button>
 
                 <Button
                   variant="secondary"

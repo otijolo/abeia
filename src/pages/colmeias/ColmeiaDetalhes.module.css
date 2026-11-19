@@ -36,18 +36,9 @@
 }
 
 .apiarioLink {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-primary-text, #4e4c43);
+  font-size: 14px;
+  color: var(--color-link);
   text-decoration: none;
-  padding: 4px 10px;
-  background: rgba(249, 197, 2, 0.15);
-  border-radius: 999px;
-  transition: background 0.15s ease;
-}
-
-.apiarioLink:hover {
-  background: rgba(249, 197, 2, 0.3);
 }
 
 .specGrid {
@@ -171,14 +162,19 @@
   margin: 8px 0;
 }
 
-/* No desktop, informações primeiro e ações em três linhas abaixo. */
+/* Ações centralizadas e botões secundários lado a lado no desktop. */
 @media (min-width: 840px) {
   .actionPanel {
     width: 100%;
     max-width: 720px;
+    margin: 0 auto;
   }
 
   .actionGrid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+
+@media (max-width: 839px) {
+  .actionGrid > :last-child { grid-column: 1 / -1; }
 }
