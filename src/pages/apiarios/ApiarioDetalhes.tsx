@@ -7,7 +7,6 @@ import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
 import { MapPreview } from '../../components/ui/MapPreview'
 import { SectionTitle } from '../../components/ui/SectionTitle'
-import { StatusBadge } from '../../components/ui/StatusBadge'
 import {
   buscarApiario,
   excluirApiario
@@ -177,6 +176,10 @@ export function ApiarioDetalhes() {
                   {colmeias.length} colmeias
                 </strong>
               </div>
+              <div className={styles.specItem}>
+                <span className={styles.specLabel}>Colmeias em atenção / críticas</span>
+                <strong className={styles.specValue}>{colmeiasEmAtencao}</strong>
+              </div>
             </div>
             {apiario.descricao && (
               <p className={styles.observacoesText}>
@@ -216,7 +219,7 @@ export function ApiarioDetalhes() {
           </Stack>
         </div>
 
-        {/* Coluna Lateral: Mapa, Gestão e Indicadores */}
+        {/* Mapa e ações após as informações do apiário */}
         <aside className={styles.sideCol}>
           {/* Mapa de Localização */}
           <div style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
@@ -225,11 +228,6 @@ export function ApiarioDetalhes() {
 
           {/* Painel de Gestão */}
           <div className={styles.actionPanel}>
-            <h3 className={styles.actionPanelTitle}>Gestão do Apiário</h3>
-            <p className={styles.actionPanelSubtitle}>
-              Operações de manejo e configurações
-            </p>
-
             <div className={styles.actionList}>
               <Button to={`/colmeias/nova?apiarioId=${apiario.id}`}>
                 + Adicionar Colmeia
@@ -254,30 +252,6 @@ export function ApiarioDetalhes() {
             </div>
           </div>
 
-          {/* Card de Indicadores Rápidos */}
-          <div className={styles.metricsCard}>
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Status Sanitário</span>
-              <StatusBadge status={apiario.status} />
-            </div>
-            <div className={styles.metricsDivider} />
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Colmeias Totais</span>
-              <span className={styles.metricsValue}>{colmeias.length}</span>
-            </div>
-            <div className={styles.metricsDivider} />
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Atenção / Críticas</span>
-              <span
-                className={styles.metricsValue}
-                style={{
-                  color: colmeiasEmAtencao > 0 ? 'var(--status-attention-fg)' : 'inherit'
-                }}
-              >
-                {colmeiasEmAtencao}
-              </span>
-            </div>
-          </div>
         </aside>
       </div>
 
