@@ -7,7 +7,7 @@
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    width: 250px;
+    width: 208px;
     height: 100vh;
     position: sticky;
     top: 0;
@@ -30,8 +30,8 @@
   .nav {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 16px 12px;
+    gap: 8px;
+    padding: 28px 14px;
     flex: 1;
     overflow-y: auto;
   }
@@ -41,7 +41,7 @@
     align-items: center;
     gap: 12px;
     padding: 10px 14px;
-    border-radius: var(--radius-sm);
+    border-radius: 6px;
     font-size: 14px;
     font-weight: 500;
     color: var(--color-label);
@@ -55,7 +55,8 @@
 
   .active,
   .active:hover {
-    background: var(--color-chip-active);
+    background: #fff3bc;
+    box-shadow: inset 3px 0 0 #e5ae00;
     color: var(--color-text);
     font-weight: 700;
   }
@@ -87,7 +88,7 @@
     align-items: center;
     gap: 12px;
     padding: 8px 10px;
-    border-radius: var(--radius-sm);
+    border-radius: 6px;
     transition: background-color 0.15s ease;
   }
 

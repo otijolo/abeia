@@ -38,22 +38,29 @@
   .trend { animation: none; }
 }
 
+/* No desktop, resumo e acompanhamento dividem a mesma área de trabalho. */
 @media (min-width: 840px) {
   .greeting {
-    margin-top: 0;
-    margin-bottom: 8px;
+    margin: 8px 0 0;
+    padding: 0 0 24px;
+    border-bottom: 1px solid var(--color-border);
   }
   .greeting h1 {
-    font-size: 28px;
+    font-size: 36px;
+    letter-spacing: -1.3px;
+    line-height: 1.15;
   }
   .greeting p {
     font-size: 14px;
-    margin-top: 4px;
+    margin-top: 10px;
   }
   .stats {
-    margin-top: 20px;
+    margin-top: 24px;
   }
   .section {
-    margin-top: 28px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 3px solid #f5c400;
+    gap: 20px;
   }
 }
