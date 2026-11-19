@@ -118,3 +118,22 @@
   .full.form .innerContainer > * { max-width: none; }
   .centered.form .innerContainer > * { margin-left: auto; margin-right: auto; }
 }
+
+/* No mobile, só a região entre o cabeçalho e a navegação tem rolagem. */
+@media (max-width: 839px) {
+  .screen {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .mainArea {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .content {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+}
