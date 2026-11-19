@@ -16,7 +16,7 @@ function Hexagon({ className }: { className: string }) {
 }
 
 /** 0 - Tela de Título: logo + loader de hexágonos, depois segue para o cadastro ou início */
-export function Splash() {
+export function Splash({ onComplete }: { onComplete?: () => void } = {}) {
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -25,18 +25,21 @@ export function Splash() {
       const temUsuario = Boolean(user || sessionStorage.getItem('abeia_modo_demo') === '1')
       const destino = temUsuario ? '/inicio' : '/login'
       clearTimeout(timer)
-      timer = setTimeout(() => navigate(destino, { replace: true, viewTransition: !temUsuario }), SPLASH_DURATION_MS)
+      timer = setTimeout(() => {
+        if (onComplete) onComplete()
+        else navigate(destino, { replace: true, viewTransition: !temUsuario })
+      }, SPLASH_DURATION_MS)
     })
     return () => {
       unsubscribe()
       clearTimeout(timer)
     }
-  }, [navigate])
+  }, [navigate, onComplete])
 
   const temUsuario = Boolean(auth.currentUser || sessionStorage.getItem('abeia_modo_demo') === '1')
 
   return (
-    <main className={styles.splash} onClick={() => navigate(temUsuario ? '/inicio' : '/login', { replace: true, viewTransition: !temUsuario })}>
+    <main className={styles.splash} onClick={() => onComplete ? onComplete() : navigate(temUsuario ? '/inicio' : '/login', { replace: true, viewTransition: !temUsuario })}>
       <div className={styles.brandIcon}>
         <AppIcon size={178} />
       </div>

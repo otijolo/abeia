@@ -103,7 +103,7 @@ export function EditarColmeia() {
 
   if (carregando) {
     return (
-      <Screen title="Editar Colmeia" padding="form">
+      <Screen title="Editar Colmeia" padding="form" contentWidth="full">
         <p>Carregando dados da colmeia...</p>
       </Screen>
     )
@@ -111,7 +111,7 @@ export function EditarColmeia() {
 
   if (erro && !colmeia) {
     return (
-      <Screen title="Editar Colmeia" padding="form">
+      <Screen title="Editar Colmeia" padding="form" contentWidth="full">
         <AlertBanner variant="error">{erro}</AlertBanner>
         <div style={{ marginTop: 16 }}>
           <Button onClick={() => navigate('/colmeias')}>
@@ -128,7 +128,7 @@ export function EditarColmeia() {
 
   if (apiarios.length === 0) {
     return (
-      <Screen title="Editar Colmeia" padding="form">
+      <Screen title="Editar Colmeia" padding="form" contentWidth="full">
         <AlertBanner variant="warning">
           Não foi possível encontrar apiários para associar à colmeia.
         </AlertBanner>
@@ -140,7 +140,7 @@ export function EditarColmeia() {
   }
 
   return (
-    <Screen title="Editar Colmeia" padding="form">
+    <Screen title="Editar Colmeia" padding="form" contentWidth="full">
       {erro && (
         <div style={{ marginBottom: 16 }}>
           <AlertBanner variant="error">{erro}</AlertBanner>

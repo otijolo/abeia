@@ -118,7 +118,7 @@ export function NovaInspecao() {
   }
 
   return (
-    <Screen title="Nova Inspeção" padding="form">
+    <Screen title="Nova Inspeção" padding="form" contentWidth="full">
       <form onSubmit={handleSubmit}>
         <Stack gap={20}>
           <TextField

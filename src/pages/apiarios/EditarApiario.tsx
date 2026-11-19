@@ -92,7 +92,7 @@ export function EditarApiario() {
 
   if (carregando) {
     return (
-      <Screen title="Editar Apiário" padding="form">
+      <Screen title="Editar Apiário" padding="form" contentWidth="full">
         <p>Carregando dados do apiário...</p>
       </Screen>
     )
@@ -100,7 +100,7 @@ export function EditarApiario() {
 
   if (erro && !apiario) {
     return (
-      <Screen title="Editar Apiário" padding="form">
+      <Screen title="Editar Apiário" padding="form" contentWidth="full">
         <AlertBanner variant="error">{erro}</AlertBanner>
         <div style={{ marginTop: 16 }}>
           <Button onClick={() => navigate('/apiarios')}>
@@ -116,7 +116,7 @@ export function EditarApiario() {
   }
 
   return (
-    <Screen title="Editar Apiário" padding="form">
+    <Screen title="Editar Apiário" padding="form" contentWidth="full">
       {erro && (
         <div style={{ marginBottom: 16 }}>
           <AlertBanner variant="error">{erro}</AlertBanner>

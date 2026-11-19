@@ -49,25 +49,7 @@
   gap: 20px;
 }
 
-.actionPanel {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 22px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-}
-
-.actionPanelTitle {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 0 0 4px;
-}
-
-.actionPanelSubtitle {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  margin: 0 0 18px;
-}
+.actionPanel { padding: 0; background: transparent; }
 
 .actionList {
   display: flex;
@@ -75,51 +57,7 @@
   gap: 12px;
 }
 
-.metricsCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 18px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.metricsRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.metricsLabel {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  font-weight: 500;
-}
-
-.metricsValue {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.metricsDivider {
-  height: 1px;
-  background: var(--color-border-light, #eee);
-}
-
-/* Responsividade Desktop (≥ 840px) */
+.secondaryActions { display: flex; flex-direction: column; gap: 12px; }
 @media (min-width: 840px) {
-  .layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr);
-    gap: 28px;
-    align-items: start;
-  }
-
-  .sideCol {
-    position: sticky;
-    top: 88px;
-  }
+  .secondaryActions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

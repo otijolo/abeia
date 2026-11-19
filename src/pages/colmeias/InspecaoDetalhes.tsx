@@ -10,7 +10,6 @@ import {
 } from '../../components/ui/InfoCard'
 import { KeyValueList } from '../../components/ui/KeyValueList'
 import { SectionTitle } from '../../components/ui/SectionTitle'
-import { StatusBadge } from '../../components/ui/StatusBadge'
 
 import { buscarColmeia } from '../../services/colmeiaService'
 import { buscarInspecao } from '../../services/inspecaoService'
@@ -178,16 +177,12 @@ export function InspecaoDetalhes() {
         {/* Coluna Lateral: Ações e Resumo */}
         <aside className={styles.sideCol}>
           <div className={styles.actionPanel}>
-            <h3 className={styles.actionPanelTitle}>Navegação</h3>
-            <p className={styles.actionPanelSubtitle}>
-              Retorno e histórico da colmeia
-            </p>
-
             <div className={styles.actionList}>
               <Button to={`/colmeias/${colmeia.id}`}>
                 Ver Colmeia
               </Button>
 
+              <div className={styles.secondaryActions}>
               <Button
                 variant="secondary"
                 to={`/colmeias/${colmeia.id}/inspecoes`}
@@ -201,22 +196,10 @@ export function InspecaoDetalhes() {
               >
                 Registrar Produção
               </Button>
+              </div>
             </div>
           </div>
 
-          <div className={styles.metricsCard}>
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Avaliação Sanitária</span>
-              <StatusBadge status={inspecao.status} />
-            </div>
-            <div className={styles.metricsDivider} />
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Data da Inspeção</span>
-              <span className={styles.metricsValue}>
-                {formatarData(inspecao.data)}
-              </span>
-            </div>
-          </div>
         </aside>
       </div>
     </Screen>

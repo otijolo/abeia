@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom'
 import { Screen, Stack } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
 import { AlertBanner } from '../../components/ui/AlertBanner'
-import { EmptyState } from '../../components/ui/EmptyState'
 import { ListCard, ListStack } from '../../components/ui/ListCard'
 
 import { buscarColmeia } from '../../services/colmeiaService'
@@ -114,14 +113,9 @@ export function HistoricoInspecoes() {
             ))}
 
             {lista.length === 0 && !erro && (
-              <EmptyState
-                title="Nenhuma inspeção realizada"
-                description={`Ainda não há registros de inspeção para a ${colmeia.nome}. Realize a primeira avaliação para monitorar a colônia.`}
-                action={{
-                  label: '+ Primeira Inspeção',
-                  to: `/colmeias/${colmeia.id}/inspecoes/nova`
-                }}
-              />
+              <p style={{ color: 'var(--color-text-muted)', padding: '16px 0' }}>
+                Nenhuma inspeção registrada.
+              </p>
             )}
           </ListStack>
 
