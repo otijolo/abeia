@@ -50,13 +50,14 @@
 /* Versão Desktop / Telas maiores */
 @media (min-width: 840px) {
   .screen {
-    flex-direction: row;
+    flex-direction: column;
     background: var(--color-bg);
   }
 
   .mainArea {
     flex: 1;
     min-width: 0;
+    min-height: calc(100dvh - 80px);
   }
 
   .content {

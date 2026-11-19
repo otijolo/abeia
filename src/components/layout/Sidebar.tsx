@@ -1,5 +1,7 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useState } from 'react'
+import titleUrl from '../../assets/abeia-titulo.png'
+import { auth } from '../../services/firebase'
 import beeUrl from '../../assets/abeia-logo.png'
 import { DesignIcon, type DesignIconName } from '../ui/DesignIcon'
 import { MapPinIcon } from '../icons'
@@ -43,8 +45,10 @@ export function Sidebar({ active }: Props) {
     return undefined
   })()
 
+  const nome = localStorage.getItem('abeia_nome') || auth.currentUser?.displayName || 'Meu perfil'
+
   return (
-    <aside className={styles.sidebar} aria-label="Navegação lateral desktop">
+    <aside className={styles.sidebar} aria-label="Navegação desktop">
       <div className={styles.brandContainer}>
         <button
           type="button"
@@ -59,6 +63,7 @@ export function Sidebar({ active }: Props) {
             <img src={beeUrl} alt="" className={styles.lowerWing} />
           </span>
         </button>
+        <img src={titleUrl} alt="Abeia" className={styles.wordmark} />
       </div>
 
       <nav className={styles.nav}>
@@ -90,6 +95,7 @@ export function Sidebar({ active }: Props) {
       <div className={styles.footer}>
         <Link to="/perfil" className={styles.profileCard} aria-label="Abrir perfil" title="Meu perfil">
           <DesignIcon name="perfil" />
+          <span className={styles.profileName}>{nome}</span>
         </Link>
       </div>
     </aside>
