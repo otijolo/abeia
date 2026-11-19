@@ -84,57 +84,23 @@
   transform: scale(1.05);
 }
 
-/* Versão Desktop (≥ 840px) */
+/* No desktop o título faz parte do conteúdo, abaixo da navegação. */
 @media (min-width: 840px) {
   .header {
     position: static;
-    top: auto;
-    height: 64px;
-    padding: 0 24px;
-    align-items: center;
-    background: var(--color-surface);
+    width: calc(100% - 72px);
+    max-width: 1080px;
+    height: auto;
+    margin: 0 auto;
+    padding: 32px 0 0;
+    background: transparent;
+    backdrop-filter: none;
+    border: 0;
   }
-
-  .headerInner {
-    max-width: none;
-    margin: 0;
-    align-items: center;
-  }
-
-  .titleRow {
-    padding: 0;
-    gap: 12px;
-  }
-
-  .title {
-    font-size: 22px;
-  }
-
-  .brandMobile {
-    display: none;
-  }
-
-  .contextDesktop {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .crumb {
-    color: var(--color-text-muted);
-  }
-
-  .crumbSep {
-    color: var(--color-border);
-  }
-
-  .crumbCurrent {
-    color: var(--color-text);
-  }
-
-  .avatar {
-    display: none;
-  }
+  .headerInner { align-items: center; }
+  .titleRow { padding: 0; gap: 12px; }
+  .title { font-size: 32px; line-height: 1.2; }
+  .brandMobile { display: none; }
+  .contextDesktop { display: flex; align-items: center; }
+  .avatar { display: none; }
 }
