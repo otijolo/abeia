@@ -166,7 +166,7 @@
 @media (min-width: 840px) {
   .actionPanel {
     width: 100%;
-    max-width: 800px;
+    max-width: none;
     margin: 0 auto;
   }
 
