@@ -57,7 +57,7 @@
   .mainArea {
     flex: 1;
     min-width: 0;
-    min-height: calc(100dvh - 88px);
+    min-height: calc(100dvh - 112px);
   }
 
   .content {
@@ -73,7 +73,7 @@
 
   .innerContainer {
     max-width: 1080px;
-    margin: 0 auto;
+    margin: 0;
   }
 
   .form .innerContainer {
