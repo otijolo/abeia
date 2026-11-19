@@ -291,6 +291,7 @@ export function ColmeiaDetalhes() {
         <aside className={styles.sideCol}>
           <div className={styles.actionPanel}>
             <div className={styles.actionList}>
+              <div className={styles.primaryActions}>
               <Button to={`/colmeias/${colmeia.id}/inspecoes/nova`}>
                 + Nova Inspeção
               </Button>
@@ -298,6 +299,7 @@ export function ColmeiaDetalhes() {
               <Button to={`/alertas/novo?colmeiaId=${colmeia.id}`}>
                 + Novo Alerta
               </Button>
+              </div>
 
               <div className={styles.actionGrid}>
                 <Button
