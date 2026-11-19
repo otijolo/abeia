@@ -60,29 +60,30 @@
     min-height: calc(100dvh - 112px);
   }
 
-  .content {
-    padding-top: 28px;
-    padding-bottom: 56px;
-  }
-
+  .content,
   .list,
-  .form {
-    padding-left: 36px;
-    padding-right: 36px;
+  .form,
+  .none {
+    padding: 24px 24px 40px;
   }
 
   .innerContainer {
-    max-width: 1080px;
+    max-width: none;
     margin: 0;
+    padding: 28px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
   }
 
-  .form .innerContainer {
+  .form .innerContainer > * {
     max-width: 720px;
-    background: var(--color-surface);
-    padding: 36px 40px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  }
+
+  .none .innerContainer {
+    padding: 0;
+    overflow: hidden;
   }
 
   .desktopCols3 {
