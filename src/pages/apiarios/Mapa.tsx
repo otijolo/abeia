@@ -42,7 +42,7 @@ export function Mapa() {
 
   useEffect(() => {
     if (!containerRef.current) return
-    const map = L.map(containerRef.current, { scrollWheelZoom: false })
+    const map = L.map(containerRef.current, { scrollWheelZoom: true })
       .setView([-5.5, -39.3], 7)
     map.on('click', () => setSelecionado(null))
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
