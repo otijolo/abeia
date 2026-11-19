@@ -38,3 +38,10 @@
   justify-content: space-between;
   margin-bottom: 8px;
 }
+
+@media (min-width: 840px) {
+  .viewport { height: 100dvh; }
+  .viewport :global(.leaflet-top) { top: 128px; }
+  .notice { top: 128px; }
+  .details { max-width: 400px; left: 24px; bottom: 24px; }
+}

@@ -81,7 +81,7 @@ export function Mapa() {
   const semLocalizacao = apiarios.filter((a) => !coordenadasDoApiario(a)).length
 
   return (
-    <Screen title="Mapa" nav="apiarios" padding="none" backTo="/apiarios">
+    <Screen fullMap title="Mapa" nav="apiarios" padding="none" backTo="/apiarios">
       <div className={styles.viewport}>
         <div ref={containerRef} className={styles.map} aria-label="Localização dos apiários" />
         {(carregando || erro || erroMapa || semLocalizacao > 0 || apiarios.length === 0) && (

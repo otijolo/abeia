@@ -35,7 +35,7 @@ export function Sidebar({ active }: Props) {
   const pathname = location.pathname
 
   // Determina a seção ativa pela rota caso active não seja passado
-  const currentSection = active || (() => {
+  const currentSection = pathname.startsWith('/mapa') ? 'mapa' : active || (() => {
     if (pathname.startsWith('/apiarios')) return 'apiarios'
     if (pathname.startsWith('/mapa')) return 'mapa'
     if (pathname.startsWith('/colmeias') || pathname.startsWith('/inspecoes')) return 'colmeias'

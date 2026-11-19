@@ -94,3 +94,21 @@
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
 }
+
+@media (min-width: 840px) {
+  .mapScreen .mainArea {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    min-height: 0;
+  }
+  .mapScreen .mainArea > header { display: none; }
+  .mapScreen .content { padding: 0; }
+  .mapScreen .innerContainer {
+    height: 100dvh;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
