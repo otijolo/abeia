@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppIcon, Wordmark } from '../../components/brand/Brand'
 import styles from './Splash.module.css'
 
 import { auth } from '../../services/firebase'
 
-const SPLASH_DURATION_MS = 2400
+const SPLASH_DURATION_MS = 3000
 
 function Hexagon({ className }: { className: string }) {
   return (
@@ -18,6 +18,14 @@ function Hexagon({ className }: { className: string }) {
 /** 0 - Tela de Título: logo + loader de hexágonos, depois segue para o cadastro ou início */
 export function Splash({ onComplete }: { onComplete?: () => void } = {}) {
   const navigate = useNavigate()
+  const [estagio, setEstagio] = useState('joined')
+
+  useEffect(() => {
+    // Pausas visíveis entre as formas unidas, separadas e o favo completo.
+    const separar = setTimeout(() => setEstagio('spread'), 1000)
+    const juntar = setTimeout(() => setEstagio('honeycomb'), 2000)
+    return () => { clearTimeout(separar); clearTimeout(juntar) }
+  }, [])
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined
@@ -46,7 +54,7 @@ export function Splash({ onComplete }: { onComplete?: () => void } = {}) {
       <div className={styles.wordmark}>
         <Wordmark width={326} />
       </div>
-      <div className={styles.loader} role="progressbar" aria-label="Carregando">
+      <div className={styles.loader} data-stage={estagio} role="progressbar" aria-label="Carregando">
         <Hexagon className={styles.top} />
         <Hexagon className={styles.left} />
         <Hexagon className={styles.right} />

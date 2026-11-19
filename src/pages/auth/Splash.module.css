@@ -41,36 +41,15 @@
   stroke: #f9d236;
   stroke-width: 7;
   stroke-linejoin: round;
-  animation: 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transition: transform 170ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.top {
-  transform: translate(0, 12px);
-  animation-name: toTop;
-}
-.left {
-  transform: translate(-27px, 56px);
-  animation-name: toLeft;
-}
-.right {
-  transform: translate(27px, 56px);
-  animation-name: toRight;
-}
-
-@keyframes toTop {
-  0%, 68% { transform: translate(0, 0); }
-  75%, 100% { transform: translate(0, 12px); }
-}
-@keyframes toLeft {
-  0%, 33% { transform: translate(0, 0); }
-  40%, 68% { transform: translate(-39px, 56px); }
-  75%, 100% { transform: translate(-27px, 56px); }
-}
-@keyframes toRight {
-  0%, 33% { transform: translate(0, 0); }
-  40%, 68% { transform: translate(39px, 56px); }
-  75%, 100% { transform: translate(27px, 56px); }
-}
+.top, .left, .right { transform: translate(0, 0); }
+.loader[data-stage='spread'] .left { transform: translate(-39px, 56px); }
+.loader[data-stage='spread'] .right { transform: translate(39px, 56px); }
+.loader[data-stage='honeycomb'] .top { transform: translate(0, 12px); }
+.loader[data-stage='honeycomb'] .left { transform: translate(-27px, 56px); }
+.loader[data-stage='honeycomb'] .right { transform: translate(27px, 56px); }
 
 @keyframes revelar {
   from { opacity: 0; }
@@ -82,5 +61,5 @@
   .brandIcon img,
   .wordmark,
   .loader,
-  .hex { animation: none; }
+  .hex { animation: none; transition: none; }
 }
