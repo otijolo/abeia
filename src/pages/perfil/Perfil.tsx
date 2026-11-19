@@ -139,7 +139,7 @@ export function Perfil() {
 
   const ocupado = carregando || salvando || excluindo
   return (
-    <Screen title="Perfil" avatar={false} padding="form">
+    <Screen title="Perfil" avatar={false} padding="form" contentWidth="centered">
       <div className={styles.identity}>
         <div className={styles.portrait}>
           <Avatar size="lg" iniciais={iniciais || 'U'} />

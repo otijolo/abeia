@@ -150,7 +150,7 @@ export function ProducaoForm() {
   if (id && !producao) return <NotFound />
 
   return (
-    <Screen title={tituloTela} avatar={false} padding="form" backTo="/producao">
+    <Screen title={tituloTela} avatar={false} padding="form" contentWidth="full" backTo="/producao">
       <form onSubmit={handleSubmit}>
         <Stack gap={20}>
           {erro && <AlertBanner variant="error">{erro}</AlertBanner>}

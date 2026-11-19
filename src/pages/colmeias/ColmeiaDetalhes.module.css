@@ -157,6 +157,8 @@
 }
 
 .actionDivider {
+  width: 112px;
+  align-self: center;
   height: 1px;
   background: var(--color-border);
   margin: 8px 0;

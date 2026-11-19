@@ -155,7 +155,7 @@ export function AlertaForm() {
   if (id && !alerta) return <NotFound />
 
   return (
-    <Screen title={tituloTela} avatar={false} padding="form" backTo={id ? `/alertas/${id}` : '/alertas'}>
+    <Screen title={tituloTela} avatar={false} padding="form" contentWidth="full" backTo={id ? `/alertas/${id}` : '/alertas'}>
       <form onSubmit={handleSubmit}>
         <Stack gap={20}>
           {erro && <AlertBanner variant="error">{erro}</AlertBanner>}

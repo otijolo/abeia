@@ -3,8 +3,8 @@ import { useState, type CSSProperties } from 'react'
 import titleUrl from '../../assets/abeia-titulo.png'
 import { auth } from '../../services/firebase'
 import beeUrl from '../../assets/abeia-logo.png'
-import { DesignIcon, type DesignIconName } from '../ui/DesignIcon'
-import { MapPinIcon } from '../icons'
+import { DesignIcon } from '../ui/DesignIcon'
+import { NavigationIcon } from '../ui/NavigationIcon'
 import type { NavSection } from './BottomNav'
 import styles from './Sidebar.module.css'
 
@@ -16,17 +16,15 @@ interface NavItem {
   key: NavSection | 'mapa'
   label: string
   to: string
-  designIcon?: NavSection
-  isCustomIcon?: boolean
 }
 
 const navItems: NavItem[] = [
-  { key: 'inicio', label: 'Início', to: '/inicio', designIcon: 'inicio' },
-  { key: 'apiarios', label: 'Apiários', to: '/apiarios', designIcon: 'apiarios' },
-  { key: 'mapa', label: 'Mapa', to: '/mapa', isCustomIcon: true },
-  { key: 'colmeias', label: 'Colmeias', to: '/colmeias', designIcon: 'colmeias' },
-  { key: 'alertas', label: 'Alertas', to: '/alertas', designIcon: 'alertas' },
-  { key: 'producao', label: 'Produção', to: '/producao', designIcon: 'producao' },
+  { key: 'inicio', label: 'Início', to: '/inicio' },
+  { key: 'apiarios', label: 'Apiários', to: '/apiarios' },
+  { key: 'mapa', label: 'Mapa', to: '/mapa' },
+  { key: 'colmeias', label: 'Colmeias', to: '/colmeias' },
+  { key: 'alertas', label: 'Alertas', to: '/alertas' },
+  { key: 'producao', label: 'Produção', to: '/producao' },
 ]
 
 export function Sidebar({ active }: Props) {
@@ -80,13 +78,7 @@ export function Sidebar({ active }: Props) {
               aria-current={isActive ? 'page' : undefined}
             >
               <span className={styles.iconWrapper} aria-hidden="true">
-                {item.isCustomIcon ? (
-                  <MapPinIcon size={28} strokeWidth={2.6} className={styles.customIcon} />
-                ) : (
-                  <DesignIcon
-                    name={(isActive ? `${item.designIcon}-ativo` : item.designIcon) as DesignIconName}
-                  />
-                )}
+                <NavigationIcon name={item.key} />
               </span>
             </NavLink>
           )

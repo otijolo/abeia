@@ -113,3 +113,8 @@
     box-shadow: none;
   }
 }
+
+@media (min-width: 840px) {
+  .full.form .innerContainer > * { max-width: none; }
+  .centered.form .innerContainer > * { margin-left: auto; margin-right: auto; }
+}

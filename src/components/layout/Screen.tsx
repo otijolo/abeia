@@ -16,15 +16,16 @@ interface Props {
   padding?: 'list' | 'form' | 'none'
   /** Mapa ocupa o desktop por trás da navegação flutuante. */
   fullMap?: boolean
+  contentWidth?: 'default' | 'full' | 'centered'
 }
 
 /** Estrutura padrão das telas autenticadas: cabeçalho + conteúdo rolável + navegação */
-export function Screen({ children, title, avatar = true, backTo, nav, padding = 'list', fullMap = false }: Props) {
+export function Screen({ children, title, avatar = true, backTo, nav, padding = 'list', fullMap = false, contentWidth = 'default' }: Props) {
   return (
     <div className={[styles.screen, fullMap ? styles.mapScreen : ''].filter(Boolean).join(' ')}>
       <div className={styles.mainArea}>
         <AppHeader title={title} avatar={avatar} backTo={backTo} />
-        <main className={`${styles.content} ${styles[padding]}`}>
+        <main className={`${styles.content} ${styles[padding]} ${styles[contentWidth] || ''}`}>
           <div className={styles.innerContainer}>{children}</div>
         </main>
         {nav && <BottomNav active={nav} />}
