@@ -1,8 +1,8 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { useState, type CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
 import titleUrl from '../../assets/abeia-titulo.png'
 import { auth } from '../../services/firebase'
-import beeUrl from '../../assets/abeia-logo.png'
+import { BeeButton } from '../brand/BeeButton'
 import { DesignIcon } from '../ui/DesignIcon'
 import { NavigationIcon } from '../ui/NavigationIcon'
 import type { NavSection } from './BottomNav'
@@ -28,7 +28,6 @@ const navItems: NavItem[] = [
 ]
 
 export function Sidebar({ active }: Props) {
-  const [batendoAsas, setBatendoAsas] = useState(false)
   const location = useLocation()
   const pathname = location.pathname
 
@@ -48,19 +47,7 @@ export function Sidebar({ active }: Props) {
   return (
     <aside className={styles.sidebar} aria-label="Navegação desktop">
       <div className={styles.brandContainer}>
-        <button
-          type="button"
-          className={styles.beeButton}
-          aria-label="Bater as asas da abelha"
-          onClick={() => setBatendoAsas(true)}
-          onAnimationEnd={() => setBatendoAsas(false)}
-        >
-          <span className={[styles.bee, batendoAsas ? styles.flapping : ''].filter(Boolean).join(' ')} aria-hidden="true">
-            <img src={beeUrl} alt="" className={styles.beeBody} />
-            <img src={beeUrl} alt="" className={styles.upperWing} />
-            <img src={beeUrl} alt="" className={styles.lowerWing} />
-          </span>
-        </button>
+        <BeeButton />
         <img src={titleUrl} alt="Abeia" className={styles.wordmark} />
       </div>
 

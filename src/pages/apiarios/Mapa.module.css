@@ -43,5 +43,5 @@
   .viewport { height: 100dvh; }
   .viewport :global(.leaflet-top) { top: 128px; }
   .notice { top: 128px; }
-  .details { max-width: 400px; left: 24px; bottom: 24px; }
+  .details { width: min(560px, calc(100% - 48px)); left: 50%; right: auto; transform: translateX(-50%); bottom: 24px; }
 }

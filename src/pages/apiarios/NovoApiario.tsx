@@ -34,7 +34,7 @@ export function NovoApiario() {
   }
 
   return (
-    <Screen title="Novo Apiário" padding="form">
+    <Screen title="Novo Apiário" padding="form" contentWidth="full">
       {erro && (
         <div style={{ marginBottom: 16 }}>
           <AlertBanner variant="error" title="Erro no cadastro">

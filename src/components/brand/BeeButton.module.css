@@ -1,0 +1,57 @@
+/* A marca é um pequeno detalhe interativo, sem navegação. */
+.beeButton {
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.beeButton:focus-visible {
+  outline: 2px solid var(--color-primary, #f5c400);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.bee {
+  position: relative;
+  display: block;
+
+}
+
+.bee img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Três recortes da mesma imagem mantêm o corpo parado durante a batida. */
+.beeBody { clip-path: inset(0 62.5% 0 0); }
+.upperWing { clip-path: polygon(37.5% 0, 100% 0, 100% 59.5%, 37.5% 59.5%); }
+.lowerWing { clip-path: polygon(37.5% 59.5%, 100% 59.5%, 100% 100%, 37.5% 100%); }
+
+.flapping .upperWing {
+  transform-origin: 38% 59.5%;
+  animation: upperFlap 120ms ease-in-out 6;
+}
+.flapping .lowerWing {
+  transform-origin: 38% 59.5%;
+  animation: lowerFlap 120ms ease-in-out 6;
+}
+
+@keyframes upperFlap {
+  50% { transform: scaleX(0.3) rotate(-12deg); }
+}
+@keyframes lowerFlap {
+  50% { transform: scaleX(0.3) rotate(12deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flapping .upperWing,
+  .flapping .lowerWing { animation-duration: 1ms; animation-iteration-count: 1; }
+}

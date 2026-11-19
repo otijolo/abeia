@@ -223,7 +223,7 @@ export function ApiarioDetalhes() {
         <aside className={styles.sideCol}>
           {/* Mapa de Localização */}
           <div style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-            <MapPreview to={`/mapa?apiario=${apiario.id}`} />
+            <MapPreview className={styles.mapPreview} to={`/mapa?apiario=${apiario.id}`} />
           </div>
 
           {/* Painel de Gestão */}

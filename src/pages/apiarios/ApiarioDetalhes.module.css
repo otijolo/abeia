@@ -89,7 +89,7 @@
 }
 
 .actionDivider {
-  width: 112px;
+  width: 176px;
   align-self: center;
   height: 1px;
   background: var(--color-border);
@@ -98,4 +98,9 @@
 
 @media (max-width: 839px) {
   .actionPanel { padding: 0 8px; }
+}
+
+.mapPreview { height: 220px; }
+@media (min-width: 840px) {
+  .mapPreview { height: 340px; }
 }

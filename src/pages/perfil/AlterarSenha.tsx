@@ -49,7 +49,7 @@ export function AlterarSenha() {
   }
 
   return (
-    <Screen title="Alterar senha" avatar={false} padding="form">
+    <Screen title="Alterar senha" avatar={false} padding="form" contentWidth="full">
       <form onSubmit={handleSubmit} style={{ paddingTop: 11 }}>
         <Stack gap={20}>
           {erro && <AlertBanner variant="error">{erro}</AlertBanner>}

@@ -1,4 +1,4 @@
-import beeUrl from '../../assets/figma/abelha.png'
+import { BeeButton } from './BeeButton'
 import wordmarkUrl from '../../assets/figma/marca.png'
 import styles from './Brand.module.css'
 
@@ -6,7 +6,7 @@ import styles from './Brand.module.css'
 export function AppIcon({ size = 90 }: { size?: number }) {
   return (
     <span className={styles.icon} style={{ width: size, height: size, borderRadius: size * 0.26 }}>
-      <img src={beeUrl} alt="" style={{ height: size * 0.69 }} />
+      <BeeButton size={size * 0.69} />
     </span>
   )
 }

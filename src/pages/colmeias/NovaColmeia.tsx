@@ -82,7 +82,7 @@ export function NovaColmeia() {
   }
 
   return (
-    <Screen title="Nova Colmeia" padding="form">
+    <Screen title="Nova Colmeia" padding="form" contentWidth="full">
       {erro && (
         <div style={{ marginBottom: 16 }}>
           <AlertBanner variant="error">{erro}</AlertBanner>

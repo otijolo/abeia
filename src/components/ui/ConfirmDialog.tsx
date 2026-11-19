@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { ExclamationIcon } from '../icons'
 import { Button } from './Button'
 import { IconBubble } from './IconBubble'
@@ -37,7 +38,7 @@ export function ConfirmDialog({
 
   if (!open) return null
 
-  return (
+  return createPortal(
     <div className={styles.backdrop} onClick={onCancel}>
       <div
         role="alertdialog"
@@ -63,6 +64,7 @@ export function ConfirmDialog({
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
