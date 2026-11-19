@@ -5,7 +5,6 @@ import { Button } from '../../components/ui/Button'
 import { AlertBanner } from '../../components/ui/AlertBanner'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { SectionTitle } from '../../components/ui/SectionTitle'
-import { StatusBadge } from '../../components/ui/StatusBadge'
 import { buscarAlerta, atualizarEstadoAlerta, excluirAlerta } from '../../services/alertaService'
 import type { Alerta } from '../../data/types'
 import { NotFound } from '../NotFound'
@@ -130,6 +129,9 @@ export function AlertaDetalhes() {
             date={alerta.data}
             status={alerta.status}
           />
+          <p className={styles.situation}>
+            Situação: <strong>{alerta.estado === 'ativo' ? 'Ativo' : alerta.estado === 'ignorado' ? 'Ignorado' : 'Resolvido'}</strong>
+          </p>
 
           <Stack gap={14}>
             <SectionTitle>Motivo do alerta</SectionTitle>
@@ -156,14 +158,9 @@ export function AlertaDetalhes() {
           </Stack>
         </div>
 
-        {/* Coluna Lateral: Ações e Metadados */}
+        {/* Ações após as informações do alerta */}
         <aside className={styles.sideCol}>
           <div className={styles.actionPanel}>
-            <h3 className={styles.actionPanelTitle}>Ações de Alerta</h3>
-            <p className={styles.actionPanelSubtitle}>
-              Resolução e tratativas sanitárias
-            </p>
-
             <div className={styles.actionList}>
               {alerta.estado === 'ativo' && (
                 <Button onClick={handleResolverAlerta} disabled={atualizando}>
@@ -171,6 +168,7 @@ export function AlertaDetalhes() {
                 </Button>
               )}
 
+              <div className={styles.secondaryActions}>
               {alerta.colmeiaId && (
                 <Button variant="secondary" to={`/colmeias/${alerta.colmeiaId}`}>
                   Ir para a Colmeia
@@ -180,6 +178,7 @@ export function AlertaDetalhes() {
               <Button variant="secondary" to={`/alertas/${alerta.id}/editar`}>
                 Editar Alerta
               </Button>
+              </div>
 
               <div className={styles.actionDivider} />
 
@@ -193,30 +192,6 @@ export function AlertaDetalhes() {
             </div>
           </div>
 
-          {/* Card de Metadados */}
-          <div className={styles.metricsCard}>
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Gravidade</span>
-              <StatusBadge status={alerta.status} />
-            </div>
-            <div className={styles.metricsDivider} />
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Situação</span>
-              <span
-                className={styles.metricsValue}
-                style={{
-                  color: alerta.estado === 'ativo' ? 'var(--status-critical-fg)' : 'var(--color-primary-text)'
-                }}
-              >
-                {alerta.estado === 'ativo' ? 'Ativo' : 'Resolvido'}
-              </span>
-            </div>
-            <div className={styles.metricsDivider} />
-            <div className={styles.metricsRow}>
-              <span className={styles.metricsLabel}>Data de Registro</span>
-              <span className={styles.metricsValue}>{alerta.data}</span>
-            </div>
-          </div>
         </aside>
       </div>
 
