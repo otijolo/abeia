@@ -140,17 +140,15 @@ export function InspecaoDetalhes() {
 
           <Stack gap={14}>
             <SectionTitle>Parâmetros da Colônia</SectionTitle>
-            <div className={styles.cardBox}>
-              <KeyValueList
-                items={[
-                  ['Força da colônia', forcaLabel[inspecao.forcaColonia] || inspecao.forcaColonia],
-                  ['Rainha observada', inspecao.rainhaObservada ? 'Sim' : 'Não'],
-                  ['Quadros com abelhas', inspecao.quadrosAbelhas],
-                  ['Quadros com cria', inspecao.quadrosCria],
-                  ['Postura da rainha', posturaLabel[inspecao.postura] || inspecao.postura]
-                ]}
-              />
-            </div>
+            <KeyValueList
+              items={[
+                ['Força da colônia', forcaLabel[inspecao.forcaColonia] || inspecao.forcaColonia],
+                ['Rainha observada', inspecao.rainhaObservada ? 'Sim' : 'Não'],
+                ['Quadros com abelhas', inspecao.quadrosAbelhas],
+                ['Quadros com cria', inspecao.quadrosCria],
+                ['Postura da rainha', posturaLabel[inspecao.postura] || inspecao.postura]
+              ]}
+            />
           </Stack>
 
           <Stack gap={14}>
