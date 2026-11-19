@@ -83,3 +83,57 @@
 .avatarLink:hover {
   transform: scale(1.05);
 }
+
+/* Versão Desktop (≥ 840px) */
+@media (min-width: 840px) {
+  .header {
+    height: 64px;
+    padding: 0 36px;
+    align-items: center;
+    background: var(--color-surface);
+  }
+
+  .headerInner {
+    max-width: 1080px;
+    margin: 0 auto;
+    align-items: center;
+  }
+
+  .titleRow {
+    padding: 0;
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .brandMobile {
+    display: none;
+  }
+
+  .contextDesktop {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .crumb {
+    color: var(--color-text-muted);
+  }
+
+  .crumbSep {
+    color: var(--color-border);
+  }
+
+  .crumbCurrent {
+    color: var(--color-text);
+  }
+
+  .avatar {
+    align-self: center;
+    margin-bottom: 0;
+  }
+}

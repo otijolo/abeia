@@ -164,3 +164,58 @@
   opacity: 0.5;
   cursor: wait;
 }
+
+/* Versão Desktop (≥ 840px) */
+@media (min-width: 840px) {
+  .topBar {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .filters {
+    flex: 1;
+    max-width: 620px;
+  }
+
+  .topActions {
+    width: auto;
+    flex-shrink: 0;
+    gap: 12px;
+  }
+
+  .topActionPrimary,
+  .topActionSecondary {
+    height: 42px !important;
+    padding: 0 18px !important;
+    font-size: 13.5px !important;
+    white-space: nowrap !important;
+    width: auto !important;
+  }
+
+  /* Ranking 3 colunas em Desktop */
+  .rankingGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  /* Grid 2 colunas para histórico de colheitas */
+  .harvestGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (min-width: 840px) and (max-width: 1040px) {
+  .rankingGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .harvestGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
